@@ -6,7 +6,7 @@ A lightweight project board for tracking features, improvements, and bugs.
 
 - **Current focus:** Admin puzzle management and puzzle player UX.
 - **Environment:** Local Laragon development.
-- **Version control:** Not yet initialized. A GitHub repository can be created later.
+- **Version control:** Git initialized, pushed to https://github.com/salehuddin/Chess-Puzzle-Challenge
 
 ## Done
 
@@ -27,7 +27,7 @@ A lightweight project board for tracking features, improvements, and bugs.
 
 ## Backlog
 
-- [ ] Initialize a Git repository and push to GitHub.
+- [x] Initialize a Git repository and push to GitHub.
 - [ ] Set up a staging/preview VPS for team testing.
 - [ ] Add CI/CD pipeline (GitHub Actions) for tests and deployments.
 - [ ] Persist hint-click counter server-side for leaderboards / bragging rights.
