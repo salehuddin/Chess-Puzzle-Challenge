@@ -1,0 +1,15 @@
+@import 'chessground/assets/chessground.base.css';
+@import 'chessground/assets/chessground.brown.css';
+@import 'chessground/assets/chessground.cburnett.css';
+
+/* Make puzzle rows look clickable when they carry preview data. */
+.fi-ta-row:has([data-preview-id]),
+.fi-ta-record:has([data-preview-id]) {
+    cursor: pointer;
+}
+
+/* Ensure board has a visible surface in Filament modals before Chessground paint. */
+.cg-wrap {
+    width: 100%;
+    height: 100%;
+}

@@ -1,0 +1,145 @@
+/* ── Chess Puzzle Challenge · Admin Theme ──────────────────── */
+/* Emerald-green, modern, card-based Filament admin panel.    */
+
+/* ── Sidebar ──────────────────────────────────────────────── */
+.fi-sidebar {
+    border-right: 1px solid rgba(5, 150, 105, 0.08);
+    background-color: #f8faf9 !important;
+}
+
+.fi-sidebar-item-active {
+    background-color: rgba(5, 150, 105, 0.10) !important;
+    border-left: 3px solid #059669 !important;
+}
+
+.fi-sidebar-item:hover {
+    background-color: rgba(5, 150, 105, 0.05);
+}
+
+/* ── Top bar ──────────────────────────────────────────────── */
+.fi-topbar {
+    border-bottom: 1px solid rgba(5, 150, 105, 0.08);
+}
+
+/* ── Cards & widgets ──────────────────────────────────────── */
+.fi-wi-stats-overview-stat {
+    border-radius: 1rem !important;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04), 0 1px 2px rgba(0, 0, 0, 0.03) !important;
+    border: 1px solid rgba(5, 150, 105, 0.06) !important;
+    transition: box-shadow 0.2s ease, transform 0.2s ease;
+}
+
+.fi-wi-stats-overview-stat:hover {
+    box-shadow: 0 4px 12px rgba(5, 150, 105, 0.10), 0 2px 4px rgba(0, 0, 0, 0.04) !important;
+}
+
+/* ── Section cards ────────────────────────────────────────── */
+.fi-section,
+.fi-fo-repeater,
+.fi-fo-builder,
+.fi-ta {
+    border-radius: 1rem !important;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.03), 0 1px 2px rgba(0, 0, 0, 0.02) !important;
+    border: 1px solid rgba(15, 23, 42, 0.06) !important;
+}
+
+/* ── Tables ───────────────────────────────────────────────── */
+.fi-ta-table th {
+    background-color: #f0fdf6 !important;
+    color: #065f46 !important;
+    font-weight: 600;
+}
+
+.fi-ta-table tr:hover td {
+    background-color: rgba(5, 150, 105, 0.03);
+}
+
+/* ── Buttons ──────────────────────────────────────────────── */
+.fi-btn.fi-btn-primary,
+.fi-btn.fi-color-primary {
+    border-radius: 0.6rem !important;
+    font-weight: 500;
+    box-shadow: 0 1px 2px rgba(5, 150, 105, 0.20);
+}
+
+.fi-btn.fi-btn-primary:hover,
+.fi-btn.fi-color-primary:hover {
+    box-shadow: 0 4px 12px rgba(5, 150, 105, 0.30);
+}
+
+/* ── Form inputs ──────────────────────────────────────────── */
+.fi-fo-text-input input,
+.fi-fo-select select,
+.fi-fo-textarea textarea {
+    border-radius: 0.5rem !important;
+    border-color: rgba(15, 23, 42, 0.12);
+}
+
+.fi-fo-text-input input:focus,
+.fi-fo-select select:focus,
+.fi-fo-textarea textarea:focus {
+    border-color: #059669;
+    ring-color: #059669;
+}
+
+/* ── Badges ───────────────────────────────────────────────── */
+.fi-badge {
+    border-radius: 0.5rem !important;
+}
+
+/* ── Progress bar ─────────────────────────────────────────── */
+.fi-progress-bar {
+    border-radius: 999px !important;
+    background-color: rgba(5, 150, 105, 0.10);
+}
+
+.fi-progress-bar .fi-progress-bar-fill {
+    background-color: #059669 !important;
+    border-radius: 999px !important;
+}
+
+/* ── Modals & dropdowns ───────────────────────────────────── */
+.fi-modal-window,
+.fi-dropdown-panel {
+    border-radius: 0.75rem !important;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.08);
+}
+
+/* ── Tabs ─────────────────────────────────────────────────── */
+.fi-tabs-item.fi-tabs-item-active {
+    border-bottom-color: #059669 !important;
+    color: #059669;
+}
+
+/* ── Filters & search ─────────────────────────────────────── */
+.fi-fo-filter-select .choices__inner {
+    border-radius: 0.5rem !important;
+}
+
+/* ── Dark mode adjustments ────────────────────────────────── */
+.dark .fi-sidebar {
+    background-color: #0a1a14 !important;
+    border-right-color: rgba(5, 150, 105, 0.10);
+}
+
+.dark .fi-topbar {
+    border-bottom-color: rgba(5, 150, 105, 0.10);
+}
+
+.dark .fi-ta-table th {
+    background-color: #0a2a1e !important;
+    color: #6ee7b7;
+}
+
+.dark .fi-ta-table tr:hover td {
+    background-color: rgba(5, 150, 105, 0.06);
+}
+
+.dark .fi-wi-stats-overview-stat {
+    border-color: rgba(5, 150, 105, 0.08) !important;
+}
+
+.dark .fi-section,
+.dark .fi-fo-repeater {
+    border-color: rgba(15, 23, 42, 0.15) !important;
+}
