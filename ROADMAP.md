@@ -28,8 +28,8 @@ A lightweight project board for tracking features, improvements, and bugs.
 ## Backlog
 
 - [x] Initialize a Git repository and push to GitHub.
+- [x] Add CI workflow (GitHub Actions) and deployment guide (Coolify/Hostinger).
 - [ ] Set up a staging/preview VPS for team testing.
-- [ ] Add CI/CD pipeline (GitHub Actions) for tests and deployments.
 - [ ] Persist hint-click counter server-side for leaderboards / bragging rights.
 - [ ] Add admin feature tests for puzzle import, filtering, and bulk actions.
 - [ ] Optimize theme filter query for very large puzzle datasets if needed.
