@@ -71,8 +71,9 @@ COPY composer.json composer.lock ./
 RUN composer install --no-dev --optimize-autoloader --no-scripts --no-autoloader
 
 COPY . .
-RUN composer dump-autoload --optimize --no-dev
 RUN npm ci && npm run build
+RUN composer dump-autoload --optimize --no-dev --no-scripts \
+    && php artisan package:discover --ansi
 
 FROM base AS production
 
