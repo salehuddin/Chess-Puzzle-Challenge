@@ -14,6 +14,8 @@
     $orderLabel = ($rules['order'] ?? 'sequential') === 'sequential' ? 'Sequential order' : 'Free order';
     $descriptionHtml = (string) ($challenge->description ?? '');
     $hasDescription = trim(strip_tags($descriptionHtml)) !== '';
+    $termsHtml = (string) ($challenge->terms_and_conditions ?? '');
+    $hasTerms = trim(strip_tags($termsHtml)) !== '';
 @endphp
 
 <div class="bg-base-200">
@@ -25,25 +27,33 @@
         <div class="absolute inset-0 bg-gradient-to-r from-stone-950/90 via-stone-900/80 to-stone-900/70"></div>
 
         <div class="relative mx-auto max-w-7xl px-4 py-16 sm:px-6 lg:px-8 lg:py-20">
-            <div class="max-w-3xl">
-                <a href="{{ route('challenges.index') }}" class="mb-5 inline-flex items-center gap-2 text-sm font-semibold text-amber-200/90 transition hover:text-amber-100">
-                    <span>←</span>
-                    <span>Back to Challenges</span>
-                </a>
+            <div class="grid grid-cols-1 gap-10 lg:grid-cols-3 lg:items-center">
+                <div class="lg:col-span-2">
+                    <a href="{{ route('challenges.index') }}" class="mb-5 inline-flex items-center gap-2 text-sm font-semibold text-amber-200/90 transition hover:text-amber-100">
+                        <span>←</span>
+                        <span>Back to Challenges</span>
+                    </a>
 
-                <div class="mb-4 flex flex-wrap items-center gap-3">
-                    <span class="badge {{ $levelData[2] }} gap-1 font-semibold">
-                        {{ $levelData[0] }} {{ $levelData[1] }}
-                    </span>
-                    <span class="badge badge-outline border-white/30 text-white/90">{{ $puzzleTotal }} puzzles</span>
-                    <span class="badge badge-outline border-white/30 text-white/90">{{ $orderLabel }}</span>
+                    <div class="mb-4 flex flex-wrap items-center gap-3">
+                        <span class="badge {{ $levelData[2] }} gap-1 font-semibold">
+                            {{ $levelData[0] }} {{ $levelData[1] }}
+                        </span>
+                        <span class="badge badge-outline border-white/30 text-white/90">{{ $puzzleTotal }} puzzles</span>
+                        <span class="badge badge-outline border-white/30 text-white/90">{{ $orderLabel }}</span>
+                    </div>
+
+                    <h1 class="font-display text-4xl font-black leading-tight text-white lg:text-6xl">{{ $challenge->name }}</h1>
+
+                    @if($hasDescription)
+                        <div class="prose prose-invert mt-5 max-w-2xl text-base leading-relaxed lg:text-lg">
+                            {!! $descriptionHtml !!}
+                        </div>
+                    @endif
                 </div>
 
-                <h1 class="font-display text-4xl font-black leading-tight text-white lg:text-6xl">{{ $challenge->name }}</h1>
-
-                @if($hasDescription)
-                    <div class="prose prose-invert mt-5 max-w-2xl text-base leading-relaxed lg:text-lg">
-                        {!! $descriptionHtml !!}
+                @if($medalArtworkUrl)
+                    <div class="flex justify-center lg:justify-end">
+                        <img src="{{ $medalArtworkUrl }}" alt="{{ $challenge->name }} medal" class="h-48 w-48 rounded-2xl object-contain shadow-2xl ring-1 ring-white/10 lg:h-64 lg:w-64">
                     </div>
                 @endif
             </div>
@@ -89,12 +99,37 @@
 
         <div class="rounded-2xl border border-amber-200 bg-amber-50 p-6 shadow-warm lg:p-8">
             <div class="flex flex-col gap-5 lg:flex-row lg:items-center lg:justify-between">
-                <div>
+                <div class="flex items-start gap-5">
+                    @if($stickerArtworkUrl)
+                        <img src="{{ $stickerArtworkUrl }}" alt="{{ $challenge->name }} sticker" class="hidden h-20 w-20 shrink-0 rounded-xl object-contain sm:block">
+                    @endif
+                    <div>
                     <p class="text-xs font-semibold uppercase tracking-widest text-amber-700">Enrollment</p>
-                    <h2 class="mt-1 font-display text-2xl font-black text-stone-900">Join this challenge</h2>
+                    @if($userEnrollment)
+                        @php
+                            $enrollmentHeading = match($userEnrollment['status']) {
+                                'pending' => 'Complete your payment',
+                                'active' => 'You\'re enrolled!',
+                                'completed' => 'Challenge completed!',
+                                default => 'Join this challenge',
+                            };
+                        @endphp
+                        <h2 class="mt-1 font-display text-2xl font-black text-stone-900">{{ $enrollmentHeading }}</h2>
+                    @else
+                        <h2 class="mt-1 font-display text-2xl font-black text-stone-900">Join this challenge</h2>
+                    @endif
                     <p class="mt-2 max-w-2xl text-sm leading-relaxed text-stone-600">
-                        Create an account or sign in to enroll. Admin users can enroll instantly without payment.
+                        @if($userEnrollment && $userEnrollment['status'] === 'active')
+                            Continue solving puzzles where you left off.
+                        @elseif($userEnrollment && $userEnrollment['status'] === 'completed')
+                            You've conquered all puzzles and earned the sticker. Track your medal shipment or browse more challenges.
+                        @elseif($userEnrollment && $userEnrollment['status'] === 'pending')
+                            Your enrollment was created. Complete payment to unlock the puzzles.
+                        @else
+                            Create an account or sign in to enroll. Admin users can enroll instantly without payment.
+                        @endif
                     </p>
+                </div>
                 </div>
 
                 <div class="flex flex-col gap-3 sm:flex-row">
@@ -106,9 +141,45 @@
                             Sign In
                         </a>
                     @else
-                        <a href="{{ $enrollUrl }}" class="btn btn-primary gap-2">
-                            {{ auth()->user()->isAdmin() ? 'Enroll as Admin' : 'Enroll Now' }}
-                        </a>
+                        @if($userEnrollment)
+                            @switch($userEnrollment['status'])
+                                @case('pending')
+                                    <a href="{{ route('checkout.show', $userEnrollment['order_id']) }}" class="btn btn-primary gap-2">
+                                        Complete Payment
+                                    </a>
+                                    <a href="{{ route('orders.track', $userEnrollment['id']) }}" class="btn btn-outline btn-primary gap-2">
+                                        View Enrollment
+                                    </a>
+                                    @break
+                                @case('active')
+                                    <a href="{{ route('play', $userEnrollment['id']) }}" class="btn btn-primary gap-2">
+                                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.5v5a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                                        Continue Playing
+                                    </a>
+                                    <a href="{{ route('challenges.index') }}" class="btn btn-outline btn-primary gap-2">
+                                        Browse Challenges
+                                    </a>
+                                    @break
+                                @case('completed')
+                                    <a href="{{ route('orders.track', $userEnrollment['id']) }}" class="btn btn-primary gap-2">
+                                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                                        View Details
+                                    </a>
+                                    <a href="{{ route('challenges.index') }}" class="btn btn-outline btn-primary gap-2">
+                                        Next Challenge
+                                    </a>
+                                    @break
+                                @default
+                                    <a href="{{ $enrollUrl }}" class="btn btn-primary gap-2">
+                                        {{ auth()->user()->isAdmin() ? 'Enroll as Admin' : 'Enroll Now' }}
+                                    </a>
+                                    @break
+                            @endswitch
+                        @else
+                            <a href="{{ $enrollUrl }}" class="btn btn-primary gap-2">
+                                {{ auth()->user()->isAdmin() ? 'Enroll as Admin' : 'Enroll Now' }}
+                            </a>
+                        @endif
                     @endguest
                 </div>
             </div>
@@ -228,4 +299,23 @@
             @endif
         </div>
     </section>
+
+    @if($hasTerms)
+        <section class="mx-auto max-w-7xl px-4 pb-14 sm:px-6 lg:px-8">
+            <h2 class="mb-5 font-display text-3xl font-black text-stone-900">Terms &amp; Conditions</h2>
+
+            <div class="rounded-2xl border border-stone-200 bg-white p-6 shadow-warm lg:p-8">
+                <details class="group">
+                    <summary class="flex cursor-pointer list-none items-center justify-between gap-3 text-sm font-semibold text-stone-700">
+                        <span>Tap to read the full terms for this challenge</span>
+                        <svg class="h-5 w-5 shrink-0 text-stone-400 transition-transform duration-200 group-open:rotate-180" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+                    </summary>
+
+                    <article class="prose prose-stone mt-5 max-w-none text-base leading-relaxed">
+                        {!! $termsHtml !!}
+                    </article>
+                </details>
+            </div>
+        </section>
+    @endif
 </div>

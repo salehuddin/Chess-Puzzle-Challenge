@@ -8,6 +8,7 @@ use App\Livewire\ChallengeIndex;
 use App\Livewire\ChallengeShow;
 use App\Livewire\Dashboard;
 use App\Livewire\HallOfFame;
+use App\Livewire\MedalRequest;
 use App\Livewire\OrderTracking;
 use App\Livewire\PuzzlePlayer;
 use App\Models\Bundle;
@@ -15,7 +16,7 @@ use App\Models\Challenge;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
-    $challenges = Challenge::active()->take(3)->get();
+    $challenges = Challenge::active()->withCount('puzzles')->take(3)->get();
     $bundles = Bundle::active()->with('challenges')->take(2)->get();
 
     return view('welcome', compact('challenges', 'bundles'));
@@ -36,6 +37,7 @@ Route::middleware('auth')->group(function () {
     Route::post('/checkout/{order}/pay', [CheckoutController::class, 'pay'])->name('checkout.pay');
 
     Route::get('/play/{enrollment}', PuzzlePlayer::class)->name('play');
+    Route::get('/medal-request/{enrollment}', MedalRequest::class)->name('medal-request');
     Route::get('/hall-of-fame', HallOfFame::class)->name('hall-of-fame');
     Route::get('/orders/{enrollment}', OrderTracking::class)->name('orders.track');
 

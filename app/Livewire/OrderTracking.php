@@ -33,7 +33,9 @@ class OrderTracking extends Component
 
         $status = match (true) {
             in_array($fulfillment?->status, ['shipped', 'delivered'], true) => 'shipped',
-            $fulfillment?->status === 'ready_to_ship' || $this->enrollment->status === 'completed' => 'completed',
+            $fulfillment?->status === 'ready_to_ship' => 'completed',
+            $this->enrollment->status === 'completed' && $fulfillment?->status === 'pending' => 'medal_pending',
+            $this->enrollment->status === 'completed' => 'completed',
             $this->enrollment->status === 'active' => 'in_progress',
             $order?->status === 'pending' => 'pending',
             default => 'pending',
@@ -43,6 +45,7 @@ class OrderTracking extends Component
             'order_id' => $order?->id ?? $this->enrollment->id,
             'challenge_name' => $this->enrollment->challenge?->name,
             'status' => $status,
+            'fulfillment_status' => $fulfillment?->status,
             'created_at' => $order?->created_at ?? $this->enrollment->created_at,
             'completed_at' => $this->enrollment->completed_at,
             'shipped_at' => $fulfillment?->shipped_at,

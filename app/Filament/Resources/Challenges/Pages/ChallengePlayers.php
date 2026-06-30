@@ -26,6 +26,8 @@ class ChallengePlayers extends ManageRelatedRecords
     public function table(Table $table): Table
     {
         $challengeId = $this->getOwnerRecord()->id;
+        $this->getOwnerRecord()->loadCount('puzzles');
+        $puzzleTotal = max((int) $this->getOwnerRecord()->puzzle_count, 1);
 
         return $table
             ->modifyQueryUsing(fn ($query) => $query->with('user'))
@@ -47,8 +49,8 @@ class ChallengePlayers extends ManageRelatedRecords
                     ->sortable(),
                 TextColumn::make('progress')
                     ->label('Progress')
-                    ->state(function (Enrollment $record) use ($challengeId): string {
-                        $total = max((int) $this->getOwnerRecord()->puzzle_count, 1);
+                    ->state(function (Enrollment $record) use ($challengeId, $puzzleTotal): string {
+                        $total = $puzzleTotal;
                         $completed = PuzzleProgress::query()
                             ->where('user_id', $record->user_id)
                             ->where('challenge_id', $challengeId)

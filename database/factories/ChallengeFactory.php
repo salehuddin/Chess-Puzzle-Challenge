@@ -35,7 +35,6 @@ class ChallengeFactory extends Factory
             ],
             'price_usd' => fake()->randomElement([9.99, 14.99, 19.99, 24.99]),
             'price_myr' => fake()->randomElement([39.90, 59.90, 79.90, 99.90]),
-            'puzzle_count' => 100,
             'is_active' => true,
         ];
     }

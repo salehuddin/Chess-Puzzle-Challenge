@@ -31,6 +31,8 @@ class ChallengeMedalStatus extends ManageRelatedRecords
     public function table(Table $table): Table
     {
         $challengeId = $this->getOwnerRecord()->id;
+        $this->getOwnerRecord()->loadCount('puzzles');
+        $puzzleTotal = max((int) $this->getOwnerRecord()->puzzle_count, 1);
 
         return $table
             ->modifyQueryUsing(fn ($query) => $query
@@ -48,8 +50,8 @@ class ChallengeMedalStatus extends ManageRelatedRecords
                     ->searchable(),
                 TextColumn::make('progress_percent')
                     ->label('Progress')
-                    ->state(function (Enrollment $record) use ($challengeId): string {
-                        $total = max((int) $this->getOwnerRecord()->puzzle_count, 1);
+                    ->state(function (Enrollment $record) use ($challengeId, $puzzleTotal): string {
+                        $total = $puzzleTotal;
                         $completed = PuzzleProgress::query()
                             ->where('user_id', $record->user_id)
                             ->where('challenge_id', $challengeId)
@@ -185,14 +187,14 @@ class ChallengeMedalStatus extends ManageRelatedRecords
                         'almost' => 'Almost Complete (80%+)',
                         'complete' => 'Fully Complete (100%)',
                     ])
-                    ->query(function ($query, array $data) use ($challengeId) {
+                    ->query(function ($query, array $data) use ($challengeId, $puzzleTotal) {
                         $value = $data['value'] ?? null;
 
                         if (! in_array($value, ['almost', 'complete'], true)) {
                             return $query;
                         }
 
-                        $total = max((int) $this->getOwnerRecord()->puzzle_count, 1);
+                        $total = $puzzleTotal;
                         $threshold = $value === 'complete' ? $total : (int) ceil($total * 0.8);
 
                         return $query->whereHas('user', function ($q) use ($challengeId, $threshold) {

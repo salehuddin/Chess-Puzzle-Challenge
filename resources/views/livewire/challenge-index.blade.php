@@ -43,16 +43,59 @@
                     };
                     $rules = $challenge->rules ?? [];
                     $displayPuzzleCount = (int) ($challenge->puzzles_count ?? $challenge->puzzle_count ?? 0);
+                    $enrollmentStatus = $enrollmentStatuses[$challenge->id] ?? null;
+                    $enrollmentBadge = match($enrollmentStatus) {
+                        'active' => ['In Progress', 'bg-green-100 text-green-800 border-green-200'],
+                        'completed' => ['Completed', 'bg-amber-100 text-amber-800 border-amber-200'],
+                        'pending' => ['Payment Pending', 'bg-yellow-100 text-yellow-800 border-yellow-200'],
+                        default => null,
+                    };
                 @endphp
                 <div wire:key="challenge-{{ $challenge->id }}" class="bg-white rounded-2xl shadow-warm overflow-hidden border border-stone-100 hover:shadow-warm-lg hover:-translate-y-1 transition-all duration-300 flex flex-col">
-                    <div class="bg-chess-pattern h-24 relative">
-                        <div class="absolute inset-0 bg-gradient-to-b from-transparent to-white/80"></div>
-                        <div class="absolute bottom-3 left-5">
-                            <span class="badge {{ $levelData[2] }} badge-sm gap-1 font-semibold">
-                                {{ $levelData[0] }} {{ $levelData[1] }}
-                            </span>
+                    @if($challenge->poster_image)
+                        <div class="h-40 relative overflow-hidden">
+                            <img src="{{ asset('storage/'.$challenge->poster_image) }}" alt="{{ $challenge->name }}" class="h-full w-full object-cover">
+                            <div class="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent"></div>
+                            <div class="absolute bottom-3 left-5">
+                                <span class="badge {{ $levelData[2] }} badge-sm gap-1 font-semibold">
+                                    {{ $levelData[0] }} {{ $levelData[1] }}
+                                </span>
+                            </div>
+                            @if($enrollmentBadge)
+                                <div class="absolute top-3 right-3">
+                                    <span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-semibold border {{ $enrollmentBadge[1] }}">
+                                        @if($enrollmentStatus === 'completed')
+                                            <svg class="w-3 h-3" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/></svg>
+                                        @elseif($enrollmentStatus === 'active')
+                                            <span class="w-1.5 h-1.5 rounded-full bg-green-500 animate-pulse"></span>
+                                        @endif
+                                        {{ $enrollmentBadge[0] }}
+                                    </span>
+                                </div>
+                            @endif
                         </div>
-                    </div>
+                    @else
+                        <div class="bg-chess-pattern h-24 relative">
+                            <div class="absolute inset-0 bg-gradient-to-b from-transparent to-white/80"></div>
+                            <div class="absolute bottom-3 left-5">
+                                <span class="badge {{ $levelData[2] }} badge-sm gap-1 font-semibold">
+                                    {{ $levelData[0] }} {{ $levelData[1] }}
+                                </span>
+                            </div>
+                            @if($enrollmentBadge)
+                                <div class="absolute top-3 right-3">
+                                    <span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-semibold border {{ $enrollmentBadge[1] }}">
+                                        @if($enrollmentStatus === 'completed')
+                                            <svg class="w-3 h-3" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/></svg>
+                                        @elseif($enrollmentStatus === 'active')
+                                            <span class="w-1.5 h-1.5 rounded-full bg-green-500 animate-pulse"></span>
+                                        @endif
+                                        {{ $enrollmentBadge[0] }}
+                                    </span>
+                                </div>
+                            @endif
+                        </div>
+                    @endif
 
                     <div class="p-6 flex flex-col flex-1">
                         <h3 class="font-display text-xl font-bold text-stone-900 mb-2">{{ $challenge->name }}</h3>
@@ -71,7 +114,15 @@
                         </div>
 
                         <a href="{{ url('/challenges/'.$challenge->slug) }}" class="btn btn-primary w-full gap-2">
-                            View Details →
+                            @if($enrollmentStatus === 'active')
+                                Continue Playing →
+                            @elseif($enrollmentStatus === 'completed')
+                                View Details →
+                            @elseif($enrollmentStatus === 'pending')
+                                Complete Payment →
+                            @else
+                                View Details →
+                            @endif
                         </a>
                     </div>
                 </div>
@@ -92,6 +143,10 @@
 
             <div class="grid grid-cols-1 md:grid-cols-2 gap-8 lg:px-16">
                 @foreach($bundles as $bundle)
+                    @php
+                        $bundleChallengeIds = $bundle->challenges->pluck('id')->all();
+                        $ownedCount = collect($bundleChallengeIds)->filter(fn ($id) => isset($enrollmentStatuses[$id]))->count();
+                    @endphp
                     <div wire:key="bundle-{{ $bundle->id }}" class="bg-white rounded-2xl shadow-warm border border-stone-100 hover:shadow-warm-lg hover:-translate-y-1 transition-all duration-300 p-8 flex flex-col">
                         <div class="flex items-center gap-3 mb-3">
                             <div class="w-10 h-10 rounded-xl bg-accent/10 flex items-center justify-center text-xl">🎁</div>
@@ -103,12 +158,26 @@
                             <p class="text-xs font-semibold text-stone-400 uppercase tracking-wider mb-3">Includes</p>
                             <div class="space-y-2">
                                 @foreach($bundle->challenges as $c)
+                                    @php
+                                        $cStatus = $enrollmentStatuses[$c->id] ?? null;
+                                    @endphp
                                     <div class="flex items-center gap-2 text-sm font-medium text-stone-700">
-                                        <svg class="w-4 h-4 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
-                                        {{ $c->name }}
+                                        @if($cStatus)
+                                            <svg class="w-4 h-4 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                                            <span>{{ $c->name }}</span>
+                                            <span class="text-xs text-green-600">({{ $cStatus === 'completed' ? 'completed' : 'enrolled' }})</span>
+                                        @else
+                                            <svg class="w-4 h-4 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
+                                            <span>{{ $c->name }}</span>
+                                        @endif
                                     </div>
                                 @endforeach
                             </div>
+                            @if($ownedCount > 0)
+                                <p class="mt-3 text-xs text-amber-700 bg-amber-50 px-3 py-2 rounded border border-amber-100">
+                                    You already own {{ $ownedCount }} of {{ count($bundleChallengeIds) }} challenges in this bundle.
+                                </p>
+                            @endif
                         </div>
 
                         <div class="flex items-center justify-between">

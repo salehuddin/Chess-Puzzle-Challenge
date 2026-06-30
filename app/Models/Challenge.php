@@ -28,12 +28,14 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
     'rules',
     'price_usd',
     'price_myr',
-    'puzzle_count',
     'is_active',
     'medal_weight',
     'medal_length',
     'medal_width',
     'medal_height',
+    'medal_stock_on_hand',
+    'medal_reorder_threshold',
+    'medal_reorder_quantity',
 ])]
 class Challenge extends Model
 {
@@ -66,12 +68,14 @@ class Challenge extends Model
             'videos' => 'array',
             'price_usd' => 'decimal:2',
             'price_myr' => 'decimal:2',
-            'puzzle_count' => 'integer',
             'is_active' => 'boolean',
             'medal_weight' => 'decimal:2',
             'medal_length' => 'decimal:2',
             'medal_width' => 'decimal:2',
             'medal_height' => 'decimal:2',
+            'medal_stock_on_hand' => 'integer',
+            'medal_reorder_threshold' => 'integer',
+            'medal_reorder_quantity' => 'integer',
         ];
     }
 
@@ -116,6 +120,71 @@ class Challenge extends Model
     public function stickers(): HasMany
     {
         return $this->hasMany(Sticker::class);
+    }
+
+    /**
+     * The stock movement audit log for this challenge's medal.
+     */
+    public function stockMovements(): HasMany
+    {
+        return $this->hasMany(MedalStockMovement::class);
+    }
+
+    /**
+     * Total puzzles attached to this challenge.
+     *
+     * Derived dynamically from the puzzles relationship rather than a stored
+     * column so it always reflects the actual attached puzzle set. Prefers
+     * the `puzzles_count` aggregate (via `withCount`/`loadCount`) when present,
+     * or the loaded relation collection, falling back to a live query.
+     */
+    public function getPuzzleCountAttribute(): int
+    {
+        if (array_key_exists('puzzles_count', $this->attributes)) {
+            return (int) $this->attributes['puzzles_count'];
+        }
+
+        if ($this->relationLoaded('puzzles')) {
+            return $this->puzzles->count();
+        }
+
+        return (int) $this->puzzles()->count();
+    }
+
+    /**
+     * Medals reserved by fulfillments that are ready to ship but not yet shipped.
+     */
+    public function getMedalStockReservedAttribute(): int
+    {
+        return (int) Fulfillment::query()
+            ->where('status', 'ready_to_ship')
+            ->whereHas('enrollment', fn ($query) => $query->where('challenge_id', $this->id))
+            ->count();
+    }
+
+    /**
+     * Medals available to dispatch = on hand - reserved.
+     */
+    public function getMedalStockAvailableAttribute(): int
+    {
+        return max(0, (int) $this->medal_stock_on_hand - $this->medal_stock_reserved);
+    }
+
+    /**
+     * Whether this medal is out of stock (no available medals).
+     */
+    public function getMedalIsOutOfStockAttribute(): bool
+    {
+        return $this->medal_stock_available <= 0;
+    }
+
+    /**
+     * Whether this medal is below the reorder threshold (but not out of stock).
+     */
+    public function getMedalIsLowStockAttribute(): bool
+    {
+        return $this->medal_stock_available > 0
+            && $this->medal_stock_available <= $this->medal_reorder_threshold;
     }
 
     /**

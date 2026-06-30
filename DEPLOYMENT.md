@@ -7,6 +7,7 @@ This guide deploys the app to a **Hostinger VPS** using **Coolify** (open-source
 ---
 
 ## Table of Contents
+
 1. [Architecture Overview](#1-architecture-overview)
 2. [Prerequisites](#2-prerequisites)
 3. [Provision the Hostinger VPS](#3-provision-the-hostinger-vps)
@@ -42,16 +43,17 @@ Coolify uses **Nixpacks** to auto-detect Laravel and build a production image wi
 
 ## 2. Prerequisites
 
-| Requirement | Details |
-| :--- | :--- |
+| Requirement   | Details                                                                                                |
+|:------------- |:------------------------------------------------------------------------------------------------------ |
 | Hostinger VPS | KVM 2 plan minimum (2 vCPU, 8GB RAM, 50GB NVMe). 4GB RAM works but is tight for MySQL + Coolify + app. |
-| OS | Ubuntu 22.04 LTS (recommended) or 24.04 |
-| Domain | Optional for staging; required for production SSL (e.g., `staging.yourdomain.com`) |
-| GitHub repo | https://github.com/salehuddin/Chess-Puzzle-Challenge |
-| SSH access | Root or sudo user on the VPS |
-| Local SSH key | For agent SSH access if running CI/CD autonomously |
+| OS            | Ubuntu 22.04 LTS (recommended) or 24.04                                                                |
+| Domain        | Optional for staging; required for production SSL (e.g., `staging.yourdomain.com`)                     |
+| GitHub repo   | https://github.com/salehuddin/Chess-Puzzle-Challenge                                                   |
+| SSH access    | Root or sudo user on the VPS                                                                           |
+| Local SSH key | For agent SSH access if running CI/CD autonomously                                                     |
 
 ### Required secrets (gather before starting)
+
 - `APP_KEY` — generate with `php artisan key:generate` locally; copy the base64 key.
 - `STRIPE_KEY`, `STRIPE_SECRET`, `STRIPE_WEBHOOK_SECRET` — from Stripe dashboard (use test keys for staging).
 - `DB_PASSWORD` — a strong password you choose for the MySQL database.
@@ -61,6 +63,7 @@ Coolify uses **Nixpacks** to auto-detect Laravel and build a production image wi
 ## 3. Provision the Hostinger VPS
 
 ### 3.1 Create the VPS
+
 1. Log into Hostinger → **VPS** → **Create new VPS**.
 2. Choose **KVM 2** (or higher), **Ubuntu 22.04 LTS**, a datacenter close to your users.
 3. Set a root password (save it securely).
@@ -113,6 +116,7 @@ curl -fsSL https://cdn.coollabs.io/coolify/install.sh | bash
 ```
 
 This script:
+
 - Installs Docker and Docker Compose.
 - Pulls the Coolify management container.
 - Starts Coolify on port `8000`.
@@ -269,6 +273,7 @@ After deploying, check the Coolify **Logs** tab for the worker container — you
 In Coolify → Application → **Environment Variables**, add the following:
 
 ### Required
+
 ```env
 APP_NAME="Chess Puzzle Challenge"
 APP_ENV=production
@@ -291,6 +296,7 @@ STRIPE_WEBHOOK_SECRET=<whsec_...>
 ```
 
 ### Optional (for this app)
+
 ```env
 # Enable sandbox payment mode for staging
 SANDBOX_PAYMENT_MODE=true
@@ -518,6 +524,7 @@ This ensures the server only rebuilds after tests pass. **Disable Coolify's auto
 ## 13. Alternatives
 
 ### Option B: Laravel Forge + any VPS
+
 - **Best for:** Laravel-focused teams who want zero-config queue/scheduler management.
 - **Cost:** ~$12–$19/month (per server) + VPS cost.
 - **How:** Buy Hostinger VPS → connect to Forge → Forge installs everything (Nginx, PHP, MySQL, Certbot). Push to GitHub → Forge auto-deploys.
@@ -525,6 +532,7 @@ This ensures the server only rebuilds after tests pass. **Disable Coolify's auto
 - **Cons:** Monthly subscription; less control over the stack.
 
 ### Option C: Ploi.io + any VPS
+
 - **Best for:** Similar to Forge but cheaper.
 - **Cost:** ~$5–$9/month + VPS cost.
 - **How:** Same flow as Forge.
@@ -532,6 +540,7 @@ This ensures the server only rebuilds after tests pass. **Disable Coolify's auto
 - **Cons:** Smaller community than Forge.
 
 ### Option D: Deployer + GitHub Actions (no control panel)
+
 - **Best for:** Teams who want full control and no monthly SaaS cost.
 - **Cost:** VPS only.
 - **How:** Write a `deploy.php` (Deployer recipe). GitHub Actions SSHes into the VPS and runs `dep deploy`.
@@ -539,6 +548,7 @@ This ensures the server only rebuilds after tests pass. **Disable Coolify's auto
 - **Cons:** You manage the server yourself (Nginx, PHP-FPM, MySQL, SSL, firewall, queue supervisor).
 
 ### Option E: Laravel Sail / Docker Compose on VPS
+
 - **Best for:** Single-server, containerized deployments.
 - **Cost:** VPS only.
 - **How:** Use a production-tuned `docker-compose.yml` with PHP-FPM, Nginx, MySQL, Redis. Deploy via GitHub Actions + `docker compose up -d`.
@@ -546,44 +556,54 @@ This ensures the server only rebuilds after tests pass. **Disable Coolify's auto
 - **Cons:** More YAML to maintain; no GUI.
 
 ### Recommendation
-| Scenario | Recommended |
-| :--- | :--- |
-| Want a GUI, self-hosted, no subscription | **Coolify** (this guide) |
-| Want the most Laravel-native experience, don't mind paying | **Laravel Forge** |
-| Want cheapest, fully scripted, no GUI | **Deployer + GitHub Actions** |
+
+| Scenario                                                   | Recommended                   |
+|:---------------------------------------------------------- |:----------------------------- |
+| Want a GUI, self-hosted, no subscription                   | **Coolify** (this guide)      |
+| Want the most Laravel-native experience, don't mind paying | **Laravel Forge**             |
+| Want cheapest, fully scripted, no GUI                      | **Deployer + GitHub Actions** |
 
 ---
 
 ## 14. Troubleshooting
 
 ### Build fails: "PHP version not detected"
+
 Nixpacks may default to an older PHP. Pin it by creating a `nixpacks.toml` in the repo root:
+
 ```toml
 [phases.setup]
 nixpkgs = ["php83", "php83Packages.composer", "nodejs_20"]
 ```
 
 ### Migrations fail on first deploy
+
 Ensure the MySQL database is linked to the app (step 6.2) and `DB_*` env vars are present. Run `php artisan migrate --force` manually in the Coolify terminal to see the error.
 
 ### Queue worker not processing jobs
+
 1. Check `QUEUE_CONNECTION=database` is set.
 2. Confirm the worker container is running (Coolify → Logs → worker).
 3. Run `php artisan queue:failed` to see failed jobs.
 
 ### CSS/JS not loading (404)
+
 The built assets live in `public/build/` which is gitignored. Ensure `npm run build` runs during the Coolify build phase (Nixpacks does this automatically for Laravel, but verify in build logs).
 
 ### Storage uploads 404
+
 Run `php artisan storage:link` in the post-deployment command (step 7.1). For persistent storage across redeploys, mount a Coolify **persistent volume** at `/app/storage/app/private`.
 
 ### "No application encryption key has been specified"
+
 Set `APP_KEY` in Coolify environment variables. Generate one locally:
+
 ```bash
 php artisan key:generate --show
 ```
 
 ### Cron / scheduler not running
+
 Verify the cron job or `schedule:work` worker is configured (step 7.3). Check `php artisan schedule:list` in the terminal.
 
 ---
@@ -616,3 +636,9 @@ An autonomous agent can run these in order. Each step is verifiable.
 [ ] 21. (Optional) Add .github/workflows/ci.yml
 [ ] 22. (Optional) Enable Coolify auto-deploy or webhook deploy
 ```
+
+
+
+
+
+

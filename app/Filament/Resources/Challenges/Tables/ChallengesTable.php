@@ -24,6 +24,10 @@ class ChallengesTable
                 TextColumn::make('name')
                     ->searchable()
                     ->weight('bold'),
+                TextColumn::make('description')
+                    ->limit(60)
+                    ->searchable()
+                    ->toggleable(),
                 TextColumn::make('slug')
                     ->searchable()
                     ->toggleable(isToggledHiddenByDefault: true),
@@ -43,11 +47,6 @@ class ChallengesTable
                     ->label('Puzzles count')
                     ->numeric()
                     ->sortable(),
-                TextColumn::make('puzzle_count')
-                    ->label('Target puzzle count')
-                    ->numeric()
-                    ->sortable()
-                    ->toggleable(isToggledHiddenByDefault: true),
                 IconColumn::make('is_active')
                     ->boolean(),
                 TextColumn::make('created_at')

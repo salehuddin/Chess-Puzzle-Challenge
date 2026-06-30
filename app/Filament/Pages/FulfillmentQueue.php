@@ -26,13 +26,13 @@ class FulfillmentQueue extends Page implements HasSchemas, HasTable
     use InteractsWithSchemas;
     use InteractsWithTable;
 
-    protected static string | \BackedEnum | null $navigationIcon = Heroicon::OutlinedTruck;
+    protected static string|\BackedEnum|null $navigationIcon = Heroicon::OutlinedTruck;
 
     protected static ?string $navigationLabel = 'Fulfillment Queue';
 
     protected static ?string $title = 'Fulfillment Queue';
 
-    protected static string | \UnitEnum | null $navigationGroup = 'Operations';
+    protected static string|\UnitEnum|null $navigationGroup = 'Operations';
 
     protected static ?int $navigationSort = 1;
 
@@ -43,7 +43,7 @@ class FulfillmentQueue extends Page implements HasSchemas, HasTable
         return $table
             ->query(
                 Fulfillment::query()
-                    ->with(['enrollment.user:id,name,email', 'enrollment.challenge:id,name', 'enrollment.orderItem:id,order_id'])
+                    ->with(['enrollment.user:id,name,email', 'enrollment.challenge:id,name,sku,medal_stock_on_hand', 'enrollment.orderItem:id,order_id'])
                     ->whereIn('status', ['ready_to_ship', 'shipped'])
             )
             ->columns([
@@ -60,7 +60,10 @@ class FulfillmentQueue extends Page implements HasSchemas, HasTable
                     ->copyable(),
                 TextColumn::make('enrollment.challenge.name')
                     ->label('Challenge')
-                    ->searchable(),
+                    ->searchable()
+                    ->description(fn (Fulfillment $record): ?string => $record->enrollment?->challenge?->medal_stock_on_hand <= 0
+                        ? '⚠ No medal stock available'
+                        : null),
                 TextColumn::make('status')
                     ->badge()
                     ->color(fn (string $state): string => match ($state) {
@@ -79,6 +82,13 @@ class FulfillmentQueue extends Page implements HasSchemas, HasTable
                     ->label('Tracking URL')
                     ->url(fn (Fulfillment $record): ?string => $record->tracking_url)
                     ->openUrlInNewTab()
+                    ->toggleable(),
+                TextColumn::make('enrollment.challenge.medal_stock_on_hand')
+                    ->label('Stock')
+                    ->alignRight()
+                    ->badge(fn (Fulfillment $record): bool => $record->enrollment?->challenge?->medal_stock_on_hand <= 0)
+                    ->color(fn (Fulfillment $record): string => $record->enrollment?->challenge?->medal_stock_on_hand <= 0 ? 'danger' : 'gray')
+                    ->formatStateUsing(fn (Fulfillment $record): string => $record->enrollment?->challenge?->medal_stock_on_hand <= 0 ? '0' : (string) $record->enrollment?->challenge?->medal_stock_on_hand)
                     ->toggleable(),
                 TextColumn::make('enrollment.completed_at')
                     ->dateTime()

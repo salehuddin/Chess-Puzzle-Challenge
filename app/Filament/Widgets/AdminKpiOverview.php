@@ -2,6 +2,7 @@
 
 namespace App\Filament\Widgets;
 
+use App\Models\Challenge;
 use App\Models\Enrollment;
 use App\Models\Fulfillment;
 use App\Models\Order;
@@ -71,6 +72,32 @@ class AdminKpiOverview extends BaseWidget
 
         $paidLast7Days = array_sum($paidTrendChart);
 
+        $readyToShipReserved = Fulfillment::query()
+            ->where('fulfillments.status', 'ready_to_ship')
+            ->join('enrollments', 'fulfillments.enrollment_id', '=', 'enrollments.id')
+            ->selectRaw('enrollments.challenge_id, COUNT(*) as reserved_count')
+            ->groupBy('enrollments.challenge_id')
+            ->pluck('reserved_count', 'challenge_id')
+            ->all();
+
+        $challenges = Challenge::query()
+            ->select(['id', 'medal_stock_on_hand', 'medal_reorder_threshold'])
+            ->get();
+
+        $outOfStockCount = 0;
+        $lowStockCount = 0;
+
+        foreach ($challenges as $challenge) {
+            $reserved = $readyToShipReserved[$challenge->id] ?? 0;
+            $available = max(0, $challenge->medal_stock_on_hand - $reserved);
+
+            if ($available <= 0) {
+                $outOfStockCount++;
+            } elseif ($available <= $challenge->medal_reorder_threshold) {
+                $lowStockCount++;
+            }
+        }
+
         return [
             Stat::make('Paid Orders', number_format($paidOrders))
                 ->description('Orders with successful payment')
@@ -92,7 +119,7 @@ class AdminKpiOverview extends BaseWidget
                 ->description('Orders not yet paid')
                 ->descriptionIcon('heroicon-o-clock')
                 ->color('gray'),
-            Stat::make('Paid Revenue (USD)', '$' . number_format($projectedRevenueUsd, 2))
+            Stat::make('Paid Revenue (USD)', '$'.number_format($projectedRevenueUsd, 2))
                 ->description('From paid USD orders')
                 ->descriptionIcon('heroicon-o-banknotes')
                 ->color('success'),
@@ -101,6 +128,14 @@ class AdminKpiOverview extends BaseWidget
                 ->descriptionIcon('heroicon-o-chart-bar-square')
                 ->color('primary')
                 ->chart($paidTrendChart),
+            Stat::make('Low Stock SKUs', number_format($lowStockCount))
+                ->description('Challenges below reorder threshold')
+                ->descriptionIcon('heroicon-o-exclamation-triangle')
+                ->color('warning'),
+            Stat::make('Out of Stock SKUs', number_format($outOfStockCount))
+                ->description('Challenges with no medals available')
+                ->descriptionIcon('heroicon-o-x-circle')
+                ->color('danger'),
         ];
     }
 }

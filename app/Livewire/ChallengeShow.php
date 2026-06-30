@@ -3,11 +3,12 @@
 namespace App\Livewire;
 
 use App\Models\Challenge;
+use App\Models\Enrollment;
 use Illuminate\Support\Arr;
-use Illuminate\Support\Str;
 use Illuminate\Support\Carbon;
-use Livewire\Component;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Str;
+use Livewire\Component;
 
 class ChallengeShow extends Component
 {
@@ -35,11 +36,18 @@ class ChallengeShow extends Component
 
     public ?string $posterImageUrl = null;
 
+    public ?string $medalArtworkUrl = null;
+
+    public ?string $stickerArtworkUrl = null;
+
+    public ?array $userEnrollment = null;
+
     public function mount(Challenge $challenge)
     {
         $this->challenge = $challenge;
         $this->challenge->loadCount('puzzles');
         $this->hydrateDisplayData();
+        $this->loadUserEnrollment();
     }
 
     public function render()
@@ -50,6 +58,8 @@ class ChallengeShow extends Component
     private function hydrateDisplayData(): void
     {
         $this->posterImageUrl = $this->mediaUrl($this->challenge->poster_image);
+        $this->medalArtworkUrl = $this->mediaUrl($this->challenge->medal_artwork);
+        $this->stickerArtworkUrl = $this->mediaUrl($this->challenge->sticker_artwork);
 
         $this->imageGallery = array_values(array_filter(array_map(
             fn (mixed $item): ?string => $this->mediaUrl((string) $item),
@@ -132,7 +142,7 @@ class ChallengeShow extends Component
             return Storage::url($path);
         }
 
-        return asset('storage/' . ltrim($path, '/'));
+        return asset('storage/'.ltrim($path, '/'));
     }
 
     private function toEmbedUrl(string $url): ?string
@@ -152,18 +162,18 @@ class ChallengeShow extends Component
         parse_str((string) ($parts['query'] ?? ''), $query);
 
         if (str_contains($host, 'youtu.be') && $path !== '') {
-            return 'https://www.youtube.com/embed/' . Str::before($path, '/');
+            return 'https://www.youtube.com/embed/'.Str::before($path, '/');
         }
 
         if (str_contains($host, 'youtube.com')) {
             $id = (string) ($query['v'] ?? '');
 
             if ($id !== '') {
-                return 'https://www.youtube.com/embed/' . $id;
+                return 'https://www.youtube.com/embed/'.$id;
             }
 
             if (str_starts_with($path, 'shorts/')) {
-                return 'https://www.youtube.com/embed/' . Str::after($path, 'shorts/');
+                return 'https://www.youtube.com/embed/'.Str::after($path, 'shorts/');
             }
         }
 
@@ -172,10 +182,47 @@ class ChallengeShow extends Component
             $id = end($segments);
 
             if (is_string($id) && ctype_digit($id)) {
-                return 'https://player.vimeo.com/video/' . $id;
+                return 'https://player.vimeo.com/video/'.$id;
             }
         }
 
         return null;
+    }
+
+    private function loadUserEnrollment(): void
+    {
+        $user = auth()->user();
+
+        if (! $user) {
+            $this->userEnrollment = null;
+
+            return;
+        }
+
+        $enrollment = Enrollment::query()
+            ->whereBelongsTo($user)
+            ->where('challenge_id', $this->challenge->id)
+            ->with(['orderItem.order:id,status'])
+            ->first();
+
+        if (! $enrollment) {
+            $this->userEnrollment = null;
+
+            return;
+        }
+
+        $orderStatus = $enrollment->orderItem?->order?->status ?? 'pending';
+
+        $status = match (true) {
+            $orderStatus === 'pending' => 'pending',
+            in_array($enrollment->status, ['completed'], true) => 'completed',
+            default => 'active',
+        };
+
+        $this->userEnrollment = [
+            'id' => $enrollment->id,
+            'status' => $status,
+            'order_id' => $enrollment->orderItem?->order?->id,
+        ];
     }
 }

@@ -6,9 +6,11 @@ use App\Filament\Resources\Challenges\ChallengeResource;
 use App\Filament\Resources\Challenges\Pages\Concerns\HasChallengeRecordHeader;
 use Filament\Actions\DeleteAction;
 use Filament\Forms\Components\FileUpload;
+use Filament\Forms\Components\Placeholder;
 use Filament\Forms\Components\Select;
-use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Textarea;
+use Filament\Forms\Components\TextInput;
+use Filament\Forms\Components\Toggle;
 use Filament\Resources\Pages\EditRecord;
 use Filament\Schemas\Components\Section;
 use Filament\Schemas\Schema;
@@ -44,9 +46,15 @@ class EditChallenge extends EditRecord
                                 'archived' => 'Archived',
                             ])
                             ->required(),
-                        TextInput::make('puzzle_count')
-                            ->required()
-                            ->numeric(),
+                        Toggle::make('is_active')
+                            ->label('Active'),
+                        Placeholder::make('puzzle_count')
+                            ->label('Puzzle Count')
+                            ->content(function ($record): string {
+                                $count = $record ? $record->puzzles()->count() : 0;
+
+                                return $count.' (auto-counted from attached puzzles — manage on the Puzzles tab)';
+                            }),
                         TextInput::make('price_usd')
                             ->required()
                             ->numeric()
@@ -59,6 +67,9 @@ class EditChallenge extends EditRecord
                             ->maxLength(255)
                             ->columnSpanFull(),
                         Textarea::make('meta_description')
+                            ->rows(3)
+                            ->columnSpanFull(),
+                        Textarea::make('description')
                             ->rows(3)
                             ->columnSpanFull(),
                     ])
@@ -106,6 +117,35 @@ class EditChallenge extends EditRecord
                             ->placeholder('5'),
                     ])
                     ->columns(4),
+                Section::make('Medal Inventory')
+                    ->schema([
+                        TextInput::make('medal_stock_on_hand')
+                            ->label('Stock On Hand')
+                            ->numeric()
+                            ->minValue(0)
+                            ->helperText('Physical medals currently in the warehouse.'),
+                        TextInput::make('medal_reorder_threshold')
+                            ->label('Reorder Threshold')
+                            ->numeric()
+                            ->minValue(0)
+                            ->helperText('Alert when available stock drops to or below this number.'),
+                        TextInput::make('medal_reorder_quantity')
+                            ->label('Reorder Quantity')
+                            ->numeric()
+                            ->minValue(0)
+                            ->placeholder('50')
+                            ->helperText('Suggested restock batch size (optional).'),
+                        Placeholder::make('medal_stock_summary')
+                            ->label('Reserved / Available')
+                            ->content(function ($record): string {
+                                $reserved = $record?->medal_stock_reserved ?? 0;
+                                $available = $record?->medal_stock_available ?? 0;
+
+                                return "{$reserved} reserved / {$available} available";
+                            }),
+                    ])
+                    ->columns(4)
+                    ->description('Track physical medal stock. Reserved and available stock are computed from ready-to-ship fulfillments automatically.'),
             ]);
     }
 

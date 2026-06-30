@@ -4,12 +4,14 @@ namespace App\Jobs;
 
 use App\Models\Fulfillment;
 use App\Services\Courier\EasyParcelService;
+use App\Services\MedalInventoryService;
 use App\Services\Settings;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Throwable;
 
@@ -25,15 +27,14 @@ class ProcessCourierShipmentJob implements ShouldQueue
      */
     public function __construct(
         public int $fulfillmentId,
-    ) {
-    }
+    ) {}
 
     /**
      * Execute the job.
      */
     public function handle(): void
     {
-        $fulfillment = Fulfillment::with('enrollment.user')->find($this->fulfillmentId);
+        $fulfillment = Fulfillment::with(['enrollment.user', 'enrollment.challenge'])->find($this->fulfillmentId);
 
         if (! $fulfillment) {
             Log::warning('ProcessCourierShipmentJob: Fulfillment not found.', [
@@ -75,13 +76,22 @@ class ProcessCourierShipmentJob implements ShouldQueue
                 default => throw new \InvalidArgumentException("Unsupported courier provider: {$provider}"),
             };
 
-            $fulfillment->update([
-                'courier' => $provider,
-                'tracking_number' => $result['tracking_number'] ?? null,
-                'tracking_url' => $result['tracking_url'] ?? null,
-                'shipped_at' => now(),
-                'status' => 'shipped',
-            ]);
+            DB::transaction(function () use ($fulfillment, $provider, $result): void {
+                $fulfillment->update([
+                    'courier' => $provider,
+                    'tracking_number' => $result['tracking_number'] ?? null,
+                    'tracking_url' => $result['tracking_url'] ?? null,
+                    'shipped_at' => now(),
+                    'status' => 'shipped',
+                ]);
+
+                $challenge = $fulfillment->enrollment?->challenge;
+
+                if ($challenge) {
+                    app(MedalInventoryService::class)
+                        ->decrementForShipment($challenge, $fulfillment);
+                }
+            });
 
             Log::info('ProcessCourierShipmentJob: Shipment dispatched.', [
                 'fulfillment_id' => $fulfillment->id,
@@ -161,7 +171,7 @@ class ProcessCourierShipmentJob implements ShouldQueue
             $serviceId = $selectedRate['service_id'];
         }
 
-        $reference = 'FUL-' . $fulfillment->id;
+        $reference = 'FUL-'.$fulfillment->id;
 
         $submitResponse = $service->submitOrder($fromAddress, $toAddress, $package, [
             'service_id' => $serviceId,
@@ -173,7 +183,7 @@ class ProcessCourierShipmentJob implements ShouldQueue
 
         if (($submitResponse['api_status'] ?? '') !== 'Success' || ! $submitResult || ($submitResult['status'] ?? '') !== 'Success') {
             throw new \RuntimeException(
-                'EasyParcel submit order failed: ' .
+                'EasyParcel submit order failed: '.
                 ($submitResult['remarks'] ?? ($submitResponse['error_remark'] ?? 'Unknown error'))
             );
         }
@@ -182,7 +192,7 @@ class ProcessCourierShipmentJob implements ShouldQueue
         $parcelNumber = $submitResult['parcel_number'];
 
         $trackingNumber = $parcelNumber;
-        $trackingUrl = 'https://www.easyparcel.com/en-my/tracking/?no=' . $parcelNumber;
+        $trackingUrl = 'https://www.easyparcel.com/en-my/tracking/?no='.$parcelNumber;
 
         if ((bool) ($courier['auto_pay'] ?? false)) {
             $payResponse = $service->payOrder($orderNumber);
@@ -223,11 +233,11 @@ class ProcessCourierShipmentJob implements ShouldQueue
             'hq' => $hq['name'] ?? null,
         ]);
 
-        $trackingNumber = 'DHL' . strtoupper(uniqid());
+        $trackingNumber = 'DHL'.strtoupper(uniqid());
 
         return [
             'tracking_number' => $trackingNumber,
-            'tracking_url' => 'https://www.dhl.com/us-en/home/tracking/tracking-express.html?submit=1&tracking-id=' . $trackingNumber,
+            'tracking_url' => 'https://www.dhl.com/us-en/home/tracking/tracking-express.html?submit=1&tracking-id='.$trackingNumber,
         ];
     }
 

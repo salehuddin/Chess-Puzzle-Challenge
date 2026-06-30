@@ -59,10 +59,30 @@
             </div>
             <h2 class="text-4xl font-bold text-amber-700 mb-4 font-serif">Challenge Complete! 🎉</h2>
             <p class="text-lg text-gray-700 mb-8 max-w-lg mx-auto">You have successfully solved all the puzzles. Your new sticker has been added to your dashboard.</p>
-            <div class="flex justify-center gap-4">
-                <a href="{{ route('dashboard') }}" class="btn btn-primary">View Dashboard</a>
-                <a href="{{ route('challenges.index') }}" class="btn btn-secondary">Next Challenge</a>
-            </div>
+
+            @if($medalRequestPending)
+                <div class="max-w-md mx-auto mb-6 p-4 bg-white rounded-xl border border-amber-200 shadow-sm">
+                    <div class="flex items-start gap-3 text-left">
+                        <div class="text-3xl">🏅</div>
+                        <div>
+                            <p class="font-bold text-stone-800">Claim your physical medal</p>
+                            <p class="text-sm text-gray-600 mt-1">Confirm your shipping address and request your medal, or do it later from your dashboard.</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="flex flex-col sm:flex-row justify-center gap-4">
+                    <a href="{{ route('medal-request', $enrollment) }}" class="btn btn-primary btn-lg gap-2">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 8h14M5 8a2 2 0 110-4h14a2 2 0 110 4M5 8v10a2 2 0 002 2h10a2 2 0 002-2V8m-9 4h4"/></svg>
+                        Request My Medal
+                    </a>
+                    <a href="{{ route('dashboard') }}" class="btn btn-outline">View Dashboard</a>
+                </div>
+            @else
+                <div class="flex justify-center gap-4">
+                    <a href="{{ route('dashboard') }}" class="btn btn-primary">View Dashboard</a>
+                    <a href="{{ route('challenges.index') }}" class="btn btn-secondary">Next Challenge</a>
+                </div>
+            @endif
         </div>
     @else
         {{-- Alpine Board Component --}}
@@ -161,6 +181,16 @@
                         </div>
                         
                         <div x-show="ready && !puzzleError" x-cloak class="mt-4">
+                            @if(!empty($currentPuzzleThemes))
+                                <div class="flex flex-wrap gap-1.5 mb-4">
+                                    @foreach($currentPuzzleThemes as $theme)
+                                        <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-emerald-50 text-emerald-700 border border-emerald-200">
+                                            {{ ucfirst(str_replace(['-', '_'], ' ', $theme)) }}
+                                        </span>
+                                    @endforeach
+                                </div>
+                            @endif
+
                             <p class="text-gray-600 text-lg">
                                 Find the best move for 
                                 <span class="font-bold inline-block px-3 py-1 rounded shadow-sm"

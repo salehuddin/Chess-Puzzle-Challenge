@@ -32,9 +32,9 @@
                 </li>
                 
                 <!-- Step 3: Completed (Ready to ship) -->
-                <li class="step {{ in_array($tracking['status'], ['completed', 'shipped']) ? 'step-primary' : '' }}" data-content="📦">
+                <li class="step {{ in_array($tracking['status'], ['completed', 'shipped', 'medal_pending']) ? 'step-primary' : '' }}" data-content="📦">
                     <div class="text-left lg:text-center mt-2">
-                        <p class="font-bold">Completed & Preparing</p>
+                        <p class="font-bold">{{ $tracking['status'] === 'medal_pending' ? 'Medal Pending' : 'Completed & Preparing' }}</p>
                         @if($tracking['completed_at'])
                             <p class="text-xs text-gray-500">{{ $tracking['completed_at']->format('M j, Y') }}</p>
                         @endif
@@ -66,6 +66,16 @@
                             <div class="text-4xl mb-4 text-amber-500">⏳</div>
                             <h4 class="font-bold text-gray-800">Awaiting payment</h4>
                             <p class="text-gray-500 text-sm mt-2">Your enrollment has been created. Complete payment to unlock the puzzles and start playing.</p>
+                        </div>
+                    @elseif($tracking['status'] === 'medal_pending')
+                        <div class="mt-4 text-center py-6">
+                            <div class="text-4xl mb-4 text-amber-500">🏅</div>
+                            <h4 class="font-bold text-gray-800">Claim your medal</h4>
+                            <p class="text-gray-500 text-sm mt-2">You've completed all puzzles! Confirm your shipping address and request your physical medal to be mailed to you.</p>
+                            <a href="{{ route('medal-request', $tracking['enrollment_id']) }}" class="btn btn-primary btn-sm mt-4 gap-2">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 8h14M5 8a2 2 0 110-4h14a2 2 0 110 4M5 8v10a2 2 0 002 2h10a2 2 0 002-2V8m-9 4h4"/></svg>
+                                Request My Medal
+                            </a>
                         </div>
                     @elseif($tracking['status'] === 'shipped')
                     <div class="mt-4 space-y-4">
@@ -121,7 +131,16 @@
                     </div>
                     
                     <div class="mt-4 text-xs text-yellow-700 bg-yellow-50 p-3 rounded border border-yellow-200">
-                        📍 This address was recorded at the time of purchase or completion and cannot be changed here. Contact support if you need to update it.
+                        📍 This address was recorded at the time of medal request and cannot be changed here. Contact support if you need to update it.
+                    </div>
+                @elseif($tracking['status'] === 'medal_pending')
+                    <div class="mt-4 text-center py-6">
+                        <div class="text-3xl mb-3">📮</div>
+                        <p class="text-gray-500 text-sm">No shipping address confirmed yet. Request your medal to lock in your delivery address.</p>
+                        <a href="{{ route('medal-request', $tracking['enrollment_id']) }}" class="btn btn-primary btn-sm mt-4 gap-2">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 8h14M5 8a2 2 0 110-4h14a2 2 0 110 4M5 8v10a2 2 0 002 2h10a2 2 0 002-2V8m-9 4h4"/></svg>
+                            Request Medal
+                        </a>
                     </div>
                 @else
                     <div class="mt-4 text-center py-6">

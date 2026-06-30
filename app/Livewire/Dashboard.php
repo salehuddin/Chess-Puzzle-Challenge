@@ -2,14 +2,19 @@
 
 namespace App\Livewire;
 
+use App\Models\Challenge;
 use App\Models\Enrollment;
+use App\Models\Order;
 use App\Models\PuzzleProgress;
+use App\Models\Sticker;
 use Illuminate\Support\Collection;
 use Livewire\Attributes\Layout;
 use Livewire\Component;
 
 class Dashboard extends Component
 {
+    public string $activeTab = 'challenges';
+
     /**
      * @return Collection<int, object>
      */
@@ -61,8 +66,44 @@ class Dashboard extends Component
                 'solved_puzzles_count' => (int) ($solvedCounts[(string) $enrollment->challenge_id] ?? 0),
                 'enrollment_id' => $enrollment->id,
                 'order_id' => $order?->id,
+                'medal_request_pending' => $enrollment->status === 'completed' && $fulfillment?->status === 'pending',
             ];
         });
+    }
+
+    /**
+     * @return array{challenges: Collection<int, Challenge>, earnedStickerChallengeIds: array<int, int>}
+     */
+    protected function buildCollectionData(): array
+    {
+        $challenges = Challenge::active()->orderBy('id')->get();
+
+        $earnedStickerChallengeIds = Sticker::query()
+            ->whereBelongsTo(auth()->user())
+            ->pluck('challenge_id')
+            ->all();
+
+        return [
+            'challenges' => $challenges,
+            'earnedStickerChallengeIds' => $earnedStickerChallengeIds,
+        ];
+    }
+
+    /**
+     * @return Collection<int, Order>
+     */
+    protected function buildOrdersData(): Collection
+    {
+        return Order::query()
+            ->whereBelongsTo(auth()->user())
+            ->with(['items.enrollments:id,order_item_id,status,completed_at'])
+            ->latest()
+            ->get();
+    }
+
+    public function setTab(string $tab): void
+    {
+        $this->activeTab = in_array($tab, ['challenges', 'collection', 'orders'], true) ? $tab : 'challenges';
     }
 
     #[Layout('layouts.app')]
@@ -73,11 +114,19 @@ class Dashboard extends Component
         $pending = $cards->filter(fn ($card) => $card->status === 'pending');
         $active = $cards->filter(fn ($card) => in_array($card->status, ['active'], true));
         $completed = $cards->filter(fn ($card) => in_array($card->status, ['completed', 'shipped'], true));
+        $pendingMedalRequests = $cards->filter(fn ($card) => $card->medal_request_pending);
+
+        $collection = $this->buildCollectionData();
+        $orders = $this->buildOrdersData();
 
         return view('livewire.dashboard', [
             'pendingCards' => $pending,
             'activeCards' => $active,
             'completedCards' => $completed,
+            'pendingMedalRequests' => $pendingMedalRequests,
+            'collectionChallenges' => $collection['challenges'],
+            'earnedStickerChallengeIds' => $collection['earnedStickerChallengeIds'],
+            'orders' => $orders,
         ]);
     }
 }

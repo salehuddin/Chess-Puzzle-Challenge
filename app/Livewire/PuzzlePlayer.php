@@ -25,6 +25,11 @@ class PuzzlePlayer extends Component
 
     public ?int $currentPuzzleId = null;
 
+    /**
+     * @var array<int, string>
+     */
+    public ?array $currentPuzzleThemes = null;
+
     public int $totalPuzzles = 0;
 
     public int $completedPuzzles = 0;
@@ -42,6 +47,8 @@ class PuzzlePlayer extends Component
     public bool $isComplete = false;
 
     public bool $isFinalPuzzle = false;
+
+    public bool $medalRequestPending = false;
 
     public ?string $completionToken = null;
 
@@ -89,6 +96,7 @@ class PuzzlePlayer extends Component
             $this->currentPuzzleId = $nextPuzzle->id;
             $this->currentFen = $nextPuzzle->fen;
             $this->currentMoves = $nextPuzzle->moves;
+            $this->currentPuzzleThemes = is_array($nextPuzzle->themes) ? array_values(array_map('strval', $nextPuzzle->themes)) : [];
 
             $remaining = $this->totalPuzzles - $this->completedPuzzles;
             $this->isFinalPuzzle = $remaining === 1;
@@ -98,8 +106,10 @@ class PuzzlePlayer extends Component
             $this->currentFen = null;
             $this->currentMoves = null;
             $this->currentPuzzleId = null;
+            $this->currentPuzzleThemes = null;
 
             $this->finalizeIfEligible();
+            $this->medalRequestPending = $this->resolveMedalRequestPending();
         }
 
         $this->orderedPuzzleIds = $challengePuzzles
@@ -201,19 +211,20 @@ class PuzzlePlayer extends Component
             ]);
 
             if (! $fulfillment->exists) {
-                $fulfillment->status = 'ready_to_ship';
-            } elseif ($fulfillment->status === 'pending') {
-                $fulfillment->status = 'ready_to_ship';
-            }
-
-            if (blank($fulfillment->address_snapshot)) {
-                $fulfillment->address_snapshot = auth()->user()->addressSnapshot();
+                $fulfillment->status = 'pending';
             }
 
             $fulfillment->save();
 
             $this->enrollment = $enrollment->fresh();
         });
+    }
+
+    protected function resolveMedalRequestPending(): bool
+    {
+        $fulfillment = Fulfillment::where('enrollment_id', $this->enrollment->id)->first();
+
+        return $fulfillment?->status === 'pending';
     }
 
     protected function generatePuzzleProofToken(int $puzzleId, int $completedCount): string
