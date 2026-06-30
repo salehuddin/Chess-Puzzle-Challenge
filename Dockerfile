@@ -3,7 +3,7 @@ FROM php:8.3-fpm AS base
 RUN apt-get update && apt-get install -y --no-install-recommends \
     curl wget git unzip \
     libpng-dev libjpeg-dev libfreetype6-dev libwebp-dev \
-    libzip-dev libonig-dev libxml2-dev \
+    libzip-dev libonig-dev libxml2-dev libicu-dev \
     libcurl4-openssl-dev \
     libpq-dev \
     && docker-php-ext-configure gd --with-freetype --with-jpeg --with-webp \
