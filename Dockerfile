@@ -2,14 +2,13 @@ FROM php:8.3-fpm AS base
 
 RUN apt-get update && apt-get install -y --no-install-recommends \
     curl wget git unzip \
-    libpng-dev libjpeg-dev libfreetype6-dev libwebp-dev libavif-dev \
+    libpng-dev libjpeg-dev libfreetype6-dev libwebp-dev \
     libzip-dev libonig-dev libxml2-dev \
     libcurl4-openssl-dev \
     libpq-dev \
     && docker-php-ext-configure gd --with-freetype --with-jpeg --with-webp \
     && docker-php-ext-install -j$(nproc) \
-        pdo_mysql mbstring xml ctype json tokenizer curl fileinfo bcmath \
-        gd zip opcache intl \
+        pdo_mysql bcmath gd zip intl pdo_pgsql \
     && apt-get clean && rm -rf /var/lib/apt/lists/*
 
 COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
