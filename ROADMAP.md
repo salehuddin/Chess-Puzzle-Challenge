@@ -4,9 +4,10 @@ A lightweight project board for tracking features, improvements, and bugs.
 
 ## Status
 
-- **Current focus:** Admin puzzle management and puzzle player UX.
-- **Environment:** Local Laragon development.
-- **Version control:** Git initialized, pushed to https://github.com/salehuddin/Chess-Puzzle-Challenge
+- **Current focus:** Production deployment complete. Next: admin user setup, Stripe integration, automated tests.
+- **Environment:** Local Laragon development + production VPS via Coolify.
+- **Production URL:** https://chesspuzzlechallenge.com
+- **Version control:** Git, pushed to https://github.com/salehuddin/Chess-Puzzle-Challenge
 
 ## Done
 
@@ -20,21 +21,32 @@ A lightweight project board for tracking features, improvements, and bugs.
   - [x] Highlight the piece to move on the board.
   - [x] Track hint clicks client-side.
   - [x] Drop the `hint` database column.
+- [x] Production VPS deployment via Coolify (June 30, 2026):
+  - [x] Dockerfile (multi-stage: PHP 8.4 + nginx + supervisord).
+  - [x] MySQL 8 database provisioned and connected.
+  - [x] Traefik reverse proxy with auto Let's Encrypt SSL.
+  - [x] Auto-deploy on push to `main` branch.
+  - [x] Site live at https://chesspuzzlechallenge.com.
 
 ## In Progress
 
-- [ ] This roadmap file.
+- [ ] Admin user creation on production (via Coolify terminal).
+- [ ] Queue worker configuration for CSV import jobs.
 
 ## Backlog
 
 - [x] Initialize a Git repository and push to GitHub.
 - [x] Add CI workflow (GitHub Actions) and deployment guide (Coolify/Hostinger).
-- [ ] Set up a staging/preview VPS for team testing.
+- [x] Set up a staging/preview VPS for team testing.
 - [ ] Persist hint-click counter server-side for leaderboards / bragging rights.
 - [ ] Add admin feature tests for puzzle import, filtering, and bulk actions.
 - [ ] Optimize theme filter query for very large puzzle datasets if needed.
+- [ ] Stripe payment integration (FPX + cards).
+- [ ] GeoIP-based PPP pricing (MYR/USD).
+- [ ] Upload Lichess CSV to production for puzzle data.
 
 ## Notes
 
 - Puzzle solution moves are used for the visual hint instead of a live engine, because the puzzle already knows the correct answer. A real Stockfish integration is listed in the backlog as an optional enhancement.
-- PHPUnit cannot currently run in this environment because the project requires PHP 8.3 while the local machine has PHP 8.2.
+- Production runs PHP 8.4 (required by Symfony 8.1 components in composer.lock). Local development uses PHP 8.5 via Laragon.
+- The deployment uses a custom Dockerfile (not Nixpacks) because Nixpacks' PHP provider had version mismatch issues with the composer.lock.

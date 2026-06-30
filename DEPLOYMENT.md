@@ -1,8 +1,10 @@
 # Deployment Guide — Chess Puzzle Challenge
 
-This guide deploys the app to a **Hostinger VPS** using **Coolify** (open-source self-hosting platform). Steps are written so they can be executed by a human or an autonomous agent (each numbered step is a discrete, verifiable action).
+This guide deploys the app to a **VPS** using **Coolify** (open-source self-hosting platform). Steps are written so they can be executed by a human or an autonomous agent (each numbered step is a discrete, verifiable action).
 
 > **Why Coolify?** It's a self-hosted Heroku/Netlify alternative that auto-detects Laravel, provisions databases, manages SSL, runs queue workers, and auto-deploys from Git. No per-app subscription, unlike Laravel Forge/Ploi.
+
+> **Production Status (June 30, 2026):** Successfully deployed to https://chesspuzzlechallenge.com using the Dockerfile build pack (not Nixpacks) with `php:8.4-fpm` + nginx + supervisord. See `deploy-coolify.ps1` for the API automation script.
 
 ---
 
@@ -29,15 +31,16 @@ This guide deploys the app to a **Hostinger VPS** using **Coolify** (open-source
 
 ```
 GitHub Repo ──push──> Coolify (on VPS) ──build──> Docker Container
-                                              │
-                                              ├── Nginx (reverse proxy + SSL)
-                                              ├── PHP-FPM 8.3
-                                              ├── MySQL 8 (Coolify-managed)
-                                              ├── Queue Worker (php artisan queue:work)
-                                              └── Scheduler (cron / php artisan schedule:run)
+                                               │
+                                               ├── Nginx (HTTP :80, reverse proxy to PHP-FPM)
+                                               ├── PHP-FPM 8.4 (Laravel application)
+                                               ├── MySQL 8 (Coolify-managed container)
+                                               └── Supervisord (process manager: nginx + php-fpm)
 ```
 
-Coolify uses **Nixpacks** to auto-detect Laravel and build a production image with PHP, Composer, and Node.js. It then runs the container and routes traffic via Traefik (built-in reverse proxy with Let's Encrypt SSL).
+Coolify uses **Docker** with a custom multi-stage `Dockerfile` to build a production image with PHP 8.4, nginx, and the Laravel app. It then runs the container and routes traffic via **Traefik** (built-in reverse proxy with Let's Encrypt SSL).
+
+> **Note:** Nixpacks auto-detection was initially attempted but failed due to PHP version mismatches (composer.lock requires PHP 8.4+). A custom Dockerfile is used instead.
 
 ---
 

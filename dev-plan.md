@@ -9,7 +9,7 @@ This document serves as the high-level roadmap and real-time status tracker for 
 
 | Framework | Target Version |
 | :--- | :--- |
-| **PHP** | 8.3+ |
+| **PHP** | 8.4+ |
 | **Laravel Framework** | v13 |
 | **Filament Admin** | v5 |
 | **Livewire** | v4 |
@@ -453,5 +453,57 @@ Browse Challenges → Challenge Detail → Enroll
 | M3 | Public styling / landing page | Partial |
 | M3 | Courier tracking URL in user dashboard | Done |
 | Admin S6 | Bundle Admin Resource | Done |
+| Admin S7 | Documentation Sync | Done |
 | Admin S8 | Automated tests | Not started |
 | Admin S9 | Final QA pass | Not started |
+| Deploy | Staging/production VPS deployment | Done |
+| Deploy | SSL via Let's Encrypt | Done |
+| Deploy | Admin user creation | Pending (run via Coolify terminal) |
+| Deploy | Lichess CSV upload | Pending (manual upload via docker cp) |
+
+---
+
+## 🚀 Deployment Status (June 30, 2026)
+
+### Production Environment
+
+| Item | Value |
+| :--- | :--- |
+| **URL** | https://chesspuzzlechallenge.com |
+| **VPS** | Ubuntu 26.04 LTS, 4 vCPU, 8 GB RAM |
+| **Platform** | Coolify (self-hosted PaaS) |
+| **Build Pack** | Dockerfile (multi-stage) |
+| **Base Image** | `php:8.4-fpm` + `node:22` + nginx + supervisord |
+| **Database** | MySQL 8 (Coolify-managed container, UUID: `qxssji8p84r4m0z733jbjij8`) |
+| **Reverse Proxy** | Traefik v3.6 (auto Let's Encrypt SSL) |
+| **CI/CD** | Auto-deploy on push to `main` branch |
+
+### Deployment Artifacts
+
+| File | Purpose |
+| :--- | :--- |
+| `Dockerfile` | Multi-stage build: base (PHP 8.4 + extensions + nginx) → build (composer + npm) → production |
+| `.dockerignore` | Excludes .git, tests, docs, local env files from build context |
+| `deploy-coolify.ps1` | PowerShell script automating Coolify API: project, database, app, env vars, deploy |
+
+### Coolify Resource UUIDs
+
+| Resource | UUID |
+| :--- | :--- |
+| Project | `bzfx2v6lt47zllfmcmufndg3` |
+| MySQL Database | `qxssji8p84r4m0z733jbjij8` |
+| Application | `d13mjn22dq6voo9qs09rxqc7` |
+
+### Post-Deploy Checklist
+
+- [x] Docker image builds successfully
+- [x] nginx + PHP-FPM serving HTTP via supervisord
+- [x] MySQL database running and connected
+- [x] Migrations executed (post-deployment command)
+- [x] RolesSeeder + SettingsSeeder executed
+- [x] Site accessible at https://chesspuzzlechallenge.com
+- [x] CSS/JS Vite assets loading
+- [ ] Admin user created (run via Coolify terminal)
+- [ ] Lichess CSV uploaded (if testing imports)
+- [ ] Queue worker configured (for CSV import jobs)
+- [ ] Scheduler configured (for scheduled tasks)

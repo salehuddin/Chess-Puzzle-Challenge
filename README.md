@@ -42,20 +42,21 @@ Built with Laravel 13, Filament v5, Livewire 4, Alpine.js, and Tailwind CSS v4.
 
 | Layer | Technology |
 | :--- | :--- |
-| Backend | PHP 8.3+, Laravel 13 |
+| Backend | PHP 8.4+, Laravel 13 |
 | Admin | Filament v5 |
 | Frontend | Livewire 4, Alpine.js 3, Tailwind CSS 4, DaisyUI 5 |
 | Chess | Chessground 9, Chess.js 1.4 |
-| Database | SQLite (local), MySQL/Postgres (production) |
+| Database | SQLite (local), MySQL 8 (production) |
 | Payments | Stripe (sandbox mode for development) |
 | Build | Vite 8 |
+| Deployment | Docker (multi-stage), Coolify, Traefik, Let's Encrypt SSL |
 
 ---
 
 ## Getting Started
 
 ### Prerequisites
-- PHP 8.3+
+- PHP 8.4+
 - Composer
 - Node.js 18+ and npm
 - A database (SQLite works for local development)
@@ -102,6 +103,24 @@ php artisan queue:work
 - [`CPC-PRD.md`](CPC-PRD.md) — Product Requirements Document.
 - [`dev-plan.md`](dev-plan.md) — Detailed development plan, milestones, and domain model.
 - [`ROADMAP.md`](ROADMAP.md) — Lightweight progress board (Done / In Progress / Backlog).
+- [`DEPLOYMENT.md`](DEPLOYMENT.md) — VPS + Coolify deployment guide.
+- [`DEPLOYMENT-CLOUD-HOSTING.md`](DEPLOYMENT-CLOUD-HOSTING.md) — Hostinger Cloud Hosting guide (staging).
+
+---
+
+## Production Deployment
+
+The app is deployed to production via **Coolify** on a VPS:
+
+| Item | Value |
+| :--- | :--- |
+| **URL** | https://chesspuzzlechallenge.com |
+| **Build** | Dockerfile (multi-stage: `php:8.4-fpm` + nginx + supervisord) |
+| **Database** | MySQL 8 (Coolify-managed) |
+| **SSL** | Let's Encrypt (auto via Traefik) |
+| **CI/CD** | Auto-deploy on push to `main` |
+
+See `deploy-coolify.ps1` for the automation script that provisions resources via the Coolify API.
 
 ---
 
@@ -139,7 +158,7 @@ Sticker (user_id + challenge_id)
 php artisan test
 ```
 
-Note: The test suite requires PHP 8.3+. Some environment setups may need to upgrade their CLI PHP to run PHPUnit.
+Note: The test suite requires PHP 8.4+. Some environment setups may need to upgrade their CLI PHP to run PHPUnit.
 
 ---
 
