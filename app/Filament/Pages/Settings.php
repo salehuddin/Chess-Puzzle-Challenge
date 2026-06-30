@@ -21,8 +21,11 @@ use Filament\Schemas\Components\Tabs;
 use Filament\Schemas\Components\Tabs\Tab;
 use Filament\Schemas\Schema;
 use Filament\Support\Icons\Heroicon;
+use Illuminate\Mail\Mailer;
 use Illuminate\Support\Facades\Http;
-use Illuminate\Support\Facades\Mail;
+use Stripe\Balance;
+use Stripe\Exception\ApiConnectionException;
+use Stripe\Exception\AuthenticationException;
 use Stripe\Stripe;
 use Symfony\Component\Mailer\Exception\TransportExceptionInterface;
 use Symfony\Component\Mailer\Transport\Smtp\EsmtpTransport;
@@ -31,15 +34,20 @@ class Settings extends Page implements HasForms
 {
     use InteractsWithForms;
 
-    protected static string | \BackedEnum | null $navigationIcon = Heroicon::OutlinedCog6Tooth;
+    protected static string|\BackedEnum|null $navigationIcon = Heroicon::OutlinedCog6Tooth;
 
     protected static ?string $navigationLabel = 'Settings';
 
     protected static ?string $title = 'Settings';
 
-    protected static string | \UnitEnum | null $navigationGroup = 'Configuration';
+    protected static string|\UnitEnum|null $navigationGroup = 'Configuration';
 
     protected static ?int $navigationSort = 1;
+
+    public static function canAccess(): bool
+    {
+        return auth()->user()?->isAdmin() ?? false;
+    }
 
     protected string $view = 'filament.pages.settings';
 
@@ -125,7 +133,7 @@ class Settings extends Page implements HasForms
         if (blank($current)) {
             data_set($this->data, $this->lastFocusedField, $placeholder);
         } else {
-            data_set($this->data, $this->lastFocusedField, $current . ' ' . $placeholder);
+            data_set($this->data, $this->lastFocusedField, $current.' '.$placeholder);
         }
     }
 
@@ -279,7 +287,7 @@ class Settings extends Page implements HasForms
     protected function emailTemplateTab(string $key, string $label, array $placeholders, bool $hasButton): Tab
     {
         $basePath = "email_templates.{$key}";
-        $placeholdersHint = 'Supported placeholders: ' . implode(', ', $placeholders);
+        $placeholdersHint = 'Supported placeholders: '.implode(', ', $placeholders);
 
         $fields = [
             Section::make($label)
@@ -416,7 +424,7 @@ class Settings extends Page implements HasForms
 
             $transport->start();
 
-            $mailer = new \Illuminate\Mail\Mailer(
+            $mailer = new Mailer(
                 'test-smtp',
                 app('view'),
                 new \Symfony\Component\Mailer\Mailer($transport),
@@ -509,14 +517,14 @@ class Settings extends Page implements HasForms
     protected function buildTestEmailHtml(string $title, string $body, string $buttonText): string
     {
         $paragraphs = implode('', array_map(
-            fn (string $paragraph) => '<p style="margin: 0 0 16px 0; color: #374151;">' . e($paragraph) . '</p>',
+            fn (string $paragraph) => '<p style="margin: 0 0 16px 0; color: #374151;">'.e($paragraph).'</p>',
             array_filter(explode("\n", $body))
         ));
 
         $button = '';
 
         if (filled($buttonText)) {
-            $button = '<p style="margin: 24px 0 0 0;"><a href="#" style="display: inline-block; padding: 12px 24px; background-color: #10b981; color: #ffffff; text-decoration: none; border-radius: 6px; font-weight: 600;">' . e($buttonText) . '</a></p>';
+            $button = '<p style="margin: 24px 0 0 0;"><a href="#" style="display: inline-block; padding: 12px 24px; background-color: #10b981; color: #ffffff; text-decoration: none; border-radius: 6px; font-weight: 600;">'.e($buttonText).'</a></p>';
         }
 
         return <<<HTML
@@ -913,7 +921,7 @@ HTML;
             $message = 'EasyParcel credentials are valid.';
 
             if ($credit !== null) {
-                $message .= ' Account credit: RM ' . number_format((float) $credit, 2) . '.';
+                $message .= ' Account credit: RM '.number_format((float) $credit, 2).'.';
             }
 
             return [
@@ -924,7 +932,7 @@ HTML;
 
         return [
             'success' => false,
-            'message' => 'EasyParcel API error: ' . ($response['error_remark'] ?? 'Unknown error') . ' (code ' . ($response['error_code'] ?? 'N/A') . ')',
+            'message' => 'EasyParcel API error: '.($response['error_remark'] ?? 'Unknown error').' (code '.($response['error_code'] ?? 'N/A').')',
         ];
     }
 
@@ -940,7 +948,7 @@ HTML;
         $response = Http::timeout(15)
             ->connectTimeout(10)
             ->withBasicAuth($apiKey, $apiSecret)
-            ->get($baseUrl . 'track/shipments', [
+            ->get($baseUrl.'track/shipments', [
                 'trackingNumber' => 'TEST',
             ]);
 
@@ -967,7 +975,7 @@ HTML;
 
         return [
             'success' => false,
-            'message' => 'DHL API returned HTTP ' . $response->status() . '. ' . ($response->body() ?: 'Check your credentials and API endpoint.'),
+            'message' => 'DHL API returned HTTP '.$response->status().'. '.($response->body() ?: 'Check your credentials and API endpoint.'),
         ];
     }
 
@@ -991,10 +999,10 @@ HTML;
             Stripe::setApiKey($secretKey);
             Stripe::setApiVersion('2025-06-16.acacia');
 
-            $balance = \Stripe\Balance::retrieve();
+            $balance = Balance::retrieve();
 
             $availableAmount = collect($balance->available)
-                ->map(fn ($entry) => number_format($entry->amount / 100, 2) . ' ' . strtoupper($entry->currency))
+                ->map(fn ($entry) => number_format($entry->amount / 100, 2).' '.strtoupper($entry->currency))
                 ->implode(', ') ?: '0.00';
 
             Notification::make()
@@ -1002,13 +1010,13 @@ HTML;
                 ->body("API key is valid. Available balance: {$availableAmount}.")
                 ->success()
                 ->send();
-        } catch (\Stripe\Exception\AuthenticationException $e) {
+        } catch (AuthenticationException $e) {
             Notification::make()
                 ->title('Invalid API key')
                 ->body('Stripe rejected the secret key. Check that it begins with "sk_" and is copied correctly.')
                 ->danger()
                 ->send();
-        } catch (\Stripe\Exception\ApiConnectionException $e) {
+        } catch (ApiConnectionException $e) {
             Notification::make()
                 ->title('Network error')
                 ->body('Could not reach Stripe servers. Check your internet connection.')

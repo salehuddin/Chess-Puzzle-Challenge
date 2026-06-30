@@ -20,8 +20,8 @@ use Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse;
 use Illuminate\Cookie\Middleware\EncryptCookies;
 use Illuminate\Foundation\Http\Middleware\PreventRequestForgery;
 use Illuminate\Routing\Middleware\SubstituteBindings;
-use Illuminate\Support\Facades\Vite;
 use Illuminate\Session\Middleware\StartSession;
+use Illuminate\Support\Facades\Vite;
 use Illuminate\View\Middleware\ShareErrorsFromSession;
 
 class AdminPanelProvider extends PanelProvider
@@ -33,16 +33,17 @@ class AdminPanelProvider extends PanelProvider
             ->id('admin')
             ->path('admin')
             ->login()
+            ->profile()
             ->brandName('Chess Puzzle Challenge')
             ->favicon(asset('favicon.ico'))
             ->colors([
-                'primary'   => Color::Emerald,
+                'primary' => Color::Emerald,
                 'secondary' => Color::Teal,
-                'success'   => Color::Emerald,
-                'warning'   => Color::Amber,
-                'danger'    => Color::Red,
-                'info'      => Color::Cyan,
-                'gray'      => Color::Slate,
+                'success' => Color::Emerald,
+                'warning' => Color::Amber,
+                'danger' => Color::Red,
+                'info' => Color::Cyan,
+                'gray' => Color::Slate,
             ])
             ->font('Inter')
             ->darkMode(false)

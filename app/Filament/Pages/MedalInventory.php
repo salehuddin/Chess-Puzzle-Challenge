@@ -36,6 +36,13 @@ class MedalInventory extends Page implements HasSchemas, HasTable
 
     protected static ?int $navigationSort = 2;
 
+    public static function canAccess(): bool
+    {
+        $user = auth()->user();
+
+        return $user && ($user->isAdmin() || $user->isFulfillment());
+    }
+
     protected string $view = 'filament.pages.medal-inventory';
 
     public function table(Table $table): Table

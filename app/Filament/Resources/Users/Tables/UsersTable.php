@@ -15,6 +15,8 @@ use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Filters\TernaryFilter;
 use Filament\Tables\Table;
+use Illuminate\Database\Eloquent\Builder;
+use Spatie\Permission\Models\Role;
 
 class UsersTable
 {
@@ -109,6 +111,12 @@ class UsersTable
                 SelectFilter::make('country')
                     ->options(fn () => User::query()->whereNotNull('country')->pluck('country', 'country')->unique()->sort()->all())
                     ->searchable(),
+                SelectFilter::make('roles')
+                    ->label('Role')
+                    ->options(fn () => Role::whereIn('name', ['super_admin', 'editor', 'fulfillment'])->pluck('name', 'name')->all())
+                    ->query(fn (Builder $query, array $data): Builder => $data['value']
+                        ? $query->whereHas('roles', fn (Builder $roleQuery): Builder => $roleQuery->where('name', $data['value']))
+                        : $query),
                 TernaryFilter::make('has_paid_orders')
                     ->label('Has paid orders')
                     ->placeholder('All users')

@@ -75,10 +75,25 @@ class User extends Authenticatable implements FilamentUser
         return $this->hasRole('super_admin');
     }
 
+    public function isEditor(): bool
+    {
+        return $this->hasRole('editor');
+    }
+
+    public function isFulfillment(): bool
+    {
+        return $this->hasRole('fulfillment');
+    }
+
+    public function isStaff(): bool
+    {
+        return $this->isAdmin() || $this->isEditor() || $this->isFulfillment();
+    }
+
     public function canAccessPanel(Panel $panel): bool
     {
         if ($panel->getId() === 'admin') {
-            return $this->isAdmin();
+            return $this->isStaff();
         }
 
         return true;

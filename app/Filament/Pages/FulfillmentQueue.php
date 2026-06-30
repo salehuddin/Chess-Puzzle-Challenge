@@ -36,6 +36,13 @@ class FulfillmentQueue extends Page implements HasSchemas, HasTable
 
     protected static ?int $navigationSort = 1;
 
+    public static function canAccess(): bool
+    {
+        $user = auth()->user();
+
+        return $user && ($user->isAdmin() || $user->isEditor() || $user->isFulfillment());
+    }
+
     protected string $view = 'filament.pages.fulfillment-queue';
 
     public function table(Table $table): Table

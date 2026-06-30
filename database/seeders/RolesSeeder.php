@@ -3,8 +3,8 @@
 namespace Database\Seeders;
 
 use Illuminate\Database\Seeder;
-use Spatie\Permission\PermissionRegistrar;
 use Spatie\Permission\Models\Role;
+use Spatie\Permission\PermissionRegistrar;
 
 class RolesSeeder extends Seeder
 {
@@ -15,6 +15,8 @@ class RolesSeeder extends Seeder
     {
         app(PermissionRegistrar::class)->forgetCachedPermissions();
 
-        Role::firstOrCreate(['name' => 'super_admin', 'guard_name' => 'web']);
+        foreach (['super_admin', 'editor', 'fulfillment'] as $name) {
+            Role::firstOrCreate(['name' => $name, 'guard_name' => 'web']);
+        }
     }
 }
