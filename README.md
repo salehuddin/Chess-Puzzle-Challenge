@@ -42,7 +42,7 @@ Built with Laravel 13, Filament v5, Livewire 4, Alpine.js, and Tailwind CSS v4.
 
 | Layer | Technology |
 | :--- | :--- |
-| Backend | PHP 8.4+, Laravel 13 |
+| Backend | PHP 8.5+, Laravel 13 |
 | Admin | Filament v5 |
 | Frontend | Livewire 4, Alpine.js 3, Tailwind CSS 4, DaisyUI 5 |
 | Chess | Chessground 9, Chess.js 1.4 |
@@ -56,7 +56,7 @@ Built with Laravel 13, Filament v5, Livewire 4, Alpine.js, and Tailwind CSS v4.
 ## Getting Started
 
 ### Prerequisites
-- PHP 8.4+
+- PHP 8.5+
 - Composer
 - Node.js 18+ and npm
 - A database (SQLite works for local development)
@@ -115,7 +115,7 @@ The app is deployed to production via **Coolify** on a VPS:
 | Item | Value |
 | :--- | :--- |
 | **URL** | https://chesspuzzlechallenge.com |
-| **Build** | Dockerfile (multi-stage: `php:8.4-fpm` + nginx + supervisord) |
+| **Build** | Dockerfile (multi-stage: `php:8.5-fpm` + nginx + supervisord) |
 | **Database** | MySQL 8 (Coolify-managed) |
 | **SSL** | Let's Encrypt (auto via Traefik) |
 | **CI/CD** | Auto-deploy on push to `main` |
@@ -158,7 +158,7 @@ Sticker (user_id + challenge_id)
 php artisan test
 ```
 
-Note: The test suite requires PHP 8.4+. Some environment setups may need to upgrade their CLI PHP to run PHPUnit.
+Note: The test suite requires PHP 8.5+. Some environment setups may need to upgrade their CLI PHP to run PHPUnit.
 
 ---
 

@@ -4,7 +4,7 @@ This guide deploys the app to a **VPS** using **Coolify** (open-source self-host
 
 > **Why Coolify?** It's a self-hosted Heroku/Netlify alternative that auto-detects Laravel, provisions databases, manages SSL, runs queue workers, and auto-deploys from Git. No per-app subscription, unlike Laravel Forge/Ploi.
 
-> **Production Status (June 30, 2026):** Successfully deployed to https://chesspuzzlechallenge.com using the Dockerfile build pack (not Nixpacks) with `php:8.4-fpm` + nginx + supervisord. See `deploy-coolify.ps1` for the API automation script.
+> **Production Status (June 30, 2026):** Successfully deployed to https://chesspuzzlechallenge.com using the Dockerfile build pack (not Nixpacks) with `php:8.5-fpm` + nginx + supervisord. See `deploy-coolify.ps1` for the API automation script.
 
 ---
 
@@ -33,12 +33,12 @@ This guide deploys the app to a **VPS** using **Coolify** (open-source self-host
 GitHub Repo ──push──> Coolify (on VPS) ──build──> Docker Container
                                                │
                                                ├── Nginx (HTTP :80, reverse proxy to PHP-FPM)
-                                               ├── PHP-FPM 8.4 (Laravel application)
+                                               ├── PHP-FPM 8.5 (Laravel application)
                                                ├── MySQL 8 (Coolify-managed container)
                                                └── Supervisord (process manager: nginx + php-fpm)
 ```
 
-Coolify uses **Docker** with a custom multi-stage `Dockerfile` to build a production image with PHP 8.4, nginx, and the Laravel app. It then runs the container and routes traffic via **Traefik** (built-in reverse proxy with Let's Encrypt SSL).
+Coolify uses **Docker** with a custom multi-stage `Dockerfile` to build a production image with PHP 8.5, nginx, and the Laravel app. It then runs the container and routes traffic via **Traefik** (built-in reverse proxy with Let's Encrypt SSL).
 
 > **Note:** Nixpacks auto-detection was initially attempted but failed due to PHP version mismatches (composer.lock requires PHP 8.4+). A custom Dockerfile is used instead.
 
@@ -160,7 +160,7 @@ docker ps | grep coolify
 
 1. In the application settings → **Build Pack** → select **Nixpacks**.
 2. Coolify will auto-detect Laravel. Verify it shows:
-   - PHP version: 8.3
+   - PHP version: 8.5
    - Composer detected
    - Node.js detected (for Vite build)
 
@@ -469,7 +469,7 @@ jobs:
       - name: Setup PHP
         uses: shivammathur/setup-php@v2
         with:
-          php-version: '8.3'
+          php-version: '8.5'
           extensions: mbstring, xml, ctype, json, pdo, pdo_sqlite
           coverage: none
 

@@ -44,7 +44,7 @@ The platform allows users to participate in themed chess puzzle "Series" (e.g., 
 ---
 
 ## 4. Technical Stack
-* **Framework:** Laravel 13 (PHP 8.4+).
+* **Framework:** Laravel 13 (PHP 8.5+).
 * **Admin:** Filament v5.
 * **Frontend:** TALL Stack (Tailwind CSS v4, Alpine.js 3, Laravel Livewire 4) + DaisyUI 5.
 * **Database:** MySQL 8 (production), SQLite (local).
@@ -88,7 +88,7 @@ The platform allows users to participate in themed chess puzzle "Series" (e.g., 
 | :--- | :--- |
 | **Production URL** | https://chesspuzzlechallenge.com |
 | **Hosting** | VPS (Ubuntu 26.04, 4 vCPU, 8 GB RAM) via Coolify |
-| **Build** | Docker (multi-stage: `php:8.4-fpm` + `node:22` + nginx + supervisord) |
+| **Build** | Docker (multi-stage: `php:8.5-fpm` + `node:22` + nginx + supervisord) |
 | **Database** | MySQL 8 (Coolify-managed container) |
 | **Reverse Proxy** | Traefik (Coolify built-in, auto Let's Encrypt SSL) |
 | **CI/CD** | Push to `main` triggers Coolify auto-deploy |

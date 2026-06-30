@@ -9,7 +9,7 @@ This document serves as the high-level roadmap and real-time status tracker for 
 
 | Framework | Target Version |
 | :--- | :--- |
-| **PHP** | 8.4+ |
+| **PHP** | 8.5+ |
 | **Laravel Framework** | v13 |
 | **Filament Admin** | v5 |
 | **Livewire** | v4 |
@@ -473,7 +473,7 @@ Browse Challenges → Challenge Detail → Enroll
 | **VPS** | Ubuntu 26.04 LTS, 4 vCPU, 8 GB RAM |
 | **Platform** | Coolify (self-hosted PaaS) |
 | **Build Pack** | Dockerfile (multi-stage) |
-| **Base Image** | `php:8.4-fpm` + `node:22` + nginx + supervisord |
+| **Base Image** | `php:8.5-fpm` + `node:22` + nginx + supervisord |
 | **Database** | MySQL 8 (Coolify-managed container, UUID: `qxssji8p84r4m0z733jbjij8`) |
 | **Reverse Proxy** | Traefik v3.6 (auto Let's Encrypt SSL) |
 | **CI/CD** | Auto-deploy on push to `main` branch |
@@ -482,7 +482,7 @@ Browse Challenges → Challenge Detail → Enroll
 
 | File | Purpose |
 | :--- | :--- |
-| `Dockerfile` | Multi-stage build: base (PHP 8.4 + extensions + nginx) → build (composer + npm) → production |
+| `Dockerfile` | Multi-stage build: base (PHP 8.5 + extensions + nginx) → build (composer + npm) → production |
 | `.dockerignore` | Excludes .git, tests, docs, local env files from build context |
 | `deploy-coolify.ps1` | PowerShell script automating Coolify API: project, database, app, env vars, deploy |
 

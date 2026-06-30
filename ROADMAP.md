@@ -22,7 +22,7 @@ A lightweight project board for tracking features, improvements, and bugs.
   - [x] Track hint clicks client-side.
   - [x] Drop the `hint` database column.
 - [x] Production VPS deployment via Coolify (June 30, 2026):
-  - [x] Dockerfile (multi-stage: PHP 8.4 + nginx + supervisord).
+  - [x] Dockerfile (multi-stage: PHP 8.5 + nginx + supervisord).
   - [x] MySQL 8 database provisioned and connected.
   - [x] Traefik reverse proxy with auto Let's Encrypt SSL.
   - [x] Auto-deploy on push to `main` branch.
@@ -48,5 +48,5 @@ A lightweight project board for tracking features, improvements, and bugs.
 ## Notes
 
 - Puzzle solution moves are used for the visual hint instead of a live engine, because the puzzle already knows the correct answer. A real Stockfish integration is listed in the backlog as an optional enhancement.
-- Production runs PHP 8.4 (required by Symfony 8.1 components in composer.lock). Local development uses PHP 8.5 via Laragon.
+- Production runs PHP 8.5 (matching local development via Laragon). The composer.lock requires PHP >=8.4.1 (Symfony 8.1 components).
 - The deployment uses a custom Dockerfile (not Nixpacks) because Nixpacks' PHP provider had version mismatch issues with the composer.lock.
