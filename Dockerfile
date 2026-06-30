@@ -1,17 +1,63 @@
 FROM php:8.4-fpm AS base
 
 RUN apt-get update && apt-get install -y --no-install-recommends \
+    nginx supervisor \
     curl wget git unzip \
     libpng-dev libjpeg-dev libfreetype6-dev libwebp-dev \
     libzip-dev libonig-dev libxml2-dev libicu-dev \
-    libcurl4-openssl-dev \
-    libpq-dev \
     && docker-php-ext-configure gd --with-freetype --with-jpeg --with-webp \
     && docker-php-ext-install -j$(nproc) \
-        pdo_mysql bcmath gd zip intl pdo_pgsql \
+        pdo_mysql bcmath gd zip intl \
     && apt-get clean && rm -rf /var/lib/apt/lists/*
 
 COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
+
+RUN printf '%s\n' \
+    '[supervisord]' \
+    'nodaemon=true' \
+    'logfile=/dev/stdout' \
+    'logfile_maxbytes=0' \
+    'pidfile=/var/run/supervisord.pid' \
+    '' \
+    '[program:php-fpm]' \
+    'command=php-fpm -F' \
+    'stdout_logfile=/dev/stdout' \
+    'stdout_logfile_maxbytes=0' \
+    'stderr_logfile=/dev/stderr' \
+    'stderr_logfile_maxbytes=0' \
+    '' \
+    '[program:nginx]' \
+    'command=nginx -g "daemon off;"' \
+    'stdout_logfile=/dev/stdout' \
+    'stdout_logfile_maxbytes=0' \
+    'stderr_logfile=/dev/stderr' \
+    'stderr_logfile_maxbytes=0' \
+    > /etc/supervisor/conf.d/supervisord.conf
+
+RUN printf '%s\n' \
+    'server {' \
+    '    listen 80 default_server;' \
+    '    root /app/public;' \
+    '    index index.php;' \
+    '    client_max_body_size 100M;' \
+    '' \
+    '    location / {' \
+    '        try_files $uri $uri/ /index.php?$query_string;' \
+    '    }' \
+    '' \
+    '    location ~ \.php$ {' \
+    '        fastcgi_pass 127.0.0.1:9000;' \
+    '        fastcgi_param SCRIPT_FILENAME $realpath_root$fastcgi_script_name;' \
+    '        include fastcgi_params;' \
+    '    }' \
+    '' \
+    '    location ~ /\.(?!well-known).* {' \
+    '        deny all;' \
+    '    }' \
+    '}' \
+    > /etc/nginx/sites-available/default \
+    && rm -f /etc/nginx/sites-enabled/default \
+    && ln -s /etc/nginx/sites-available/default /etc/nginx/sites-enabled/default
 
 FROM base AS build
 
@@ -32,15 +78,15 @@ FROM base AS production
 
 WORKDIR /app
 COPY --from=build /app /app
-COPY --from=build /app/public/build /app/public/build
 
 RUN mkdir -p /app/storage/framework/cache \
              /app/storage/framework/sessions \
              /app/storage/framework/views \
              /app/bootstrap/cache \
+             /app/storage/app/public \
+    && mkdir -p /app/public \
+    && ln -sf /app/storage/app/public /app/public/storage \
     && chown -R www-data:www-data /app/storage /app/bootstrap/cache
 
-RUN php artisan storage:link 2>/dev/null || true
-
-EXPOSE 9000
-CMD ["php-fpm"]
+EXPOSE 80
+CMD ["supervisord", "-c", "/etc/supervisor/conf.d/supervisord.conf"]
