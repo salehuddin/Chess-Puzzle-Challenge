@@ -36,7 +36,7 @@
                 async init() {
                     await this.ensureEditorJs();
 
-                    this.wire = $wire;
+                    this.wire = this.$wire;
 
                     // Tear down any lingering editor instance for this holder
                     // (can happen after a Livewire morph re-initialises the component).
