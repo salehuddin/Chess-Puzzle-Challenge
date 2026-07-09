@@ -53,6 +53,7 @@ class AdminPanelProvider extends PanelProvider
             ->assets([
                 Css::make('filament-puzzle-preview', Vite::asset('resources/css/filament-puzzle-preview.css')),
                 Js::make('filament-puzzle-preview', Vite::asset('resources/js/filament-puzzle-preview.js'))->module(),
+                Js::make('filament-editorjs', Vite::asset('resources/js/filament-editorjs.js'))->module(),
                 Css::make('filament-admin-theme', asset('css/filament-admin-theme.css')),
                 Css::make('filament-tailwind', Vite::asset('resources/css/filament-tailwind.css')),
             ])

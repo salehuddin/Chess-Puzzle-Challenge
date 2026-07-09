@@ -13,6 +13,7 @@ export default defineConfig({
                 'resources/js/puzzle-player-page.js',
                 'resources/css/filament-puzzle-preview.css',
                 'resources/js/filament-puzzle-preview.js',
+                'resources/js/filament-editorjs.js',
             ],
             refresh: true,
         }),

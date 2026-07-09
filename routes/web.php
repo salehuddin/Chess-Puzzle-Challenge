@@ -1,9 +1,10 @@
 <?php
 
-use App\Http\Controllers\ProfileController;
-use App\Http\Controllers\ChallengeEnrollmentController;
+use App\Http\Controllers\Admin\EditorJsUploadController;
 use App\Http\Controllers\BundleEnrollmentController;
+use App\Http\Controllers\ChallengeEnrollmentController;
 use App\Http\Controllers\CheckoutController;
+use App\Http\Controllers\ProfileController;
 use App\Livewire\ChallengeIndex;
 use App\Livewire\ChallengeShow;
 use App\Livewire\Dashboard;
@@ -44,6 +45,12 @@ Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
+});
+
+Route::middleware(['auth', 'staff'])->prefix('admin/editorjs')->group(function () {
+    Route::post('/image', [EditorJsUploadController::class, 'storeImage']);
+    Route::post('/image-by-url', [EditorJsUploadController::class, 'storeImageUrl']);
+    Route::post('/attaches', [EditorJsUploadController::class, 'storeAttaches']);
 });
 
 require __DIR__.'/auth.php';

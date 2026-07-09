@@ -4,7 +4,7 @@ namespace App\Livewire;
 
 use App\Models\Challenge;
 use App\Models\Enrollment;
-use Illuminate\Support\Arr;
+use App\Services\ChallengeContentRenderer;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
@@ -29,10 +29,7 @@ class ChallengeShow extends Component
      */
     public array $medalImages = [];
 
-    /**
-     * @var array<int, array<string, mixed>>
-     */
-    public array $contentBlocks = [];
+    public string $contentHtml = '';
 
     public ?string $posterImageUrl = null;
 
@@ -71,16 +68,9 @@ class ChallengeShow extends Component
             $this->asArray($this->challenge->medal_images)
         )));
 
-        $content = $this->challenge->content_blocks;
-        $blocks = [];
-
-        if (is_array($content) && isset($content['blocks']) && is_array($content['blocks'])) {
-            $blocks = $content['blocks'];
-        } elseif (is_array($content) && Arr::isList($content)) {
-            $blocks = $content;
-        }
-
-        $this->contentBlocks = $blocks;
+        $this->contentHtml = app(ChallengeContentRenderer::class)->render(
+            $this->challenge->content_blocks
+        );
 
         $this->videos = array_values(array_filter(array_map(function (mixed $item): ?array {
             if (! is_array($item)) {

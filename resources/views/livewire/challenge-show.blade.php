@@ -258,37 +258,9 @@
         <h2 class="mb-5 font-display text-3xl font-black text-stone-900">Challenge Details</h2>
 
         <div class="rounded-2xl border border-stone-200 bg-white p-6 shadow-warm lg:p-8">
-            @if($contentBlocks !== [])
-                <article class="space-y-6">
-                    @foreach($contentBlocks as $index => $block)
-                        @php
-                            $type = $block['type'] ?? '';
-                            $data = is_array($block['data'] ?? null) ? $block['data'] : [];
-                            $tag = ($data['level'] ?? 2) >= 3 ? 'h3' : 'h2';
-                        @endphp
-
-                        @if($type === 'header')
-                            @if($tag === 'h3')
-                                <h3 class="font-display text-2xl font-black text-stone-900" wire:key="content-block-{{ $index }}">{{ strip_tags((string) ($data['text'] ?? '')) }}</h3>
-                            @else
-                                <h2 class="font-display text-3xl font-black text-stone-900" wire:key="content-block-{{ $index }}">{{ strip_tags((string) ($data['text'] ?? '')) }}</h2>
-                            @endif
-                        @elseif($type === 'paragraph')
-                            <p class="text-base leading-relaxed text-stone-700" wire:key="content-block-{{ $index }}">{{ strip_tags((string) ($data['text'] ?? '')) }}</p>
-                        @elseif($type === 'list')
-                            @php
-                                $items = is_array($data['items'] ?? null) ? $data['items'] : [];
-                                $style = ($data['style'] ?? 'unordered') === 'ordered' ? 'list-decimal' : 'list-disc';
-                            @endphp
-                            <ul class="ml-6 space-y-2 {{ $style }} text-stone-700" wire:key="content-block-{{ $index }}">
-                                @foreach($items as $item)
-                                    <li>{{ strip_tags((string) $item) }}</li>
-                                @endforeach
-                            </ul>
-                        @elseif($type === 'delimiter')
-                            <hr class="border-stone-200" wire:key="content-block-{{ $index }}">
-                        @endif
-                    @endforeach
+            @if($contentHtml !== '')
+                <article class="space-y-6 prose prose-stone max-w-none">
+                    {!! $contentHtml !!}
                 </article>
             @elseif($hasDescription)
                 <article class="prose max-w-none prose-stone text-base leading-relaxed">
