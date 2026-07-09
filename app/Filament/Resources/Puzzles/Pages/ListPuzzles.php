@@ -4,6 +4,7 @@ namespace App\Filament\Resources\Puzzles\Pages;
 
 use App\Filament\Resources\Puzzles\PuzzleResource;
 use App\Models\Puzzle;
+use Filament\Actions\Action;
 use Filament\Actions\CreateAction;
 use Filament\Resources\Pages\ListRecords;
 use Filament\Schemas\Components\EmbeddedTable;
@@ -47,11 +48,16 @@ class ListPuzzles extends ListRecords
     protected function getHeaderActions(): array
     {
         return [
-            \Filament\Actions\Action::make('import_csv')
+            Action::make('import_csv')
                 ->label('Import CSV Data')
                 ->color('success')
                 ->icon('heroicon-o-cloud-arrow-up')
                 ->url(fn (): string => PuzzleResource::getUrl('import')),
+            Action::make('upload_batch')
+                ->label('Upload CSV Batch')
+                ->color('success')
+                ->icon('heroicon-o-document-arrow-up')
+                ->url(fn (): string => PuzzleResource::getUrl('upload')),
             CreateAction::make(),
         ];
     }
