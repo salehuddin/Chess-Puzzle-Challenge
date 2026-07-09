@@ -35,6 +35,8 @@
                 async init() {
                     await this.ensureEditorJs();
 
+                    const wire = $wire;
+
                     // Tear down any lingering editor instance for this holder
                     // (can happen after a Livewire morph re-initialises the component).
                     if (window.__editorJsInstances[this.editorId]) {
@@ -51,14 +53,18 @@
                         onChange: async () => {
                             if (! this.editor) { return; }
 
-                            const output = await this.editor.save();
-                            const serialized = JSON.stringify(output);
-                            this.lastSerialized = serialized;
+                            try {
+                                const output = await this.editor.save();
+                                const serialized = JSON.stringify(output);
+                                this.lastSerialized = serialized;
 
-                            // Send a JSON string so Livewire's wire snapshot can diff the
-                            // value reliably and the Challenge model's `array` cast re-decodes
-                            // it server-side. `defer: false` forces the round-trip to commit.
-                            $wire.set(this.statePath, serialized, false);
+                                // Send a JSON string so Livewire's wire snapshot can diff the
+                                // value reliably and the Challenge model's `array` cast re-decodes
+                                // it server-side. `defer: false` forces the round-trip to commit.
+                                wire.set(this.statePath, serialized, false);
+                            } catch (e) {
+                                console.warn('[Editor.js] onChange save failed:', e);
+                            }
                         },
                     });
 
@@ -102,8 +108,10 @@
                         const output = await this.editor.save();
                         const serialized = JSON.stringify(output);
                         this.lastSerialized = serialized;
-                        $wire.set(this.statePath, serialized, false);
-                    } catch (e) { /* noop */ }
+                        wire.set(this.statePath, serialized, false);
+                    } catch (e) {
+                        console.warn('[Editor.js] flush save failed:', e);
+                    }
                     finally {
                         setTimeout(() => { this.flushing = false; }, 300);
                     }
