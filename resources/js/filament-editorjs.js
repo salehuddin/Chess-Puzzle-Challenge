@@ -69,7 +69,7 @@ if (! document.getElementById('editorjs-tool-styles')) {
 
 const INLINE_TOOLBAR = ['bold', 'italic', 'marker', 'underline', 'inlineCode', 'link'];
 
-window.createChallengeEditor = function ({ holder, data, placeholder, onChange, wire }) {
+window.createChallengeEditor = function ({ holder, data, placeholder, onChange }) {
     return new EditorJS({
         holder: holder,
         data: data,
