@@ -78,7 +78,7 @@
                     this.bindSubmitFlush();
 
                     // Re-sync from wire state when it changes externally (e.g. after save).
-                    this.$watch('$wire.data.' + this.statePath, (value) => {
+                    this.$watch('$wire.' + this.statePath, (value) => {
                         if (! this.editor || this.flushing) { return; }
 
                         const incoming = this.parseData(value);
