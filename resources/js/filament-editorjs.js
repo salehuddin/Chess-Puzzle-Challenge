@@ -98,6 +98,10 @@ window.createChallengeEditor = function ({ holder, data, placeholder, onChange }
                     },
                     field: 'image',
                     types: 'image/png,image/jpeg,image/gif,image/webp,image/svg+xml',
+                    additionalRequestHeaders: {
+                        'Accept': 'application/json',
+                        'X-Requested-With': 'XMLHttpRequest',
+                    },
                 },
             },
             quote: {
@@ -123,6 +127,10 @@ window.createChallengeEditor = function ({ holder, data, placeholder, onChange }
                 config: {
                     endpoint: '/admin/editorjs/attaches',
                     field: 'file',
+                    additionalRequestHeaders: {
+                        'Accept': 'application/json',
+                        'X-Requested-With': 'XMLHttpRequest',
+                    },
                 },
             },
             embed: {
