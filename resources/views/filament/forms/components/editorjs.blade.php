@@ -9,7 +9,7 @@
         editorId: @js($editorId),
         initialData: @js($getState()),
     })"
-    x-init="init(); () => cleanup()"
+    x-init="init()"
     class="space-y-3"
 >
     <div :id="editorId" class="min-h-[540px] rounded-xl border border-gray-200 bg-white p-4"></div>
@@ -26,73 +26,47 @@
         window.editorJsField = function(config) {
             return {
                 editor: null,
-                wire: null,
                 statePath: config.statePath,
                 editorId: config.editorId,
                 data: config.initialData,
                 lastSerialized: null,
                 flushing: false,
+                initialized: false,
+                saveTimer: null,
 
                 async init() {
+                    if (this.initialized) {
+                        return;
+                    }
+                    this.initialized = true;
+
                     await this.ensureEditorJs();
 
-                    this.wire = this.$wire;
-
                     // Tear down any lingering editor instance for this holder
-                    // (can happen after a Livewire morph re-initialises the component).
                     if (window.__editorJsInstances[this.editorId]) {
                         try {
-                            await Promise.resolve(window.__editorJsInstances[this.editorId].destroy());
+                            await window.__editorJsInstances[this.editorId].destroy();
                         } catch (e) { /* noop */ }
                         delete window.__editorJsInstances[this.editorId];
-                        this.editor = null;
                     }
 
                     this.editor = window.createChallengeEditor({
                         holder: this.editorId,
                         data: this.parseData(this.data),
-                        onChange: async () => {
-                            if (! this.editor) { return; }
-
-                            try {
-                                const output = await this.editor.save();
-                                const serialized = JSON.stringify(output);
-                                this.lastSerialized = serialized;
-
-                                // Send a JSON string so Livewire's wire snapshot can diff the
-                                // value reliably and the Challenge model's `array` cast re-decodes
-                                // it server-side. `defer: false` forces the round-trip to commit.
-                                this.wire.set(this.statePath, serialized, false);
-                            } catch (e) {
-                                console.warn('[Editor.js] onChange save failed:', e);
-                            }
-                        },
+                        onChange: () => this.handleChange(),
                     });
 
                     this.lastSerialized = JSON.stringify(this.parseData(this.data));
                     window.__editorJsInstances[this.editorId] = this.editor;
 
-                    // When the form is submitted (Filament wires the Save button to a
-                    // Livewire call that walks up to the wrapping <form>), flush the
-                    // latest editor content to the wire state BEFORE the request fires.
                     this.bindSubmitFlush();
+                },
 
-                    // Re-sync from wire state when it changes externally (e.g. after save).
-                    this.$watch('$wire.' + this.statePath, (value) => {
-                        if (! this.editor || this.flushing) { return; }
+                handleChange() {
+                    if (! this.editor || this.flushing) { return; }
 
-                        const incoming = this.parseData(value);
-                        if (! incoming || ! Array.isArray(incoming.blocks)) { return; }
-
-                        const incomingSerialized = JSON.stringify(incoming);
-                        if (incomingSerialized === this.lastSerialized) { return; }
-
-                        // Re-render with the persisted state — safe to do while idle.
-                        try {
-                            this.editor.blocks.render({ blocks: incoming.blocks });
-                            this.lastSerialized = incomingSerialized;
-                        } catch (e) { /* noop */ }
-                    });
+                    clearTimeout(this.saveTimer);
+                    this.saveTimer = setTimeout(() => this.flush(), 300);
                 },
 
                 bindSubmitFlush() {
@@ -103,28 +77,20 @@
                 },
 
                 async flush() {
-                    if (! this.editor || this.flushing) { return; }
+                    if (! this.editor) { return; }
                     this.flushing = true;
                     try {
                         const output = await this.editor.save();
                         const serialized = JSON.stringify(output);
+                        if (serialized === this.lastSerialized) {
+                            return;
+                        }
                         this.lastSerialized = serialized;
-                        this.wire.set(this.statePath, serialized, false);
+                        this.$wire.set(this.statePath, serialized, false);
                     } catch (e) {
                         console.warn('[Editor.js] flush save failed:', e);
-                    }
-                    finally {
-                        setTimeout(() => { this.flushing = false; }, 300);
-                    }
-                },
-
-                cleanup() {
-                    if (this.editor && typeof this.editor.destroy === 'function') {
-                        try { this.editor.destroy(); } catch (e) { /* noop */ }
-                    }
-                    this.editor = null;
-                    if (window.__editorJsInstances) {
-                        delete window.__editorJsInstances[this.editorId];
+                    } finally {
+                        setTimeout(() => { this.flushing = false; }, 100);
                     }
                 },
 
