@@ -9,8 +9,6 @@ import Warning from '@editorjs/warning';
 import Delimiter from '@editorjs/delimiter';
 import Table from '@editorjs/table';
 import Code from '@editorjs/code';
-import Raw from '@editorjs/raw';
-import Link from '@editorjs/link';
 import Attaches from '@editorjs/attaches';
 import Embed from '@editorjs/embed';
 import Marker from '@editorjs/marker';
@@ -50,12 +48,6 @@ if (! document.getElementById('editorjs-tool-styles')) {
         .cdx-checklist .cdx-checklist__item { display: flex; align-items: flex-start; gap: 8px; padding: 4px 0; }
         .cdx-checklist__checkbox { width: 18px; height: 18px; border: 2px solid #d1d5db; border-radius: 4px; cursor: pointer; flex-shrink: 0; margin-top: 2px; }
         .cdx-checklist__checkbox:checked { background: #10b981; border-color: #10b981; }
-        .cdx-link { color: #2563eb; }
-        .link-tool { border: 1px solid #e5e7eb; border-radius: 8px; overflow: hidden; }
-        .link-tool__link-info { display: flex; align-items: center; padding: 10px 14px; gap: 10px; }
-        .link-tool__title { font-size: 13px; font-weight: 600; color: #111827; }
-        .link-tool__description { font-size: 12px; color: #6b7280; margin-top: 2px; }
-        .link-tool__domain { font-size: 11px; color: #2563eb; margin-top: 4px; }
         .cdx-attaches { border: 1px solid #e5e7eb; border-radius: 8px; padding: 12px 16px; }
         .cdx-attaches .cdx-attaches__file-name { font-weight: 600; color: #111827; }
         .cdx-attaches .cdx-attaches__file-size { font-size: 12px; color: #6b7280; }
@@ -125,12 +117,6 @@ window.createChallengeEditor = function ({ holder, data, placeholder, onChange }
             },
             code: {
                 class: Code,
-            },
-            raw: {
-                class: Raw,
-            },
-            link: {
-                class: Link,
             },
             attaches: {
                 class: Attaches,
