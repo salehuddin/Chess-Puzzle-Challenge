@@ -24,7 +24,7 @@ class BundleFactory extends Factory
         return [
             'name' => $name,
             'slug' => Str::slug($name),
-            'sku' => 'BU-' . Str::upper(Str::random(8)),
+            'sku' => 'BU-'.Str::upper(Str::random(8)),
             'description' => fake()->paragraph(2),
             'price_usd' => fake()->randomElement([24.99, 34.99, 44.99]),
             'price_myr' => fake()->randomElement([99.90, 139.90, 179.90]),

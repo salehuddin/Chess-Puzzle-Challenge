@@ -178,7 +178,7 @@ class Settings
         $paths = [];
 
         foreach (self::$encryptedPaths as $path) {
-            $prefix = $group . '.';
+            $prefix = $group.'.';
 
             if (! str_starts_with($path, $prefix)) {
                 continue;

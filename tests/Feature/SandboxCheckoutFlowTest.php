@@ -101,7 +101,7 @@ class SandboxCheckoutFlowTest extends TestCase
         $this->assertSame('pending', Order::first()->status);
 
         $this->actingAs($user)
-            ->get("/checkout/" . Order::first()->id)
+            ->get('/checkout/'.Order::first()->id)
             ->assertRedirectToRoute('dashboard');
     }
 }

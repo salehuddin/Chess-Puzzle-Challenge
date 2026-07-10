@@ -8,8 +8,8 @@ use Filament\Forms\Components\DateTimePicker;
 use Filament\Forms\Components\Placeholder;
 use Filament\Forms\Components\Select;
 use Filament\Schemas\Components\Section;
-use Filament\Schemas\Schema;
 use Filament\Schemas\Components\Utilities\Set;
+use Filament\Schemas\Schema;
 
 class EnrollmentForm
 {
@@ -80,8 +80,8 @@ class EnrollmentForm
         return sprintf(
             'Order #%d - %s%s',
             $record->order_id,
-            $record->name_snapshot ?: ('Item #' . $record->id),
-            $record->order?->user?->name ? ' (' . $record->order->user->name . ')' : '',
+            $record->name_snapshot ?: ('Item #'.$record->id),
+            $record->order?->user?->name ? ' ('.$record->order->user->name.')' : '',
         );
     }
 

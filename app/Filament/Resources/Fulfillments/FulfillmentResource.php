@@ -18,9 +18,9 @@ class FulfillmentResource extends Resource
 {
     protected static ?string $model = Fulfillment::class;
 
-    protected static string | BackedEnum | null $navigationIcon = Heroicon::OutlinedTruck;
+    protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedTruck;
 
-    protected static string | UnitEnum | null $navigationGroup = 'Operations';
+    protected static string|UnitEnum|null $navigationGroup = 'Operations';
 
     protected static ?int $navigationSort = 2;
 

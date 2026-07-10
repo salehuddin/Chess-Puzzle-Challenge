@@ -21,7 +21,7 @@ class BundleResource extends Resource
 
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedSquaresPlus;
 
-    protected static string | UnitEnum | null $navigationGroup = 'Commerce';
+    protected static string|UnitEnum|null $navigationGroup = 'Commerce';
 
     protected static ?int $navigationSort = 20;
 

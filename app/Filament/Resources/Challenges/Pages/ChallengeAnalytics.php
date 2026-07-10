@@ -4,6 +4,7 @@ namespace App\Filament\Resources\Challenges\Pages;
 
 use App\Filament\Resources\Challenges\ChallengeResource;
 use App\Filament\Resources\Challenges\Pages\Concerns\HasChallengeRecordHeader;
+use App\Models\PuzzleProgress;
 use Carbon\Carbon;
 use Carbon\CarbonPeriod;
 use Filament\Forms\Components\DatePicker;
@@ -55,7 +56,7 @@ class ChallengeAnalytics extends EditRecord
                             ->content(fn (): string => number_format($this->getPlayerCount())),
                         Placeholder::make('estimated_revenue_usd')
                             ->label('Amount Paid (USD)')
-                            ->content(fn (): string => '$' . number_format($this->getPlayerCount() * (float) $this->getRecord()->price_usd, 2)),
+                            ->content(fn (): string => '$'.number_format($this->getPlayerCount() * (float) $this->getRecord()->price_usd, 2)),
                         Placeholder::make('completed_count')
                             ->label('Completed')
                             ->content(fn (): string => number_format($this->getStatusCount(['completed']))),
@@ -126,7 +127,7 @@ class ChallengeAnalytics extends EditRecord
         $count = 0;
 
         foreach ($enrollments as $enrollment) {
-            $solved = \App\Models\PuzzleProgress::query()
+            $solved = PuzzleProgress::query()
                 ->where('user_id', $enrollment->user_id)
                 ->where('challenge_id', $challengeId)
                 ->whereNotNull('solved_at')

@@ -6,7 +6,6 @@ use App\Filament\Resources\Challenges\ChallengeResource;
 use App\Filament\Resources\Challenges\Pages\Concerns\HasChallengeRecordHeader;
 use App\Filament\Resources\Challenges\Widgets\ChallengeQuickGlance;
 use App\Models\Enrollment;
-use App\Models\Fulfillment;
 use App\Models\PuzzleProgress;
 use Filament\Notifications\Notification;
 use Filament\Resources\Pages\ManageRelatedRecords;
@@ -59,7 +58,7 @@ class ChallengeMedalStatus extends ManageRelatedRecords
                             ->count();
                         $percent = round(($completed / $total) * 100);
 
-                        return $percent . '%';
+                        return $percent.'%';
                     })
                     ->badge(),
                 TextColumn::make('fulfillment.address_snapshot')

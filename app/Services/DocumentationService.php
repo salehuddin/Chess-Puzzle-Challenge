@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use Carbon\Carbon;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Str;
@@ -18,7 +19,7 @@ class DocumentationService
     }
 
     /**
-     * @return Collection<int, array{name: string, label: string, documents: Collection<int, array{path: string, title: string, description: string, updated_at: \Carbon\Carbon}>}>
+     * @return Collection<int, array{name: string, label: string, documents: Collection<int, array{path: string, title: string, description: string, updated_at: Carbon}>}>
      */
     public function categories(): Collection
     {
@@ -26,7 +27,7 @@ class DocumentationService
             return collect();
         }
 
-        $featuresPath = $this->basePath . '/features';
+        $featuresPath = $this->basePath.'/features';
 
         if (! is_dir($featuresPath)) {
             return collect();
@@ -39,7 +40,7 @@ class DocumentationService
     }
 
     /**
-     * @return array{name: string, label: string, documents: Collection<int, array{path: string, title: string, description: string, updated_at: \Carbon\Carbon}>}
+     * @return array{name: string, label: string, documents: Collection<int, array{path: string, title: string, description: string, updated_at: Carbon}>}
      */
     protected function makeCategory(string $path): array
     {
@@ -58,7 +59,7 @@ class DocumentationService
     }
 
     /**
-     * @return Collection<int, array{path: string, title: string, description: string, updated_at: \Carbon\Carbon}>
+     * @return Collection<int, array{path: string, title: string, description: string, updated_at: Carbon}>
      */
     protected function documentsInCategory(string $path): Collection
     {
@@ -68,7 +69,7 @@ class DocumentationService
 
         $documents = collect();
 
-        $finder = new Finder();
+        $finder = new Finder;
         $finder->files()->in($path)->name('*.md')->sortByName();
 
         foreach ($finder as $file) {
@@ -79,11 +80,11 @@ class DocumentationService
     }
 
     /**
-     * @return array{path: string, title: string, description: string, updated_at: \Carbon\Carbon}
+     * @return array{path: string, title: string, description: string, updated_at: Carbon}
      */
     public function parseDocument(string $filePath): array
     {
-        $relativePath = $this->normalizePath(str_replace($this->normalizePath($this->basePath) . '/', '', $this->normalizePath($filePath)));
+        $relativePath = $this->normalizePath(str_replace($this->normalizePath($this->basePath).'/', '', $this->normalizePath($filePath)));
 
         $content = File::get($filePath);
 
@@ -146,7 +147,7 @@ class DocumentationService
 
     public function findDocument(string $path): ?array
     {
-        $filePath = $this->normalizePath($this->basePath . '/' . ltrim($path, '/'));
+        $filePath = $this->normalizePath($this->basePath.'/'.ltrim($path, '/'));
 
         if (! File::exists($filePath) || ! Str::endsWith($filePath, '.md')) {
             return null;

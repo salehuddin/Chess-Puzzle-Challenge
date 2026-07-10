@@ -24,7 +24,7 @@ class ChallengeFactory extends Factory
         return [
             'name' => $name,
             'slug' => Str::slug($name),
-            'sku' => 'CH-' . Str::upper(Str::random(8)),
+            'sku' => 'CH-'.Str::upper(Str::random(8)),
             'description' => fake()->paragraph(2),
             'medal_artwork' => null,
             'sticker_artwork' => null,

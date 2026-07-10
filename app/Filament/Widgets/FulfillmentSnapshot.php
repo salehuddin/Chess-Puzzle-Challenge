@@ -12,7 +12,7 @@ class FulfillmentSnapshot extends BaseWidget
 
     protected static ?int $sort = 2;
 
-    protected int | string | array $columnSpan = [
+    protected int|string|array $columnSpan = [
         'md' => 2,
         'xl' => 2,
     ];

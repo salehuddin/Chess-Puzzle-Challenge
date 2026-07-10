@@ -28,7 +28,7 @@ class CommerceHierarchyService
                     'item_type' => $itemType,
                     'item_id' => $purchasable->getKey(),
                     'name_snapshot' => (string) $purchasable->name,
-                    'sku_snapshot' => $purchasable->sku ?? ($itemType . ':' . $purchasable->getKey()),
+                    'sku_snapshot' => $purchasable->sku ?? ($itemType.':'.$purchasable->getKey()),
                     'unit_price' => (float) ($purchasable->price_usd ?? 0),
                     'quantity' => 1,
                     'line_total' => (float) ($purchasable->price_usd ?? 0),

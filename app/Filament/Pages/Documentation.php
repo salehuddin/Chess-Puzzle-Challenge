@@ -9,7 +9,7 @@ use Illuminate\Support\Facades\Request;
 
 class Documentation extends Page
 {
-    protected static string | \BackedEnum | null $navigationIcon = Heroicon::OutlinedBookOpen;
+    protected static string|\BackedEnum|null $navigationIcon = Heroicon::OutlinedBookOpen;
 
     protected static ?string $navigationLabel = 'Documentation';
 

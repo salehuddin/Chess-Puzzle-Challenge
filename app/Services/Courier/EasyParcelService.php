@@ -4,7 +4,6 @@ namespace App\Services\Courier;
 
 use Illuminate\Http\Client\Response;
 use Illuminate\Support\Facades\Http;
-use Illuminate\Support\Facades\Log;
 
 class EasyParcelService
 {
@@ -198,7 +197,7 @@ class EasyParcelService
      */
     protected function request(string $action, array $params): Response
     {
-        $url = $this->baseUrl() . $action;
+        $url = $this->baseUrl().$action;
 
         $payload = [
             'api' => $this->apiKey,
@@ -220,7 +219,7 @@ class EasyParcelService
             return [
                 'api_status' => 'Error',
                 'error_code' => (string) $response->status(),
-                'error_remark' => 'HTTP error: ' . $response->body(),
+                'error_remark' => 'HTTP error: '.$response->body(),
                 'result' => [],
             ];
         }

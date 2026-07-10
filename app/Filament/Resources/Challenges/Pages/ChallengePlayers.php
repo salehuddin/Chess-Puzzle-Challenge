@@ -58,7 +58,7 @@ class ChallengePlayers extends ManageRelatedRecords
                             ->count();
                         $percent = round(($completed / $total) * 100);
 
-                        return $completed . ' / ' . $total . ' (' . $percent . '%)';
+                        return $completed.' / '.$total.' ('.$percent.'%)';
                     }),
             ])
             ->defaultSort('created_at', 'desc');

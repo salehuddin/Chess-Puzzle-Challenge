@@ -2,13 +2,13 @@
 
 namespace App\Filament\Resources\Challenges;
 
-use App\Filament\Resources\Challenges\Pages\CreateChallenge;
 use App\Filament\Resources\Challenges\Pages\AttachPuzzles;
 use App\Filament\Resources\Challenges\Pages\ChallengeAnalytics;
 use App\Filament\Resources\Challenges\Pages\ChallengeContent;
 use App\Filament\Resources\Challenges\Pages\ChallengeMedalStatus;
-use App\Filament\Resources\Challenges\Pages\ChallengePuzzles;
 use App\Filament\Resources\Challenges\Pages\ChallengePlayers;
+use App\Filament\Resources\Challenges\Pages\ChallengePuzzles;
+use App\Filament\Resources\Challenges\Pages\CreateChallenge;
 use App\Filament\Resources\Challenges\Pages\EditChallenge;
 use App\Filament\Resources\Challenges\Pages\ListChallenges;
 use App\Filament\Resources\Challenges\Schemas\ChallengeForm;

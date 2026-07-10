@@ -4,6 +4,7 @@ namespace App\Filament\Resources\Challenges\Pages;
 
 use App\Filament\Resources\Challenges\ChallengeResource;
 use App\Filament\Resources\Challenges\Pages\Concerns\HasChallengeRecordHeader;
+use App\Models\Puzzle;
 use Filament\Actions\Action;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DetachAction;
@@ -15,7 +16,6 @@ use Filament\Schemas\Components\View as SchemaView;
 use Filament\Schemas\Schema;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
-use App\Models\Puzzle;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Facades\DB;
 use Livewire\Attributes\Url;
@@ -35,7 +35,7 @@ class ChallengePuzzles extends ManageRelatedRecords
     #[Url(as: 'preview')]
     public ?int $previewPuzzleId = null;
 
-    public function mount(int | string $record): void
+    public function mount(int|string $record): void
     {
         parent::mount($record);
     }
@@ -139,12 +139,12 @@ class ChallengePuzzles extends ManageRelatedRecords
             ])
             ->bulkActions([
                 BulkActionGroup::make([
-                        DetachBulkAction::make()
-                            ->fetchSelectedRecords(false)
-                            ->after(function (): void {
-                                $this->normalizeSequence();
-                                $this->resetTable();
-                            }),
+                    DetachBulkAction::make()
+                        ->fetchSelectedRecords(false)
+                        ->after(function (): void {
+                            $this->normalizeSequence();
+                            $this->resetTable();
+                        }),
                 ]),
             ]);
     }
@@ -212,5 +212,4 @@ class ChallengePuzzles extends ManageRelatedRecords
 
         $this->persistSequenceOrder($orderedPuzzleIds);
     }
-
 }

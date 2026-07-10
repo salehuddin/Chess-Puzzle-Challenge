@@ -12,7 +12,7 @@ return new class extends Migration
             Schema::table('orders', function (Blueprint $table) {
                 $table->dropForeign(['source_subscription_id']);
             });
-        } catch (\Throwable) {
+        } catch (Throwable) {
             // FK may already have been dropped by a previous failed migration attempt
         }
 

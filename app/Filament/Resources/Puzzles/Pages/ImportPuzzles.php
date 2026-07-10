@@ -7,10 +7,10 @@ use App\Jobs\ImportLichessPuzzlesJob;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Concerns\InteractsWithForms;
 use Filament\Forms\Contracts\HasForms;
-use Filament\Forms\Form;
 use Filament\Notifications\Notification;
 use Filament\Resources\Pages\Page;
 use Filament\Schemas\Components\Section;
+use Filament\Schemas\Schema;
 
 class ImportPuzzles extends Page implements HasForms
 {
@@ -36,7 +36,7 @@ class ImportPuzzles extends Page implements HasForms
         ]);
     }
 
-    public function form(\Filament\Schemas\Schema $schema): \Filament\Schemas\Schema
+    public function form(Schema $schema): Schema
     {
         return $schema
             ->schema([

@@ -74,5 +74,4 @@ class ChallengeContent extends EditRecord
                     ]),
             ]);
     }
-
 }
