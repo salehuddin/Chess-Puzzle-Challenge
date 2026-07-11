@@ -24,5 +24,18 @@ return Application::configure(basePath: dirname(__DIR__))
         $middleware->trustProxies(at: '*');
     })
     ->withExceptions(function (Exceptions $exceptions): void {
-        //
+        $exceptions->render(function (\Throwable $e, \Illuminate\Http\Request $request) {
+            if ($request->is('livewire/*/upload-file') || $request->is('livewire/upload-file')) {
+                $payload = [
+                    'message' => $e->getMessage(),
+                    'class' => get_class($e),
+                    'file' => $e->getFile().':'.$e->getLine(),
+                ];
+                if (config('app.debug')) {
+                    $payload['trace'] = explode("\n", $e->getTraceAsString());
+                }
+                return response()->json($payload, 500);
+            }
+            return null;
+        });
     })->create();
