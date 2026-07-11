@@ -92,10 +92,13 @@ RUN mkdir -p /app/storage/framework/cache \
              /app/storage/framework/views \
              /app/bootstrap/cache \
              /app/storage/app/public \
-             /app/storage/app/private/livewire-tmp \
     && mkdir -p /app/public \
     && ln -sf /app/storage/app/public /app/public/storage \
     && chown -R www-data:www-data /app/storage /app/bootstrap/cache
 
+COPY docker/entrypoint.sh /usr/local/bin/entrypoint.sh
+RUN chmod +x /usr/local/bin/entrypoint.sh
+
 EXPOSE 80
+ENTRYPOINT ["/usr/local/bin/entrypoint.sh"]
 CMD ["supervisord", "-c", "/etc/supervisor/conf.d/supervisord.conf"]
