@@ -64,6 +64,8 @@ RUN printf '%s\n' \
     && rm -f /etc/nginx/sites-enabled/default \
     && ln -s /etc/nginx/sites-available/default /etc/nginx/sites-enabled/default
 
+COPY docker/php/php.ini /usr/local/etc/php/conf.d/zz-app.ini
+
 FROM base AS build
 
 COPY --from=node:22 /usr/local/bin/node /usr/local/bin/node
@@ -90,6 +92,7 @@ RUN mkdir -p /app/storage/framework/cache \
              /app/storage/framework/views \
              /app/bootstrap/cache \
              /app/storage/app/public \
+             /app/storage/app/private/livewire-tmp \
     && mkdir -p /app/public \
     && ln -sf /app/storage/app/public /app/public/storage \
     && chown -R www-data:www-data /app/storage /app/bootstrap/cache
