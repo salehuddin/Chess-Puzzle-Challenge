@@ -58,6 +58,34 @@ Deploy the app to **Hostinger Cloud Hosting** for testing. This is managed hosti
 
 > Most are enabled by default on Hostinger. Just verify `pdo_mysql` and `gd` are on.
 
+### Step 2.5 — Raise PHP upload limits (REQUIRED for admin image uploads)
+
+The default PHP limits on shared hosting are too small for the admin image gallery. In the same **PHP Configuration** page, open **PHP Options** (or the `php.ini` editor) and set:
+
+| Setting                | Default | Recommended |
+| :--------------------- | :------ | :---------- |
+| `upload_max_filesize`  | 2M      | 25M         |
+| `post_max_size`        | 8M      | 30M         |
+| `memory_limit`         | 128M    | 256M        |
+| `max_execution_time`   | 30      | 120         |
+| `max_input_time`       | 60      | 120         |
+| `max_file_uploads`     | 20      | 20          |
+
+> Without these, Filament image uploads silently fail with `Path must not be empty` or `failed to upload`. The custom `docker/php/php.ini` in the repo applies the same values automatically when using the Coolify/VPS deployment — here you must set them via the hPanel UI.
+
+Also add this to your `.env` (see Step 8):
+
+```env
+LIVEWIRE_TEMPORARY_FILE_UPLOAD_DISK=livewire-tmp
+```
+
+The `livewire-tmp` disk is committed in `config/filesystems.php` and will work on shared hosting as long as `storage/app/private/livewire-tmp/` is writable. Create it once via SSH:
+
+```bash
+mkdir -p storage/app/private/livewire-tmp
+chmod -R 775 storage/app/private
+```
+
 ### Step 3 — Create a MySQL database
 
 1. hPanel → **Databases** → **MySQL Databases**.

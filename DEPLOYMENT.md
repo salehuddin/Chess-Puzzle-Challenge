@@ -309,13 +309,68 @@ SANDBOX_PAYMENT_MODE=true
 MAXMIND_LICENSE_KEY=
 ```
 
-### 8.1 Verify
+### 8.1 Filament / Editor.js File Uploads (REQUIRED)
+
+The admin panel's `FileUpload` fields (challenge posters, medal artwork, image galleries, sticker artwork) and the Editor.js block-editor image tool all need a properly configured temp-upload disk and a tuned PHP. If you skip these, uploads will silently fail with errors like `Path must not be empty` (Livewire) or `failed to upload` (Filament).
+
+**Add this env var** (alongside the others above):
+
+```env
+# Livewire uses this disk to store temp uploads before they are moved to their
+# final location. Must match a disk defined in config/filesystems.php.
+LIVEWIRE_TEMPORARY_FILE_UPLOAD_DISK=livewire-tmp
+```
+
+**Confirm the `livewire-tmp` disk exists** in `config/filesystems.php`:
+
+```php
+'livewire-tmp' => [
+    'driver' => 'local',
+    'root' => storage_path('app/private/livewire-tmp'),
+    'throw' => false,
+    'report' => false,
+],
+```
+
+> This disk is committed in the repo. Do not remove it.
+
+**Confirm the custom `php.ini` is loaded** by the Docker image. The Dockerfile copies `docker/php/php.ini` into `/usr/local/etc/php/conf.d/zz-app.ini`. The file raises the default PHP limits:
+
+| Setting              | PHP base image default | Our override |
+| :------------------- | :--------------------- | :----------- |
+| `upload_max_filesize`| 2M                     | 25M          |
+| `post_max_size`      | 8M                     | 30M          |
+| `memory_limit`       | 128M                   | 256M         |
+| `max_execution_time` | 30                     | 120          |
+| `max_input_time`     | 60                     | 120          |
+| `max_file_uploads`   | 20                     | 20           |
+
+> If you ever change the base image or remove `docker/php/php.ini`, expect uploads >2 MB to fail silently. The CI lint should fail if `docker/php/php.ini` is missing.
+
+**Confirm the entrypoint runs at container start.** The Dockerfile uses `docker/entrypoint.sh` as the container entrypoint, which creates the following directories on every boot (necessary because Coolify's persistent volume mount at `/app/storage/app` overrides anything created at image-build time):
+
+- `storage/app/private/livewire-tmp` — Livewire temp uploads
+- `storage/framework/cache`, `sessions`, `views` — Laravel framework
+- `storage/logs` — Laravel log files
+- `bootstrap/cache` — Laravel config/route/view caches
+
+The entrypoint also runs `chown -R www-data:www-data /app/storage /app/bootstrap/cache` so PHP-FPM can write.
+
+### 8.2 Verify
 
 ```bash
 php artisan config:cache
 php artisan tinker --execute="echo config('app.env');"
 # Expected: production
+
+php artisan tinker --execute="echo ini_get('upload_max_filesize'), ' / ', ini_get('post_max_size');"
+# Expected: 25M / 30M
+
+php artisan tinker --execute="echo config('livewire.temporary_file_upload.disk');"
+# Expected: livewire-tmp
 ```
+
+Then in the admin panel → Challenges → Edit a challenge → Content or Details tab → upload an image. It should appear in the gallery and be saved to `storage/app/public/artworks/...`. The livewire-tmp temp files will live in `storage/app/private/livewire-tmp/` and be cleaned up by Livewire's own `cleanup` process (configured in `config/livewire.php`).
 
 ---
 
@@ -608,6 +663,30 @@ php artisan key:generate --show
 ### Cron / scheduler not running
 
 Verify the cron job or `schedule:work` worker is configured (step 7.3). Check `php artisan schedule:list` in the terminal.
+
+### Filament file upload returns 401 "Unauthorized"
+
+The Livewire signed-URL signature is rejected. The most common cause behind a reverse proxy (Traefik, Nginx Proxy Manager, Cloudflare) is the request URL scheme not matching the URL Laravel used to generate the signature. Verify:
+
+1. `APP_URL` in Coolify env vars starts with `https://` (matching the real request scheme).
+2. `AppServiceProvider::boot()` calls `URL::forceScheme('https')` in production.
+3. `bootstrap/app.php` calls `$middleware->trustProxies(at: '*')` (this is committed; do not remove).
+4. `config('app.debug')` is `false` in production (otherwise the redirect to HTTP may bypass the forceScheme).
+
+### Filament file upload returns 500 with "Path must not be empty"
+
+The Livewire temp upload disk's `root` resolves to an empty string. Verify the four files are all in place (see section 8.1):
+
+- `config/filesystems.php` defines the `livewire-tmp` disk.
+- `LIVEWIRE_TEMPORARY_FILE_UPLOAD_DISK=livewire-tmp` is set in Coolify env vars.
+- `docker/entrypoint.sh` is the `ENTRYPOINT` in `Dockerfile` and creates `storage/app/private/livewire-tmp` on every container start.
+- `docker/php/php.ini` is copied into the image.
+
+After fixing, **rebuild the image** (not just restart the container), then clear the Laravel config cache: `php artisan config:cache`.
+
+### Filament file upload returns 500 silently
+
+Since July 11, 2026, `bootstrap/app.php` registers an exception render handler for `livewire/upload-file` that returns the actual error as JSON. Open DevTools → Network tab → click the failed POST → look at the **Response** body for `{message, class, file, trace}`. This avoids needing shell access to read `storage/logs/laravel.log`.
 
 ---
 

@@ -27,6 +27,13 @@ A lightweight project board for tracking features, improvements, and bugs.
   - [x] Traefik reverse proxy with auto Let's Encrypt SSL.
   - [x] Auto-deploy on push to `main` branch.
   - [x] Site live at https://chesspuzzlechallenge.com.
+- [x] Filament `FileUpload` and Editor.js image uploads working in production (July 11, 2026):
+  - [x] Dedicated `livewire-tmp` disk in `config/filesystems.php` (was failing with `Path must not be empty` because the default `local` disk root conflicted with PHP's temp-file lifecycle on Windows + Linux under a Coolify persistent volume).
+  - [x] Custom `docker/php/php.ini` to raise `upload_max_filesize=25M`, `post_max_size=30M` (php:8.5-fpm base image ships with 2M/8M).
+  - [x] `docker/entrypoint.sh` to create `livewire-tmp`, framework, log, and cache directories on every container start (Coolify mounts the persistent volume over `/app/storage/app`, masking anything created at image-build time).
+  - [x] `bootstrap/app.php` trusts all proxies and `AppServiceProvider` forces HTTPS in production, fixing the Livewire signed-URL 401 caused by `APP_URL` scheme mismatch behind Traefik.
+  - [x] `bootstrap/app.php` exception handler returns JSON for `livewire/upload-file` errors so 500s are diagnosable from the browser DevTools without server log access.
+  - [x] Removed leftover `public/test_upload.php` debug file.
 
 ## In Progress
 
@@ -50,3 +57,4 @@ A lightweight project board for tracking features, improvements, and bugs.
 - Puzzle solution moves are used for the visual hint instead of a live engine, because the puzzle already knows the correct answer. A real Stockfish integration is listed in the backlog as an optional enhancement.
 - Production runs PHP 8.5 (matching local development via Laragon). The composer.lock requires PHP >=8.4.1 (Symfony 8.1 components).
 - The deployment uses a custom Dockerfile (not Nixpacks) because Nixpacks' PHP provider had version mismatch issues with the composer.lock.
+- **Filament file uploads require four pieces to be in sync in production** (see July 11, 2026 entry above): the `livewire-tmp` disk in `config/filesystems.php`, the `LIVEWIRE_TEMPORARY_FILE_UPLOAD_DISK` env var in Coolify, the custom `docker/php/php.ini`, and the `docker/entrypoint.sh`. If any of these regresses, uploads will fail. CI should fail if any of the four files is missing.

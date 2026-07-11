@@ -99,3 +99,18 @@ The main Challenges page shows a table with:
 - `app/Filament/Resources/Challenges/Pages/ChallengeMedalStatus.php` — Medal Status tab
 - `app/Filament/Resources/Challenges/Pages/ChallengeAnalytics.php` — Analytics tab
 - `app/Filament/Resources/Challenges/Tables/ChallengesTable.php` — List table configuration
+
+## Image Upload Storage
+
+All artwork uploaded in the admin panel (poster images, medal artwork, sticker artwork, image gallery, Editor.js content blocks) is stored in the `public` disk under `artworks/challenges/...`. Final paths:
+
+| Field                       | Storage path                                |
+| :-------------------------- | :------------------------------------------ |
+| Poster image                | `storage/app/public/artworks/challenges/posters/`  |
+| Medal artwork               | `storage/app/public/artworks/medals/`                |
+| Medal images (gallery)      | `storage/app/public/artworks/medals/gallery/`        |
+| Sticker artwork             | `storage/app/public/artworks/stickers/`              |
+| Image gallery (Content tab) | `storage/app/public/artworks/challenges/gallery/`    |
+| Editor.js content images    | `storage/app/public/artworks/challenges/content/YYYY/MM/` |
+
+> **Production note (July 11, 2026):** Livewire (which Filament uses for file uploads) requires a dedicated `livewire-tmp` disk. The `config/filesystems.php` defines it at `storage/app/private/livewire-tmp/` and the `LIVEWIRE_TEMPORARY_FILE_UPLOAD_DISK` env var must be set to `livewire-tmp` in any environment where uploads occur. See `DEPLOYMENT.md` §8.1 for details.
