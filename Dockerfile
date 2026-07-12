@@ -82,31 +82,11 @@ RUN npm ci && npm run build
 RUN composer dump-autoload --optimize --no-dev --no-scripts \
     && php artisan package:discover --ansi
 
-FROM base AS production
-
-WORKDIR /app
-COPY --from=build /app /app
-
-RUN mkdir -p /app/storage/framework/cache \
-             /app/storage/framework/sessions \
-             /app/storage/framework/views \
-             /app/bootstrap/cache \
-             /app/storage/app/public \
-    && mkdir -p /app/public \
-    && ln -sf /app/storage/app/public /app/public/storage \
-    && chown -R www-data:www-data /app/storage /app/bootstrap/cache
-
-COPY docker/entrypoint.sh /usr/local/bin/entrypoint.sh
-RUN chmod +x /usr/local/bin/entrypoint.sh
-
-EXPOSE 80
-ENTRYPOINT ["/usr/local/bin/entrypoint.sh"]
-CMD ["supervisord", "-c", "/etc/supervisor/conf.d/supervisord.conf"]
-
 # ──────────────────────────────────────────────────────────────────────
 # Dev image — same base/PHP/extensions/php.ini as production, plus Node
 # and a Vite dev server + queue worker running under supervisord.
 # Source is bind-mounted via docker-compose (no code baked in here).
+# Only built when docker-compose targets `dev` explicitly.
 # ──────────────────────────────────────────────────────────────────────
 FROM base AS dev
 
@@ -154,4 +134,29 @@ RUN chmod +x /usr/local/bin/entrypoint-dev.sh
 
 EXPOSE 80 5173
 ENTRYPOINT ["/usr/local/bin/entrypoint-dev.sh"]
+CMD ["supervisord", "-c", "/etc/supervisor/conf.d/supervisord.conf"]
+
+# ──────────────────────────────────────────────────────────────────────
+# Production image — the FINAL stage so it is the default build target
+# when `docker build` runs without --target (e.g. on Coolify).
+# ──────────────────────────────────────────────────────────────────────
+FROM base AS production
+
+WORKDIR /app
+COPY --from=build /app /app
+
+RUN mkdir -p /app/storage/framework/cache \
+             /app/storage/framework/sessions \
+             /app/storage/framework/views \
+             /app/bootstrap/cache \
+             /app/storage/app/public \
+    && mkdir -p /app/public \
+    && ln -sf /app/storage/app/public /app/public/storage \
+    && chown -R www-data:www-data /app/storage /app/bootstrap/cache
+
+COPY docker/entrypoint.sh /usr/local/bin/entrypoint.sh
+RUN chmod +x /usr/local/bin/entrypoint.sh
+
+EXPOSE 80
+ENTRYPOINT ["/usr/local/bin/entrypoint.sh"]
 CMD ["supervisord", "-c", "/etc/supervisor/conf.d/supervisord.conf"]
