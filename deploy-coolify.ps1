@@ -247,6 +247,7 @@ $envVars = @(
     @{ key = "SESSION_PATH";             value = "/" }
     @{ key = "BROADCAST_CONNECTION";     value = "log" }
     @{ key = "FILESYSTEM_DISK";          value = "local" }
+    @{ key = "LIVEWIRE_TEMPORARY_FILE_UPLOAD_DISK"; value = "livewire-tmp" }
     @{ key = "QUEUE_CONNECTION";         value = "database" }
     @{ key = "CACHE_STORE";              value = "database" }
     @{ key = "MAIL_MAILER";              value = "log" }

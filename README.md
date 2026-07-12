@@ -46,7 +46,7 @@ Built with Laravel 13, Filament v5, Livewire 4, Alpine.js, and Tailwind CSS v4.
 | Admin | Filament v5 |
 | Frontend | Livewire 4, Alpine.js 3, Tailwind CSS 4, DaisyUI 5 |
 | Chess | Chessground 9, Chess.js 1.4 |
-| Database | SQLite (local), MySQL 8 (production) |
+| Database | MySQL 8 (local & production) |
 | Payments | Stripe (sandbox mode for development) |
 | Build | Vite 8 |
 | Deployment | Docker (multi-stage), Coolify, Traefik, Let's Encrypt SSL |
@@ -55,40 +55,66 @@ Built with Laravel 13, Filament v5, Livewire 4, Alpine.js, and Tailwind CSS v4.
 
 ## Getting Started
 
-### Prerequisites
-- PHP 8.5+
-- Composer
-- Node.js 18+ and npm
-- A database (SQLite works for local development)
+> **Local/prod parity:** Local development runs the **same Docker image** as
+> production (`php:8.5-fpm` + nginx + supervisord, same PHP extensions, same
+> `docker/php/php.ini`, same MySQL 8). The `dev` stage of the `Dockerfile` adds
+> Node and a Vite dev server + queue worker. No Laragon/PHP-on-host required.
 
-### Installation
+### Prerequisites
+- [Docker](https://www.docker.com/) (Docker Desktop on Windows/macOS)
+- Optional: PHP 8.5+ on the host only if you want to run `artisan`/`composer`
+  outside the container
+
+### Installation & run
 
 ```bash
 git clone https://github.com/salehuddin/Chess-Puzzle-Challenge.git
 cd Chess-Puzzle-Challenge
-composer install
-npm install
 
 cp .env.example .env
-php artisan key:generate
 
-php artisan migrate
-npm run build
+# Build the dev image and start the app + MySQL 8 + Vite + queue worker.
+docker compose up -d --build
+
+# Generate APP_KEY and run migrations inside the container.
+docker compose exec app php artisan key:generate
+docker compose exec app php artisan migrate
+docker compose exec app php artisan storage:link
+
+# Seed roles + settings (required for admin access).
+docker compose exec app php artisan db:seed --class=RolesSeeder --force
+docker compose exec app php artisan db:seed --class=SettingsSeeder --force
 ```
 
-### Run locally
+Open http://localhost:8080. Vite HMR runs on http://localhost:5173 (configured
+automatically — edit any Blade/JS/CSS file and the browser updates).
+
+### Common commands
 
 ```bash
-php artisan serve
+# All PHP/composer/npm commands run inside the container (Linux deps = prod parity):
+docker compose exec app php artisan <command>
+docker compose exec app composer <command>
+docker compose exec app npm <command>
+
+# Tail logs (nginx + php-fpm + vite + queue, all in one stream):
+docker compose logs -f app
+
+# Stop / start / rebuild after changing the Dockerfile or php.ini:
+docker compose down
+docker compose up -d --build
 ```
 
-Or use Laragon / Valet / Sail depending on your environment.
+> If you prefer the native (non-Docker) workflow, Laragon/Valet/`php artisan
+> serve` still work — set `DB_HOST=127.0.0.1` in `.env` and run
+> `composer dev`. Note this loses Docker/prod parity (different PHP version,
+> extensions, and php.ini upload limits).
 
 ### Queue worker (for CSV imports)
 
-```bash
-php artisan queue:work
-```
+In Docker dev, a queue worker runs automatically under supervisord (see the
+`[program:queue]` block in the `Dockerfile` `dev` stage) — no manual command
+needed. For the native workflow: `php artisan queue:work`.
 
 ### Importing Lichess puzzles
 

@@ -1,0 +1,53 @@
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: dev
+    container_name: chess-app
+    working_dir: /app
+    volumes:
+      # Bind the source so file edits on the host hot-reload in the container.
+      - .:/app
+      # Keep vendor/ and node_modules/ container-managed so PHP/Node run with
+      # Linux-installed deps matching production (not the host's Windows ones).
+      - /app/vendor
+      - /app/node_modules
+      # Persist build artifacts across restarts so Vite doesn't rebuild logo.png each boot.
+      - /app/public/build
+    ports:
+      - "8080:80"    # nginx -> PHP-FPM (the app)
+      - "5173:5173"  # Vite dev server (HMR)
+    depends_on:
+      mysql:
+        condition: service_healthy
+    environment:
+      # Override the .env's DB host so Laravel talks to the MySQL service below.
+      DB_HOST: mysql
+      DB_PORT: "3306"
+      DB_DATABASE: chess_puzzle
+      DB_USERNAME: chess_app
+      DB_PASSWORD: secret
+    restart: unless-stopped
+
+  mysql:
+    image: mysql:8
+    container_name: chess-mysql
+    environment:
+      MYSQL_DATABASE: chess_puzzle
+      MYSQL_USER: chess_app
+      MYSQL_PASSWORD: secret
+      MYSQL_ROOT_PASSWORD: root
+    ports:
+      - "3306:3306"
+    volumes:
+      - chess-mysql:/var/lib/mysql
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-proot"]
+      interval: 5s
+      timeout: 5s
+      retries: 20
+    restart: unless-stopped
+
+volumes:
+  chess-mysql:

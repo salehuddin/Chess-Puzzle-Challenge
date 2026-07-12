@@ -102,3 +102,56 @@ RUN chmod +x /usr/local/bin/entrypoint.sh
 EXPOSE 80
 ENTRYPOINT ["/usr/local/bin/entrypoint.sh"]
 CMD ["supervisord", "-c", "/etc/supervisor/conf.d/supervisord.conf"]
+
+# ──────────────────────────────────────────────────────────────────────
+# Dev image — same base/PHP/extensions/php.ini as production, plus Node
+# and a Vite dev server + queue worker running under supervisord.
+# Source is bind-mounted via docker-compose (no code baked in here).
+# ──────────────────────────────────────────────────────────────────────
+FROM base AS dev
+
+COPY --from=node:22 /usr/local/bin/node /usr/local/bin/node
+COPY --from=node:22 /usr/local/lib/node_modules /usr/local/lib/node_modules
+RUN ln -s /usr/local/lib/node_modules/npm/bin/npm-cli.js /usr/local/bin/npm && \
+    ln -s /usr/local/lib/node_modules/npm/bin/npx-cli.js /usr/local/bin/npx
+
+RUN printf '\n%s\n' \
+    '[program:vite]' \
+    'command=npm run dev -- --host 0.0.0.0' \
+    'directory=/app' \
+    'stdout_logfile=/dev/stdout' \
+    'stdout_logfile_maxbytes=0' \
+    'stderr_logfile=/dev/stderr' \
+    'stderr_logfile_maxbytes=0' \
+    'autorestart=true' \
+    'priority=20' \
+    '' \
+    '[program:queue]' \
+    'command=php artisan queue:work --tries=3 --timeout=90' \
+    'directory=/app' \
+    'stdout_logfile=/dev/stdout' \
+    'stdout_logfile_maxbytes=0' \
+    'stderr_logfile=/dev/stderr' \
+    'stderr_logfile_maxbytes=0' \
+    'autorestart=true' \
+    'priority=30' \
+    '' \
+    '[program:scheduler]' \
+    'command=php artisan schedule:work' \
+    'directory=/app' \
+    'stdout_logfile=/dev/stdout' \
+    'stdout_logfile_maxbytes=0' \
+    'stderr_logfile=/dev/stderr' \
+    'stderr_logfile_maxbytes=0' \
+    'autorestart=true' \
+    'priority=40' \
+    >> /etc/supervisor/conf.d/supervisord.conf
+
+WORKDIR /app
+
+COPY docker/entrypoint-dev.sh /usr/local/bin/entrypoint-dev.sh
+RUN chmod +x /usr/local/bin/entrypoint-dev.sh
+
+EXPOSE 80 5173
+ENTRYPOINT ["/usr/local/bin/entrypoint-dev.sh"]
+CMD ["supervisord", "-c", "/etc/supervisor/conf.d/supervisord.conf"]
