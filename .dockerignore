@@ -9,7 +9,6 @@ vendor
 .env.local
 .phpunit.result.cache
 tests
-docs
 deploy-coolify.ps1
 check-php-reqs.php
 public/test_upload.php

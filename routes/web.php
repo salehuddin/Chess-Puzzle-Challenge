@@ -4,6 +4,7 @@ use App\Http\Controllers\Admin\EditorJsUploadController;
 use App\Http\Controllers\BundleEnrollmentController;
 use App\Http\Controllers\ChallengeEnrollmentController;
 use App\Http\Controllers\CheckoutController;
+use App\Http\Controllers\DocController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\PublicProfileController;
 use App\Livewire\ChallengeIndex;
@@ -29,6 +30,9 @@ Route::get('/challenges/{challenge:slug}', ChallengeShow::class)->name('challeng
 Route::get('/challenges/{challenge:slug}/enroll', ChallengeEnrollmentController::class)->name('challenges.enroll');
 Route::get('/bundles/{bundle:slug}/enroll', BundleEnrollmentController::class)->name('bundles.enroll');
 Route::view('/mockups/single-challenge', 'mockups.single-challenge')->name('mockups.single-challenge');
+
+Route::get('/docs', [DocController::class, 'index'])->name('docs.index');
+Route::get('/docs/{path}', [DocController::class, 'show'])->where('path', '.+')->name('docs.show');
 
 Route::get('/dashboard', Dashboard::class)
     ->middleware(['auth', 'verified'])

@@ -50,6 +50,10 @@
                            class="text-stone-600 hover:text-primary font-medium text-sm transition-colors duration-150">
                             🏆 Hall of Fame
                         </a>
+                        <a href="{{ route('docs.index') }}"
+                           class="text-stone-600 hover:text-primary font-medium text-sm transition-colors duration-150">
+                            Docs
+                        </a>
                     </nav>
 
                     {{-- Desktop CTA --}}
@@ -99,6 +103,7 @@
                     <a href="{{ url('/challenges') }}" class="block px-3 py-2 rounded-lg text-stone-700 hover:bg-amber-50 hover:text-primary font-medium text-sm transition-colors">Challenges</a>
                     <a href="{{ url('/challenges#bundles') }}" class="block px-3 py-2 rounded-lg text-stone-700 hover:bg-amber-50 hover:text-primary font-medium text-sm transition-colors">Bundles</a>
                     <a href="{{ url('/hall-of-fame') }}" class="block px-3 py-2 rounded-lg text-stone-700 hover:bg-amber-50 hover:text-primary font-medium text-sm transition-colors">🏆 Hall of Fame</a>
+                    <a href="{{ route('docs.index') }}" class="block px-3 py-2 rounded-lg text-stone-700 hover:bg-amber-50 hover:text-primary font-medium text-sm transition-colors">Docs</a>
                     <div class="pt-3 border-t border-amber-100 flex flex-col gap-2">
                         @auth
                             <a href="{{ route('dashboard') }}" class="btn btn-primary btn-sm w-full">My Dashboard →</a>
@@ -139,6 +144,7 @@
                             <li><a href="{{ url('/challenges') }}" class="opacity-70 hover:opacity-100 transition-opacity">Browse Challenges</a></li>
                             <li><a href="{{ url('/challenges#bundles') }}" class="opacity-70 hover:opacity-100 transition-opacity">Bundles</a></li>
                             <li><a href="{{ url('/hall-of-fame') }}" class="opacity-70 hover:opacity-100 transition-opacity">Hall of Fame</a></li>
+                            <li><a href="{{ route('docs.index') }}" class="opacity-70 hover:opacity-100 transition-opacity">Documentation</a></li>
                         </ul>
                     </div>
 
