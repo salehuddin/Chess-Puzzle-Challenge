@@ -18,7 +18,7 @@ use Spatie\Activitylog\Models\Concerns\LogsActivity;
 use Spatie\Activitylog\Support\LogOptions;
 use Spatie\Permission\Traits\HasRoles;
 
-#[Fillable(['name', 'email', 'password', 'address_line1', 'address_line2', 'city', 'state', 'postcode', 'country'])]
+#[Fillable(['name', 'username', 'email', 'password', 'avatar', 'bio', 'profile_is_public', 'address_line1', 'address_line2', 'city', 'state', 'postcode', 'country'])]
 #[Hidden(['password', 'remember_token'])]
 class User extends Authenticatable implements FilamentUser
 {
@@ -35,6 +35,7 @@ class User extends Authenticatable implements FilamentUser
         return [
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
+            'profile_is_public' => 'boolean',
         ];
     }
 
@@ -175,6 +176,14 @@ class User extends Authenticatable implements FilamentUser
     public function stickersCount(): int
     {
         return $this->stickers()->whereNotNull('unlocked_at')->count();
+    }
+
+    /**
+     * Whether this user's profile is publicly viewable.
+     */
+    public function isPubliclyViewable(): bool
+    {
+        return $this->profile_is_public && filled($this->username);
     }
 
     /**

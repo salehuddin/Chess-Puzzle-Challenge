@@ -5,6 +5,7 @@ use App\Http\Controllers\BundleEnrollmentController;
 use App\Http\Controllers\ChallengeEnrollmentController;
 use App\Http\Controllers\CheckoutController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\PublicProfileController;
 use App\Livewire\ChallengeIndex;
 use App\Livewire\ChallengeShow;
 use App\Livewire\Dashboard;
@@ -32,6 +33,8 @@ Route::view('/mockups/single-challenge', 'mockups.single-challenge')->name('mock
 Route::get('/dashboard', Dashboard::class)
     ->middleware(['auth', 'verified'])
     ->name('dashboard');
+
+Route::get('/u/{user:username}', [PublicProfileController::class, 'show'])->name('profile.show');
 
 Route::middleware('auth')->group(function () {
     Route::get('/checkout/{order}', [CheckoutController::class, 'show'])->name('checkout.show');

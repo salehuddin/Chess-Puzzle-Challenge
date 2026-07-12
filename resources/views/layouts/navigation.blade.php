@@ -43,9 +43,13 @@
                         role="button"
                         class="flex items-center gap-2 px-3 py-1.5 rounded-full border border-stone-200 hover:border-primary/50 hover:bg-primary/5 transition-all cursor-pointer"
                     >
-                        <div class="w-7 h-7 rounded-full bg-primary/10 flex items-center justify-center text-primary font-bold text-sm">
-                            {{ strtoupper(substr(Auth::user()->name, 0, 1)) }}
-                        </div>
+                        @if(Auth::user()->avatar)
+                            <img src="{{ Storage::url(Auth::user()->avatar) }}" alt="{{ Auth::user()->name }}" class="w-7 h-7 rounded-full object-cover" />
+                        @else
+                            <div class="w-7 h-7 rounded-full bg-primary/10 flex items-center justify-center text-primary font-bold text-sm">
+                                {{ strtoupper(substr(Auth::user()->name, 0, 1)) }}
+                            </div>
+                        @endif
                         <span class="text-sm font-medium text-stone-700 max-w-24 truncate">{{ Auth::user()->name }}</span>
                         <svg class="w-3.5 h-3.5 text-stone-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
@@ -65,10 +69,18 @@
                         </li>
                         <li>
                             <a href="{{ route('dashboard') }}" class="flex items-center gap-2 text-stone-700 hover:text-primary hover:bg-primary/5">
-                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"/></svg>
-                                My Orders
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zm10 0a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zm10 0a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z"/></svg>
+                                Dashboard
                             </a>
                         </li>
+                        @if(Auth::user()->isPubliclyViewable())
+                        <li>
+                            <a href="{{ route('profile.show', Auth::user()->username) }}" target="_blank" class="flex items-center gap-2 text-stone-700 hover:text-primary hover:bg-primary/5">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/></svg>
+                                Public Profile
+                            </a>
+                        </li>
+                        @endif
                         <li class="border-t border-stone-100 mt-1 pt-1">
                             <form method="POST" action="{{ route('logout') }}">
                                 @csrf
@@ -116,7 +128,11 @@
         <div class="px-4 py-4 border-t border-stone-100">
             <p class="text-xs text-stone-400 mb-1">{{ Auth::user()->name }}</p>
             <p class="text-sm text-stone-500 mb-3">{{ Auth::user()->email }}</p>
+            <a href="{{ route('dashboard') }}" class="block px-3 py-2 rounded-lg text-stone-700 hover:bg-amber-50 text-sm mb-1">Dashboard</a>
             <a href="{{ route('profile.edit') }}" class="block px-3 py-2 rounded-lg text-stone-700 hover:bg-amber-50 text-sm mb-1">Profile & Address</a>
+            @if(Auth::user()->isPubliclyViewable())
+                <a href="{{ route('profile.show', Auth::user()->username) }}" target="_blank" class="block px-3 py-2 rounded-lg text-stone-700 hover:bg-amber-50 text-sm mb-1">Public Profile</a>
+            @endif
             <form method="POST" action="{{ route('logout') }}">
                 @csrf
                 <button type="submit" class="w-full text-left px-3 py-2 rounded-lg text-error hover:bg-error/5 text-sm font-medium">

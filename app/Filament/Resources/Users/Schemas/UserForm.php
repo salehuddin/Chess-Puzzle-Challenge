@@ -3,8 +3,11 @@
 namespace App\Filament\Resources\Users\Schemas;
 
 use Filament\Forms\Components\DateTimePicker;
+use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\Select;
+use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
+use Filament\Forms\Components\Toggle;
 use Filament\Schemas\Components\Section;
 use Filament\Schemas\Schema;
 use Illuminate\Database\Eloquent\Builder;
@@ -41,6 +44,26 @@ class UserForm
                             ->visible(fn (): bool => (bool) auth()->user()?->isAdmin())
                             ->columnSpanFull(),
                     ]),
+
+                Section::make('Public Profile')
+                    ->schema([
+                        TextInput::make('username')
+                            ->unique(table: 'users', ignorable: fn ($record) => $record)
+                            ->maxLength(30)
+                            ->regex('/^[a-z0-9][a-z0-9-]+[a-z0-9]$/')
+                            ->placeholder('your-username'),
+                        FileUpload::make('avatar')
+                            ->disk('public')
+                            ->image()
+                            ->directory('avatars')
+                            ->imageEditor()
+                            ->imageCropAspectRatio('1:1')
+                            ->maxSize(1024),
+                        Textarea::make('bio')
+                            ->rows(3)
+                            ->maxLength(500),
+                        Toggle::make('profile_is_public'),
+                    ])->columns(2),
 
                 Section::make('Address')
                     ->schema([
