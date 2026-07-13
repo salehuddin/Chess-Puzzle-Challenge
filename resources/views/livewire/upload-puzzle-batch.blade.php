@@ -18,7 +18,8 @@
 
     {{-- Upload Step --}}
     @if (! $storedPath)
-        <x-filament-section heading="Select CSV File">
+        <div class="rounded-xl bg-white p-6 shadow-sm ring-1 ring-gray-200/50">
+            <h3 class="mb-4 text-lg font-semibold text-gray-900">Select CSV File</h3>
             <div class="flex flex-wrap items-center gap-4">
                 <input
                     type="file"
@@ -37,28 +38,25 @@
             @error('csvFile')
                 <div class="mt-3 text-sm text-red-600">{{ $message }}</div>
             @enderror
-        </x-filament-section>
+        </div>
     @endif
 
     {{-- Preview / Import Step --}}
     @if ($storedPath && ! $imported)
-        <x-filament-section>
-            <x-slot name="heading">
+        <div class="rounded-xl bg-white p-6 shadow-sm ring-1 ring-gray-200/50">
+            <div class="mb-4 flex items-center justify-between">
                 <div class="flex items-center gap-2">
-                    <span>{{ $storedName }}</span>
+                    <span class="text-lg font-semibold text-gray-900">{{ $storedName }}</span>
                     @if ($totalRows >= 0)
-                        <x-filament::badge size="sm" color="success">
+                        <span class="inline-flex items-center rounded-full bg-emerald-100 px-2.5 py-0.5 text-xs font-medium text-emerald-800">
                             {{ number_format($totalRows) }} rows
-                        </x-filament::badge>
+                        </span>
                     @endif
                 </div>
-            </x-slot>
-
-            <x-slot name="actions">
                 <x-filament::button tag="button" color="gray" size="sm" wire:click="clearFile">
                     Remove
                 </x-filament::button>
-            </x-slot>
+            </div>
 
             <div class="mb-3 text-xs text-gray-500">
                 {{ $this->formattedSize }} &middot; Sample of first 5 rows shown below
@@ -145,14 +143,15 @@
                     </span>
                 @endif
             </div>
-        </x-filament-section>
+        </div>
     @endif
 
     {{-- Result Step --}}
     @if ($imported)
-        <x-filament-section heading="Import complete" color="success">
+        <div class="rounded-xl bg-white p-6 shadow-sm ring-1 ring-gray-200/50">
+            <h3 class="mb-4 text-lg font-semibold text-emerald-700">Import complete</h3>
             <div class="flex items-start gap-3">
-                <svg class="mt-0.5 h-6 w-6 shrink-0 text-success-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                <svg class="mt-0.5 h-6 w-6 shrink-0 text-emerald-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                     <path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
                 </svg>
                 <div class="flex-1">
@@ -171,6 +170,6 @@
                     </div>
                 </div>
             </div>
-        </x-filament-section>
+        </div>
     @endif
 </div>

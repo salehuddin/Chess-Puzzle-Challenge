@@ -152,6 +152,7 @@ RUN mkdir -p /app/storage/framework/cache \
              /app/storage/app/public \
              /app/storage/app/private/livewire-tmp \
              /app/storage/app/private/puzzle-uploads \
+             /app/storage/logs \
     && mkdir -p /app/public \
     && ln -sf /app/storage/app/public /app/public/storage \
     && chown -R www-data:www-data /app/storage /app/bootstrap/cache
