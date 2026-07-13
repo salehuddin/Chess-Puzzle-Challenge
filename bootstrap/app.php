@@ -36,6 +36,14 @@ return Application::configure(basePath: dirname(__DIR__))
                 }
                 return response()->json($payload, 500);
             }
+
+            \Log::error('Unhandled exception: '.$e->getMessage(), [
+                'url' => $request->fullUrl(),
+                'class' => get_class($e),
+                'file' => $e->getFile().':'.$e->getLine(),
+                'trace' => $e->getTraceAsString(),
+            ]);
+
             return null;
         });
     })->create();
