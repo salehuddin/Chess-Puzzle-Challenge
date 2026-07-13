@@ -2,6 +2,7 @@
 set -e
 
 mkdir -p /app/storage/app/private/livewire-tmp
+mkdir -p /app/storage/app/private/puzzle-uploads
 mkdir -p /app/storage/framework/cache/data
 mkdir -p /app/storage/framework/sessions
 mkdir -p /app/storage/framework/views
