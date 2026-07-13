@@ -24,7 +24,7 @@
                 <input
                     type="file"
                     accept=".csv,.txt,text/csv"
-                    wire:upload="csvFile"
+                    wire:model="csvFile"
                     class="block w-full text-sm text-gray-500 file:mr-4 file:rounded-lg file:border-0 file:bg-emerald-600 file:px-4 file:py-2 file:text-sm file:font-medium file:text-white hover:file:bg-emerald-700"
                 >
                 <div wire:loading wire:target="csvFile" class="flex items-center gap-2 text-sm text-emerald-600">
