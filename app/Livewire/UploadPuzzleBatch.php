@@ -87,7 +87,7 @@ class UploadPuzzleBatch extends Component
             $result = $this->csvService->getPage($this->storedPath, [], 1, 5, null);
 
             $this->sampleRows = $result['rows'];
-            $this->totalRows = $result['total'];
+            $this->totalRows = $this->csvService->countMatches($this->storedPath);
         } catch (\Throwable $e) {
             Notification::make()
                 ->title('Preview failed')

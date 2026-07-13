@@ -23,9 +23,23 @@ class CsvPuzzleService
         }
 
         $matchIndex = -1;
+        $isFirstRow = true;
 
         while (($data = fgetcsv($handle, 4096, ',')) !== false) {
-            if (count($data) < self::EXPECTED_COLUMNS || $data[0] === 'PuzzleId') {
+            // Skip header row: check first column case-insensitively and strip BOM
+            if ($isFirstRow) {
+                $isFirstRow = false;
+                $firstCol = $data[0] ?? '';
+                // Strip UTF-8 BOM if present
+                if (str_starts_with($firstCol, "\xEF\xBB\xBF")) {
+                    $firstCol = substr($firstCol, 3);
+                }
+                if (strtolower(trim($firstCol)) === 'puzzleid') {
+                    continue;
+                }
+            }
+
+            if (count($data) < self::EXPECTED_COLUMNS) {
                 continue;
             }
 
@@ -87,9 +101,21 @@ class CsvPuzzleService
         }
 
         $themes = [];
+        $isFirstRow = true;
 
         while (($data = fgetcsv($handle, 4096, ',')) !== false) {
-            if (count($data) < self::EXPECTED_COLUMNS || $data[0] === 'PuzzleId') {
+            if ($isFirstRow) {
+                $isFirstRow = false;
+                $firstCol = $data[0] ?? '';
+                if (str_starts_with($firstCol, "\xEF\xBB\xBF")) {
+                    $firstCol = substr($firstCol, 3);
+                }
+                if (strtolower(trim($firstCol)) === 'puzzleid') {
+                    continue;
+                }
+            }
+
+            if (count($data) < self::EXPECTED_COLUMNS) {
                 continue;
             }
 

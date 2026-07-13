@@ -126,7 +126,7 @@
                     size="lg"
                     wire:click="importToDb"
                     wire:loading.attr="disabled"
-                    onclick="return confirm('Import {{ number_format($totalRows) }} puzzles into the database?')"
+                    wire:confirm="Import {{ number_format($totalRows) }} puzzles into the database?"
                 >
                     <span wire:loading.remove wire:target="importToDb">Import to Database</span>
                     <span wire:loading wire:target="importToDb" class="flex items-center gap-2">
