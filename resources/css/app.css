@@ -16,9 +16,9 @@
     --color-base-300: #E5E5E5;
     --color-base-content: #111111;
 
-    /* Primary — Jade Green */
-    --color-primary: #22C55E;
-    --color-primary-content: #FFFFFF;
+    /* Primary — Onyx (CTAs) */
+    --color-primary: #111111;
+    --color-primary-content: #FEFEFE;
 
     /* Secondary — Onyx */
     --color-secondary: #111111;
