@@ -21,6 +21,16 @@
     $hasTerms      = trim(strip_tags($termsHtml)) !== '';
     $faqItems      = is_array($challenge->faq) ? $challenge->faq : [];
 
+    // Placeholder FAQ shown when the challenge has no FAQ authored yet,
+    // so the layout is visible during the design phase.
+    $placeholderFaqs = [
+        ['question' => 'How do I start the challenge?', 'answer' => 'Once you enroll, your puzzles unlock immediately. Open the first puzzle from your dashboard and start solving.'],
+        ['question' => 'How long do I have to finish?', 'answer' => 'There is no time limit. Take a week or take a year — your enrollment stays open until you complete every puzzle.'],
+        ['question' => 'When will I receive my medal?', 'answer' => 'Your physical medal is dispatched within 3-5 business days of completing the final puzzle. You will receive a tracking link by email.'],
+        ['question' => 'Can I replay puzzles I have already solved?', 'answer' => 'Yes. Once a puzzle is solved it stays accessible from your progress page. You can revisit it any time for practice.'],
+        ['question' => 'What happens if I get stuck on a puzzle?', 'answer' => 'Each puzzle includes hint options. You can also revisit earlier puzzles or reach out in our community forum for guidance.'],
+    ];
+
     $enrollUrl    = route('challenges.enroll', ['challenge' => $challenge], absolute: false);
     $registerUrl  = route('register', ['redirect_to' => $enrollUrl]);
     $loginUrl     = route('login', ['redirect_to' => $enrollUrl]);
@@ -135,42 +145,25 @@
         </x-challenge.section>
     @endif
 
-    {{-- 4. Puzzle milestones --------------------------------------------- --}}
-    <x-challenge.section
-        id="milestones"
-        eyebrow="Puzzle milestones"
-        heading="Your checkpoint map"
-        sub="Every puzzle is a milestone. Solve in order or jump around — your call."
-        :bg="'white'"
-    >
-        <x-challenge.milestone-grid :puzzles="$challenge->puzzles" />
-    </x-challenge.section>
-
-    {{-- 5. Media gallery (image_gallery) --------------------------------- --}}
-    @if($imageGallery !== [])
+    {{-- 4. Media gallery + Videos (combined) ----------------------------- --}}
+    @if($imageGallery !== [] || $videos !== [])
         <x-challenge.section
             id="gallery"
             eyebrow="Inside the challenge"
             heading="A look at the puzzles"
-            :bg="'base-2'"
-        >
-            <x-challenge.media-grid :images="$imageGallery" :alt="$challenge->name" />
-        </x-challenge.section>
-    @endif
-
-    {{-- 6. Videos --------------------------------------------------------- --}}
-    @if($videos !== [])
-        <x-challenge.section
-            id="videos"
-            eyebrow="Watch first"
-            heading="Video walkthroughs"
             :bg="'white'"
         >
-            <x-challenge.video-grid :videos="$videos" />
+            <x-challenge.media-grid :images="$imageGallery" :alt="$challenge->name" />
+
+            @if($videos !== [])
+                <div class="@if($imageGallery !== []) mt-10 @endif">
+                    <x-challenge.video-grid :videos="$videos" />
+                </div>
+            @endif
         </x-challenge.section>
     @endif
 
-    {{-- 7. Medal showcase ------------------------------------------------- --}}
+    {{-- 5. Medal showcase ------------------------------------------------- --}}
     @if($medalArtworkUrl || $medalImages !== [])
         <x-challenge.section
             id="medal"
@@ -187,7 +180,7 @@
         </x-challenge.section>
     @endif
 
-    {{-- 8. Benefit grid (static placeholder copy) ------------------------ --}}
+    {{-- 6. Benefit grid (static placeholder copy) ------------------------ --}}
     <x-challenge.section
         id="benefits"
         eyebrow="Plus all this"
@@ -197,7 +190,7 @@
         <x-challenge.benefit-grid />
     </x-challenge.section>
 
-    {{-- 9. Pricing / enrollment card ------------------------------------- --}}
+    {{-- 7. Pricing / enrollment card ------------------------------------- --}}
     <x-challenge.section
         id="enroll"
         eyebrow="Enroll"
@@ -220,17 +213,15 @@
         />
     </x-challenge.section>
 
-    {{-- 10. FAQ accordion ------------------------------------------------- --}}
-    @if($faqItems !== [])
-        <x-challenge.section
-            id="faq"
-            eyebrow="FAQ"
-            heading="Frequently asked questions"
-            :bg="'white'"
-        >
-            <x-challenge.faq-accordion :items="$faqItems" />
-        </x-challenge.section>
-    @endif
+    {{-- 8. FAQ accordion (placeholder shown when challenge has no FAQ) ----- --}}
+    <x-challenge.section
+        id="faq"
+        eyebrow="FAQ"
+        heading="Frequently asked questions"
+        :bg="'white'"
+    >
+        <x-challenge.faq-accordion :items="$faqItems !== [] ? $faqItems : $placeholderFaqs" />
+    </x-challenge.section>
 
     {{-- 11. Terms & Conditions ------------------------------------------- --}}
     @if($hasTerms)

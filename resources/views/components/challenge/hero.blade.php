@@ -38,13 +38,13 @@
 
 <section class="relative overflow-hidden bg-stone-900 text-white">
     @if($posterImageUrl)
-        <img src="{{ $posterImageUrl }}" alt="" aria-hidden="true" class="absolute inset-0 h-full w-full object-cover opacity-30">
+        <img src="{{ $posterImageUrl }}" alt="" aria-hidden="true" class="absolute inset-0 h-full w-full object-cover opacity-60">
     @endif
 
-    <div class="absolute inset-0 bg-gradient-to-br from-stone-950/95 via-stone-900/85 to-stone-900/70"></div>
-    <div class="absolute inset-0 bg-chess-pattern opacity-[0.05]"></div>
+    <div class="absolute inset-0 bg-gradient-to-br from-stone-950/80 via-stone-900/60 to-stone-900/40"></div>
+    <div class="absolute inset-0 bg-chess-pattern opacity-[0.04]"></div>
 
-    <div class="relative mx-auto max-w-7xl px-4 py-16 sm:px-6 lg:px-8 lg:py-24">
+    <div class="relative mx-auto max-w-7xl px-4 py-10 sm:px-6 lg:px-8 lg:py-14">
         <a href="{{ $backHref }}" class="mb-6 inline-flex items-center gap-2 text-sm font-semibold text-amber-200/90 transition hover:text-amber-100">
             <span aria-hidden="true">←</span>
             <span>{{ $backLabel }}</span>

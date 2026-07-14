@@ -39,11 +39,11 @@
     $subColor     = $bg === 'dark' ? 'text-stone-300' : 'text-stone-600';
 @endphp
 
-<section @if($id) id="{{ $id }}" @endif class="{{ $bgClass }} py-16 sm:py-20 lg:py-24">
+<section @if($id) id="{{ $id }}" @endif class="{{ $bgClass }} py-10 sm:py-12 lg:py-14">
     @if($contained)
         <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
             @if($eyebrow || $heading || $sub)
-                <div class="mb-10 max-w-3xl {{ $bg === 'dark' ? 'text-stone-100' : '' }}">
+                <div class="mb-8 max-w-3xl {{ $bg === 'dark' ? 'text-stone-100' : '' }}">
                     @if($eyebrow)
                         <p class="text-xs font-semibold uppercase tracking-[0.2em] {{ $eyebrowColor }}">{{ $eyebrow }}</p>
                     @endif
@@ -61,7 +61,7 @@
     @else
         {{-- Full-bleed: still emit heading/eyebrow above the slot, but let body escape the container. --}}
         @if($eyebrow || $heading || $sub)
-            <div class="mx-auto mb-10 max-w-7xl px-4 sm:px-6 lg:px-8">
+            <div class="mx-auto mb-8 max-w-7xl px-4 sm:px-6 lg:px-8">
                 <div class="max-w-3xl {{ $bg === 'dark' ? 'text-stone-100' : '' }}">
                     @if($eyebrow)
                         <p class="text-xs font-semibold uppercase tracking-[0.2em] {{ $eyebrowColor }}">{{ $eyebrow }}</p>
