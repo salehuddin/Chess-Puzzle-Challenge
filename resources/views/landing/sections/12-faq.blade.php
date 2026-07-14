@@ -41,9 +41,9 @@
             ];
         @endphp
 
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-3" x-data="{ open: 0 }">
+        <div class="columns-1 md:columns-2 gap-3 [&>*]:mb-3 [&>*:last-child]:mb-0" x-data="{ open: 0 }">
             @foreach($faqs as $i => $faq)
-                <div class="reveal border border-neutral-200 rounded-2xl overflow-hidden hover:border-brand/40 transition-colors"
+                <div class="reveal break-inside-avoid border border-neutral-200 rounded-2xl overflow-hidden hover:border-brand/40 transition-colors"
                      style="--reveal-delay: {{ $i * 50 }}ms;">
                     <button
                         @click="open === {{ $i }} ? open = null : open = {{ $i }}"
