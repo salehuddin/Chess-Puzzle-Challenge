@@ -51,26 +51,26 @@
     $eyebrow = $status ? 'Enrollment' : 'Get Started';
 @endphp
 
-<div class="overflow-hidden rounded-3xl border border-amber-200 bg-gradient-to-br from-amber-50 via-white to-amber-50 shadow-warm-lg">
+<div class="overflow-hidden rounded-3xl border border-orange-200 bg-gradient-to-br from-orange-50 via-white to-orange-50 shadow-warm-lg">
     <div class="grid grid-cols-1 lg:grid-cols-5 lg:items-center">
         <div class="flex items-start gap-5 p-6 sm:p-8 lg:col-span-3 lg:p-10">
             @if($stickerArtworkUrl)
                 <img
                     src="{{ $stickerArtworkUrl }}"
                     alt="Sticker reward"
-                    class="hidden h-24 w-24 shrink-0 rounded-2xl object-contain ring-1 ring-amber-200 sm:block"
+                    class="hidden h-24 w-24 shrink-0 rounded-2xl object-contain ring-1 ring-orange-200 sm:block"
                 >
             @endif
             <div>
-                <p class="text-xs font-semibold uppercase tracking-[0.2em] text-amber-700">{{ $eyebrow }}</p>
-                <h2 class="mt-1 font-display text-2xl font-black text-stone-900 sm:text-3xl">{{ $heading }}</h2>
-                <p class="mt-3 max-w-2xl text-sm leading-relaxed text-stone-600 sm:text-base">
+                <p class="text-xs font-semibold uppercase tracking-[0.2em] text-orange-700">{{ $eyebrow }}</p>
+                <h2 class="mt-1 font-display text-2xl font-black text-neutral-900 sm:text-3xl">{{ $heading }}</h2>
+                <p class="mt-3 max-w-2xl text-sm leading-relaxed text-neutral-600 sm:text-base">
                     {{ $body }}
                 </p>
             </div>
         </div>
 
-        <div class="flex flex-col gap-3 border-t border-amber-200/60 bg-white/60 p-6 sm:flex-row sm:p-8 lg:col-span-2 lg:items-center lg:justify-end lg:border-l lg:border-t-0 lg:p-10">
+        <div class="flex flex-col gap-3 border-t border-orange-200/60 bg-white/60 p-6 sm:flex-row sm:p-8 lg:col-span-2 lg:items-center lg:justify-end lg:border-l lg:border-t-0 lg:p-10">
             @if($isGuest)
                 <a href="{{ $registerUrl }}" class="btn btn-primary w-full sm:w-auto">
                     Register to Enroll

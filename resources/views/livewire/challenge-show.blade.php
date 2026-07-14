@@ -133,11 +133,11 @@
         >
             <div class="mx-auto max-w-3xl px-4 sm:px-6 lg:px-8">
                 @if($contentHtml !== '')
-                    <article class="space-y-6 text-base leading-relaxed text-stone-700">
+                    <article class="space-y-6 text-base leading-relaxed text-neutral-700">
                         {!! $contentHtml !!}
                     </article>
                 @else
-                    <article class="space-y-6 text-base leading-relaxed text-stone-700">
+                    <article class="space-y-6 text-base leading-relaxed text-neutral-700">
                         {!! $description !!}
                     </article>
                 @endif
@@ -231,15 +231,15 @@
             heading="Terms & conditions"
             :bg="'base-2'"
         >
-            <details class="group overflow-hidden rounded-2xl border border-stone-200 bg-white shadow-warm">
-                <summary class="flex cursor-pointer list-none items-center justify-between gap-3 px-6 py-5 text-sm font-semibold text-stone-700">
+            <details class="group overflow-hidden rounded-2xl border border-neutral-200 bg-white shadow-warm">
+                <summary class="flex cursor-pointer list-none items-center justify-between gap-3 px-6 py-5 text-sm font-semibold text-neutral-700">
                     <span>Tap to read the full terms for this challenge</span>
-                    <svg class="h-5 w-5 shrink-0 text-stone-400 transition-transform duration-200 group-open:rotate-180" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <svg class="h-5 w-5 shrink-0 text-neutral-400 transition-transform duration-200 group-open:rotate-180" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
                     </svg>
                 </summary>
-                <div class="border-t border-stone-200 px-6 py-6">
-                    <article class="prose prose-stone max-w-none text-base leading-relaxed">
+                <div class="border-t border-neutral-200 px-6 py-6">
+                    <article class="prose prose-neutral max-w-none text-base leading-relaxed">
                         {!! $termsHtml !!}
                     </article>
                 </div>

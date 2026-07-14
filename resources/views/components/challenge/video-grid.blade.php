@@ -13,8 +13,8 @@
 @if($videos !== [])
     <div class="grid grid-cols-1 gap-6 lg:grid-cols-2">
         @foreach($videos as $video)
-            <article class="overflow-hidden rounded-2xl border border-stone-200 bg-white shadow-warm" wire:key="video-{{ md5($video['url']) }}">
-                <div class="aspect-video w-full bg-stone-100">
+            <article class="overflow-hidden rounded-2xl border border-neutral-200 bg-white shadow-warm" wire:key="video-{{ md5($video['url']) }}">
+                <div class="aspect-video w-full bg-neutral-100">
                     <iframe
                         src="{{ $video['embed_url'] }}"
                         title="{{ $video['title'] }}"
@@ -26,7 +26,7 @@
                     ></iframe>
                 </div>
                 <div class="p-5">
-                    <h3 class="text-lg font-bold text-stone-900">{{ $video['title'] }}</h3>
+                    <h3 class="text-lg font-bold text-neutral-900">{{ $video['title'] }}</h3>
                     <a href="{{ $video['url'] }}" target="_blank" rel="noopener noreferrer" class="mt-2 inline-flex items-center gap-2 text-sm font-semibold text-primary hover:underline">
                         Open source video
                         <span aria-hidden="true">↗</span>

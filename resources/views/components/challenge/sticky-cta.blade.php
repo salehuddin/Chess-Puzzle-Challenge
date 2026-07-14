@@ -35,19 +35,19 @@
     x-transition:leave="transition ease-in duration-200"
     x-transition:leave-start="translate-y-0 opacity-100"
     x-transition:leave-end="translate-y-full opacity-0"
-    class="fixed inset-x-0 bottom-0 z-40 border-t border-amber-200 bg-white/95 shadow-warm-lg backdrop-blur-md"
+    class="fixed inset-x-0 bottom-0 z-40 border-t border-orange-200 bg-white/95 shadow-warm-lg backdrop-blur-md"
     role="region"
     aria-label="Challenge enrollment"
 >
     <div class="mx-auto flex max-w-7xl flex-col gap-3 px-4 py-3 sm:px-6 sm:flex-row sm:items-center sm:justify-between lg:px-8">
         <div class="flex items-center gap-3">
-            <span class="grid h-10 w-10 place-items-center rounded-full bg-amber-100 text-lg text-amber-800">
+            <span class="grid h-10 w-10 place-items-center rounded-full bg-orange-100 text-lg text-orange-800">
                 {{ $icon }}
             </span>
             <div class="min-w-0">
-                <p class="truncate text-sm font-bold text-stone-900 sm:text-base">{{ $title }}</p>
+                <p class="truncate text-sm font-bold text-neutral-900 sm:text-base">{{ $title }}</p>
                 @if($subtitle !== '')
-                    <p class="truncate text-xs text-stone-500 sm:text-sm">{{ $subtitle }}</p>
+                    <p class="truncate text-xs text-neutral-500 sm:text-sm">{{ $subtitle }}</p>
                 @endif
             </div>
         </div>

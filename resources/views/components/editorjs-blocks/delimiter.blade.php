@@ -1,1 +1,1 @@
-<hr class="border-stone-200">
+<hr class="border-neutral-200">

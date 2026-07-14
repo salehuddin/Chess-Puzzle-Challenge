@@ -18,7 +18,7 @@
             ></iframe>
         </div>
         @if ($caption)
-            <figcaption class="mt-2 text-center text-sm text-stone-500">{!! $caption !!}</figcaption>
+            <figcaption class="mt-2 text-center text-sm text-neutral-500">{!! $caption !!}</figcaption>
         @endif
     </figure>
 @endif

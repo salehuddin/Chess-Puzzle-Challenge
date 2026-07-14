@@ -26,10 +26,10 @@
         <div>
             <x-input-label for="username" :value="__('Username')" />
             <div class="mt-1 flex items-center gap-1">
-                <span class="text-sm text-stone-400">chesspuzzlechallenge.com/u/</span>
+                <span class="text-sm text-neutral-400">chesspuzzlechallenge.com/u/</span>
             </div>
             <x-text-input id="username" name="username" type="text" class="mt-1 block w-full" :value="old('username', $user->username)" placeholder="your-username" autocomplete="username" />
-            <p class="mt-1 text-xs text-stone-400">Lowercase letters, numbers, and hyphens only (3–30 characters). Required for a public profile.</p>
+            <p class="mt-1 text-xs text-neutral-400">Lowercase letters, numbers, and hyphens only (3–30 characters). Required for a public profile.</p>
             <x-input-error class="mt-2" :messages="$errors->get('username')" />
         </div>
 
@@ -64,10 +64,10 @@
                 name="bio"
                 rows="3"
                 maxlength="500"
-                class="mt-1 block w-full rounded-lg border-stone-300 shadow-sm focus:border-primary focus:ring-primary text-sm"
+                class="mt-1 block w-full rounded-lg border-neutral-300 shadow-sm focus:border-primary focus:ring-primary text-sm"
                 placeholder="Tell others about yourself..."
             >{{ old('bio', $user->bio) }}</textarea>
-            <p class="mt-1 text-xs text-stone-400">{{ strlen($user->bio ?? '') }}/500 characters</p>
+            <p class="mt-1 text-xs text-neutral-400">{{ strlen($user->bio ?? '') }}/500 characters</p>
             <x-input-error class="mt-2" :messages="$errors->get('bio')" />
         </div>
 
@@ -87,8 +87,8 @@
                     {{ $user->username ? '' : 'disabled title="Set a username first"' }}
                 />
                 <div>
-                    <span class="text-sm font-medium text-stone-800">Make profile public</span>
-                    <p class="text-xs text-stone-400">
+                    <span class="text-sm font-medium text-neutral-800">Make profile public</span>
+                    <p class="text-xs text-neutral-400">
                         @if($user->username)
                             Others can view your profile at <a href="{{ route('profile.show', $user->username) }}" target="_blank" class="underline text-primary">{{ url('/u/' . $user->username) }}</a>
                         @else

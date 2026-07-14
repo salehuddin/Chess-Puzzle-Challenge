@@ -38,20 +38,20 @@
 
 <div class="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-4">
     @foreach($benefits as $benefit)
-        <div class="flex h-full flex-col rounded-2xl border border-stone-200 bg-white p-6 shadow-warm">
-            <div class="grid h-12 w-12 place-items-center rounded-xl bg-amber-50 text-2xl">
+        <div class="flex h-full flex-col rounded-2xl border border-neutral-200 bg-white p-6 shadow-warm">
+            <div class="grid h-12 w-12 place-items-center rounded-xl bg-orange-50 text-2xl">
                 {{ $benefit['icon'] }}
             </div>
-            <h3 class="mt-4 font-display text-lg font-black text-stone-900">
+            <h3 class="mt-4 font-display text-lg font-black text-neutral-900">
                 {{ $benefit['title'] }}
             </h3>
-            <p class="mt-2 text-sm leading-relaxed text-stone-600">
+            <p class="mt-2 text-sm leading-relaxed text-neutral-600">
                 {{ $benefit['body'] }}
             </p>
         </div>
     @endforeach
 </div>
 
-<p class="mt-4 text-center text-[10px] font-semibold uppercase tracking-[0.2em] text-stone-400">
+<p class="mt-4 text-center text-[10px] font-semibold uppercase tracking-[0.2em] text-neutral-400">
     Placeholder copy — replace with challenge-specific benefits
 </p>

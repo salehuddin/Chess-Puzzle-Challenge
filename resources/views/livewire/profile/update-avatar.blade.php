@@ -13,9 +13,9 @@
         {{-- Current avatar preview --}}
         <div class="shrink-0">
             @if($currentAvatar)
-                <img src="{{ Storage::url($currentAvatar) }}" alt="Avatar" class="w-20 h-20 rounded-full object-cover border-2 border-stone-200" />
+                <img src="{{ Storage::url($currentAvatar) }}" alt="Avatar" class="w-20 h-20 rounded-full object-cover border-2 border-neutral-200" />
             @else
-                <div class="w-20 h-20 rounded-full bg-primary/10 flex items-center justify-center text-primary font-bold text-2xl border-2 border-stone-200">
+                <div class="w-20 h-20 rounded-full bg-primary/10 flex items-center justify-center text-primary font-bold text-2xl border-2 border-neutral-200">
                     {{ strtoupper(substr(Auth::user()->name, 0, 1)) }}
                 </div>
             @endif
@@ -28,7 +28,7 @@
                     type="file"
                     wire:model="photo"
                     accept="image/jpeg,image/png,image/webp"
-                    class="block w-full text-sm text-stone-500
+                    class="block w-full text-sm text-neutral-500
                            file:mr-4 file:py-2 file:px-4
                            file:rounded-lg file:border-0
                            file:text-sm file:font-semibold

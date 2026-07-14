@@ -37,7 +37,7 @@
                         $current = $puzzleId === ($currentPuzzleId ?? null);
                     @endphp
                     <div
-                        class="h-4 rounded-sm border {{ $solved ? 'bg-green-500 border-green-600' : ($current ? 'bg-amber-400 border-amber-500' : 'bg-gray-100 border-gray-200') }}"
+                        class="h-4 rounded-sm border {{ $solved ? 'bg-green-500 border-green-600' : ($current ? 'bg-orange-400 border-orange-500' : 'bg-gray-100 border-gray-200') }}"
                         title="Puzzle {{ $index + 1 }}{{ $current ? ' (current)' : '' }}{{ $solved ? ' (solved)' : '' }}"
                     ></div>
                 @endforeach
@@ -45,27 +45,27 @@
 
             <div class="mt-3 flex flex-wrap items-center gap-4 text-xs text-gray-600">
                 <div class="flex items-center gap-1.5"><span class="inline-block w-3 h-3 rounded-sm bg-green-500 border border-green-600"></span><span>Solved</span></div>
-                <div class="flex items-center gap-1.5"><span class="inline-block w-3 h-3 rounded-sm bg-amber-400 border border-amber-500"></span><span>Current</span></div>
+                <div class="flex items-center gap-1.5"><span class="inline-block w-3 h-3 rounded-sm bg-orange-400 border border-orange-500"></span><span>Current</span></div>
                 <div class="flex items-center gap-1.5"><span class="inline-block w-3 h-3 rounded-sm bg-gray-100 border border-gray-200"></span><span>Remaining</span></div>
             </div>
         </div>
     @endif
 
     @if($isComplete)
-        <div class="text-center py-20 bg-amber-50 rounded-2xl shadow-xl border border-amber-200">
+        <div class="text-center py-20 bg-orange-50 rounded-2xl shadow-xl border border-orange-200">
             <div class="w-32 h-32 mx-auto mb-6">
                 <!-- Simple Trophy SVG -->
-                <svg class="w-full h-full text-amber-500 drop-shadow-md" fill="currentColor" viewBox="0 0 24 24"><path d="M21 4h-3V3a1 1 0 00-1-1H7a1 1 0 00-1 1v1H3a1 1 0 00-1 1v3c0 4.31 3.14 7.92 7.28 8.82l-.4 3.18H6a1 1 0 00-1 1v2a1 1 0 001 1h12a1 1 0 001-1v-2a1 1 0 00-1-1h-2.88l-.4-3.18C18.86 15.92 22 12.31 22 8V5a1 1 0 00-1-1zM4 8V6h2v6.83C4.85 11.53 4 9.87 4 8zm10.5 8c-1.38 0-2.5-.9-2.5-2s1.12-2 2.5-2 2.5.9 2.5 2-1.12 2-2.5 2zm5.5-8c0 1.87-.85 3.53-2 4.83V6h2v2z"/></svg>
+                <svg class="w-full h-full text-orange-500 drop-shadow-md" fill="currentColor" viewBox="0 0 24 24"><path d="M21 4h-3V3a1 1 0 00-1-1H7a1 1 0 00-1 1v1H3a1 1 0 00-1 1v3c0 4.31 3.14 7.92 7.28 8.82l-.4 3.18H6a1 1 0 00-1 1v2a1 1 0 001 1h12a1 1 0 001-1v-2a1 1 0 00-1-1h-2.88l-.4-3.18C18.86 15.92 22 12.31 22 8V5a1 1 0 00-1-1zM4 8V6h2v6.83C4.85 11.53 4 9.87 4 8zm10.5 8c-1.38 0-2.5-.9-2.5-2s1.12-2 2.5-2 2.5.9 2.5 2-1.12 2-2.5 2zm5.5-8c0 1.87-.85 3.53-2 4.83V6h2v2z"/></svg>
             </div>
-            <h2 class="text-4xl font-bold text-amber-700 mb-4 font-serif">Challenge Complete! 🎉</h2>
+            <h2 class="text-4xl font-bold text-orange-700 mb-4 font-serif">Challenge Complete! 🎉</h2>
             <p class="text-lg text-gray-700 mb-8 max-w-lg mx-auto">You have successfully solved all the puzzles. Your new sticker has been added to your dashboard.</p>
 
             @if($medalRequestPending)
-                <div class="max-w-md mx-auto mb-6 p-4 bg-white rounded-xl border border-amber-200 shadow-sm">
+                <div class="max-w-md mx-auto mb-6 p-4 bg-white rounded-xl border border-orange-200 shadow-sm">
                     <div class="flex items-start gap-3 text-left">
                         <div class="text-3xl">🏅</div>
                         <div>
-                            <p class="font-bold text-stone-800">Claim your physical medal</p>
+                            <p class="font-bold text-neutral-800">Claim your physical medal</p>
                             <p class="text-sm text-gray-600 mt-1">Confirm your shipping address and request your medal, or do it later from your dashboard.</p>
                         </div>
                     </div>
@@ -194,7 +194,7 @@
                             <p class="text-gray-600 text-lg">
                                 Find the best move for 
                                 <span class="font-bold inline-block px-3 py-1 rounded shadow-sm"
-                                      :class="playerColor === 'white' ? 'bg-amber-100 text-amber-900' : 'bg-gray-800 text-white'"
+                                      :class="playerColor === 'white' ? 'bg-orange-100 text-orange-900' : 'bg-gray-800 text-white'"
                                       x-text="playerColor === 'white' ? 'White' : 'Black'">
                                 </span>.
                             </p>

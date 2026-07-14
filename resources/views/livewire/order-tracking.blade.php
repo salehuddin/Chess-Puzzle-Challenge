@@ -63,13 +63,13 @@
                 
                     @if($tracking['status'] === 'pending')
                         <div class="mt-4 text-center py-6">
-                            <div class="text-4xl mb-4 text-amber-500">⏳</div>
+                            <div class="text-4xl mb-4 text-orange-500">⏳</div>
                             <h4 class="font-bold text-gray-800">Awaiting payment</h4>
                             <p class="text-gray-500 text-sm mt-2">Your enrollment has been created. Complete payment to unlock the puzzles and start playing.</p>
                         </div>
                     @elseif($tracking['status'] === 'medal_pending')
                         <div class="mt-4 text-center py-6">
-                            <div class="text-4xl mb-4 text-amber-500">🏅</div>
+                            <div class="text-4xl mb-4 text-orange-500">🏅</div>
                             <h4 class="font-bold text-gray-800">Claim your medal</h4>
                             <p class="text-gray-500 text-sm mt-2">You've completed all puzzles! Confirm your shipping address and request your physical medal to be mailed to you.</p>
                             <a href="{{ route('medal-request', $tracking['enrollment_id']) }}" class="btn btn-primary btn-sm mt-4 gap-2">
@@ -99,7 +99,7 @@
                     </div>
                     @elseif($tracking['status'] === 'completed')
                     <div class="mt-4 text-center py-6">
-                        <div class="text-4xl mb-4 text-amber-500">📦</div>
+                        <div class="text-4xl mb-4 text-orange-500">📦</div>
                         <h4 class="font-bold text-gray-800">Preparing for Shipment</h4>
                         <p class="text-gray-500 text-sm mt-2">You've completed the challenge! We are preparing your physical sticker/medal for shipment. Check back soon for tracking information.</p>
                     </div>

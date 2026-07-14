@@ -1,1 +1,1 @@
-<p class="text-base leading-relaxed text-stone-700">{!! $data['text'] !!}</p>
+<p class="text-base leading-relaxed text-neutral-700">{!! $data['text'] !!}</p>

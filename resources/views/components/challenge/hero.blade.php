@@ -36,16 +36,16 @@
     [$levelIcon, $levelLabel, $levelClass] = $badgeLevel;
 @endphp
 
-<section class="relative overflow-hidden bg-stone-900 text-white">
+<section class="relative overflow-hidden bg-neutral-900 text-white">
     @if($posterImageUrl)
         <img src="{{ $posterImageUrl }}" alt="" aria-hidden="true" class="absolute inset-0 h-full w-full object-cover opacity-60">
     @endif
 
-    <div class="absolute inset-0 bg-gradient-to-br from-stone-950/80 via-stone-900/60 to-stone-900/40"></div>
+    <div class="absolute inset-0 bg-gradient-to-br from-neutral-950/80 via-neutral-900/60 to-neutral-900/40"></div>
     <div class="absolute inset-0 bg-chess-pattern opacity-[0.04]"></div>
 
     <div class="relative mx-auto max-w-7xl px-4 py-10 sm:px-6 lg:px-8 lg:py-14">
-        <a href="{{ $backHref }}" class="mb-6 inline-flex items-center gap-2 text-sm font-semibold text-amber-200/90 transition hover:text-amber-100">
+        <a href="{{ $backHref }}" class="mb-6 inline-flex items-center gap-2 text-sm font-semibold text-orange-200/90 transition hover:text-orange-100">
             <span aria-hidden="true">←</span>
             <span>{{ $backLabel }}</span>
         </a>
@@ -76,24 +76,24 @@
                 </h1>
 
                 @if($hasDescription)
-                    <div class="prose prose-invert mt-5 max-w-2xl text-base leading-relaxed text-stone-200 lg:text-lg">
+                    <div class="prose prose-invert mt-5 max-w-2xl text-base leading-relaxed text-neutral-200 lg:text-lg">
                         {!! $description !!}
                     </div>
                 @endif
 
-                <div class="mt-8 flex flex-wrap items-center gap-3 text-sm text-stone-300">
+                <div class="mt-8 flex flex-wrap items-center gap-3 text-sm text-neutral-300">
                     <span class="inline-flex items-center gap-2">
-                        <span class="h-1.5 w-1.5 rounded-full bg-amber-400"></span>
+                        <span class="h-1.5 w-1.5 rounded-full bg-orange-400"></span>
                         Physical medal shipped
                     </span>
-                    <span class="text-stone-600">·</span>
+                    <span class="text-neutral-600">·</span>
                     <span class="inline-flex items-center gap-2">
-                        <span class="h-1.5 w-1.5 rounded-full bg-amber-400"></span>
+                        <span class="h-1.5 w-1.5 rounded-full bg-orange-400"></span>
                         Sticker on completion
                     </span>
-                    <span class="text-stone-600">·</span>
+                    <span class="text-neutral-600">·</span>
                     <span class="inline-flex items-center gap-2">
-                        <span class="h-1.5 w-1.5 rounded-full bg-amber-400"></span>
+                        <span class="h-1.5 w-1.5 rounded-full bg-orange-400"></span>
                         Global shipping
                     </span>
                 </div>

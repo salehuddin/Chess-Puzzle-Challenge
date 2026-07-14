@@ -23,15 +23,15 @@
                         Winter 2026 Series — Now Live
                     </div>
 
-                    <h1 class="font-display text-5xl lg:text-6xl font-black text-stone-900 leading-tight mb-6">
+                    <h1 class="font-display text-5xl lg:text-6xl font-black text-neutral-900 leading-tight mb-6">
                         Solve Puzzles.<br>
                         <span class="text-gradient-green">Earn Your</span><br>
                         <span class="text-gradient-gold">Physical Medal.</span>
                     </h1>
 
-                    <p class="text-xl text-stone-600 leading-relaxed mb-8 max-w-lg">
+                    <p class="text-xl text-neutral-600 leading-relaxed mb-8 max-w-lg">
                         Work through 100 curated chess puzzles from the Lichess database.
-                        Complete the series and we'll ship you a <strong class="text-stone-900">custom-designed physical medal</strong> — plus a digital sticker for your Hall of Fame.
+                        Complete the series and we'll ship you a <strong class="text-neutral-900">custom-designed physical medal</strong> — plus a digital sticker for your Hall of Fame.
                     </p>
 
                     <div class="flex flex-col sm:flex-row gap-4 mb-10">
@@ -48,13 +48,13 @@
                     <div class="flex items-center gap-6">
                         <div class="flex -space-x-2">
                             @foreach(['🟢','🔵','🟠','🟣','🔴'] as $color)
-                                <div class="w-8 h-8 rounded-full border-2 border-white bg-base-200 flex items-center justify-center text-xs font-bold text-stone-600 shadow-sm">
+                                <div class="w-8 h-8 rounded-full border-2 border-white bg-base-200 flex items-center justify-center text-xs font-bold text-neutral-600 shadow-sm">
                                     {{ chr(65 + $loop->index) }}
                                 </div>
                             @endforeach
                         </div>
-                        <p class="text-sm text-stone-500">
-                            <span class="font-bold text-stone-900">1,200+</span> chess players have already joined
+                        <p class="text-sm text-neutral-500">
+                            <span class="font-bold text-neutral-900">1,200+</span> chess players have already joined
                         </p>
                     </div>
                 </div>
@@ -81,7 +81,7 @@
                                         <div class="aspect-square flex items-center justify-center text-lg select-none
                                             {{ $isLight ? 'bg-[#F0D9B5]' : 'bg-[#B58863]' }}">
                                             @if($piece)
-                                                <span class="{{ $row < 2 ? 'text-stone-800' : 'text-white drop-shadow' }}">{{ $piece }}</span>
+                                                <span class="{{ $row < 2 ? 'text-neutral-800' : 'text-white drop-shadow' }}">{{ $piece }}</span>
                                             @endif
                                         </div>
                                     @endfor
@@ -93,8 +93,8 @@
                         <div class="absolute -bottom-6 -left-8 bg-white rounded-2xl shadow-warm-lg px-5 py-3 flex items-center gap-3 achievement-glow animate-float">
                             <span class="text-3xl">🏅</span>
                             <div>
-                                <p class="text-xs text-stone-400 font-medium">Latest achievement</p>
-                                <p class="text-sm font-bold text-stone-900">Winter Beginner Medal</p>
+                                <p class="text-xs text-neutral-400 font-medium">Latest achievement</p>
+                                <p class="text-sm font-bold text-neutral-900">Winter Beginner Medal</p>
                             </div>
                         </div>
 
@@ -138,8 +138,8 @@
 
             <div class="text-center mb-16">
                 <span class="inline-block text-primary font-semibold text-sm uppercase tracking-widest mb-3">Simple Process</span>
-                <h2 class="font-display text-4xl lg:text-5xl font-black text-stone-900">How It Works</h2>
-                <p class="text-stone-500 mt-4 text-lg max-w-xl mx-auto">Three steps from sign-up to holding your medal in your hands.</p>
+                <h2 class="font-display text-4xl lg:text-5xl font-black text-neutral-900">How It Works</h2>
+                <p class="text-neutral-500 mt-4 text-lg max-w-xl mx-auto">Three steps from sign-up to holding your medal in your hands.</p>
             </div>
 
             <div class="grid grid-cols-1 md:grid-cols-3 gap-8 relative">
@@ -148,19 +148,19 @@
 
                 @foreach([
                     ['🎯', '01', 'Choose a Challenge', 'Browse our curated Puzzle Series. Each challenge has 100 Lichess-sourced puzzles filtered by difficulty and theme — from beginner forks to advanced endgames.', 'bg-primary/10 text-primary'],
-                    ['♟', '02', 'Solve 100 Puzzles', 'Play at your own pace directly in your browser. Your progress is saved automatically — close the tab and pick up exactly where you left off, puzzle by puzzle.', 'bg-accent/10 text-amber-700'],
+                    ['♟', '02', 'Solve 100 Puzzles', 'Play at your own pace directly in your browser. Your progress is saved automatically — close the tab and pick up exactly where you left off, puzzle by puzzle.', 'bg-accent/10 text-orange-700'],
                     ['🏅', '03', 'Receive Your Medal', 'The moment you finish all 100 puzzles, a digital sticker is instantly unlocked in your Hall of Fame. Your physical medal is then custom-made and shipped to your door.', 'bg-secondary/10 text-secondary'],
                 ] as [$icon, $step, $title, $desc, $iconBg])
-                    <div class="relative bg-white rounded-2xl shadow-warm p-8 border border-stone-100 hover:shadow-warm-lg hover:-translate-y-1 transition-all duration-300">
+                    <div class="relative bg-white rounded-2xl shadow-warm p-8 border border-neutral-100 hover:shadow-warm-lg hover:-translate-y-1 transition-all duration-300">
                         {{-- Step number --}}
-                        <div class="absolute -top-4 left-8 bg-white border border-stone-200 rounded-full w-8 h-8 flex items-center justify-center text-xs font-black text-stone-400 shadow-sm">
+                        <div class="absolute -top-4 left-8 bg-white border border-neutral-200 rounded-full w-8 h-8 flex items-center justify-center text-xs font-black text-neutral-400 shadow-sm">
                             {{ $step }}
                         </div>
                         <div class="w-14 h-14 rounded-2xl {{ $iconBg }} flex items-center justify-center text-2xl mb-5">
                             {{ $icon }}
                         </div>
-                        <h3 class="font-display text-xl font-bold text-stone-900 mb-3">{{ $title }}</h3>
-                        <p class="text-stone-500 text-sm leading-relaxed">{{ $desc }}</p>
+                        <h3 class="font-display text-xl font-bold text-neutral-900 mb-3">{{ $title }}</h3>
+                        <p class="text-neutral-500 text-sm leading-relaxed">{{ $desc }}</p>
                     </div>
                 @endforeach
             </div>
@@ -176,7 +176,7 @@
             <div class="flex flex-col md:flex-row md:items-end justify-between mb-12 gap-4">
                 <div>
                     <span class="inline-block text-primary font-semibold text-sm uppercase tracking-widest mb-3">Winter 2026 Series</span>
-                    <h2 class="font-display text-4xl lg:text-5xl font-black text-stone-900">Current Challenges</h2>
+                    <h2 class="font-display text-4xl lg:text-5xl font-black text-neutral-900">Current Challenges</h2>
                 </div>
                 <a href="{{ url('/challenges') }}" class="btn btn-outline btn-primary shrink-0">
                     View All Challenges →
@@ -194,7 +194,7 @@
                         };
                         $rules = $challenge->rules ?? [];
                     @endphp
-                    <div class="bg-white rounded-2xl shadow-warm overflow-hidden border border-stone-100 hover:shadow-warm-lg hover:-translate-y-1 transition-all duration-300 flex flex-col">
+                    <div class="bg-white rounded-2xl shadow-warm overflow-hidden border border-neutral-100 hover:shadow-warm-lg hover:-translate-y-1 transition-all duration-300 flex flex-col">
                         {{-- Card header with chess pattern --}}
                         <div class="bg-chess-pattern h-24 relative">
                             <div class="absolute inset-0 bg-gradient-to-b from-transparent to-white/80"></div>
@@ -206,40 +206,40 @@
                         </div>
 
                         <div class="p-6 flex flex-col flex-1">
-                            <h3 class="font-display text-xl font-bold text-stone-900 mb-2 leading-snug">
+                            <h3 class="font-display text-xl font-bold text-neutral-900 mb-2 leading-snug">
                                 {{ $challenge->name }}
                             </h3>
-                            <p class="text-stone-500 text-sm leading-relaxed mb-4 line-clamp-2 flex-1">
+                            <p class="text-neutral-500 text-sm leading-relaxed mb-4 line-clamp-2 flex-1">
                                 {{ $challenge->description }}
                             </p>
 
                             {{-- Details --}}
                             <div class="grid grid-cols-2 gap-3 mb-5 text-sm">
-                                <div class="flex items-center gap-2 text-stone-600">
+                                <div class="flex items-center gap-2 text-neutral-600">
                                     <svg class="w-4 h-4 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/></svg>
                                     <span><strong>{{ $challenge->puzzles_count ?? $challenge->puzzle_count }}</strong> puzzles</span>
                                 </div>
-                                <div class="flex items-center gap-2 text-stone-600">
+                                <div class="flex items-center gap-2 text-neutral-600">
                                     <svg class="w-4 h-4 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg>
                                     <span>{{ ($rules['order'] ?? null) === 'sequential' ? 'Sequential' : 'Any order' }}</span>
                                 </div>
-                                <div class="flex items-center gap-2 text-stone-600">
+                                <div class="flex items-center gap-2 text-neutral-600">
                                     <span>🏅</span>
                                     <span>Physical medal</span>
                                 </div>
-                                <div class="flex items-center gap-2 text-stone-600">
+                                <div class="flex items-center gap-2 text-neutral-600">
                                     <span>✦</span>
                                     <span>Digital sticker</span>
                                 </div>
                             </div>
 
                             {{-- Pricing --}}
-                            <div class="flex items-center justify-between mb-5 pt-4 border-t border-stone-100">
+                            <div class="flex items-center justify-between mb-5 pt-4 border-t border-neutral-100">
                                 <div>
-                                    <p class="text-2xl font-black text-stone-900">MYR {{ number_format($challenge->price_myr, 2) }}</p>
-                                    <p class="text-xs text-stone-400">or USD {{ number_format($challenge->price_usd, 2) }}</p>
+                                    <p class="text-2xl font-black text-neutral-900">MYR {{ number_format($challenge->price_myr, 2) }}</p>
+                                    <p class="text-xs text-neutral-400">or USD {{ number_format($challenge->price_usd, 2) }}</p>
                                 </div>
-                                <span class="badge badge-outline badge-sm text-stone-400">one-time</span>
+                                <span class="badge badge-outline badge-sm text-neutral-400">one-time</span>
                             </div>
 
                             <a href="{{ url('/challenges/'.$challenge->slug) }}" id="btn-challenge-{{ $challenge->id }}" class="btn btn-primary w-full gap-2">
@@ -248,7 +248,7 @@
                         </div>
                     </div>
                 @empty
-                    <div class="col-span-3 text-center py-16 text-stone-400">
+                    <div class="col-span-3 text-center py-16 text-neutral-400">
                         <p class="text-4xl mb-4">♟</p>
                         <p class="text-lg font-medium">No challenges yet — check back soon!</p>
                     </div>
@@ -265,8 +265,8 @@
 
             <div class="text-center mb-12">
                 <span class="inline-block text-accent font-semibold text-sm uppercase tracking-widest mb-3">Best Value</span>
-                <h2 class="font-display text-4xl lg:text-5xl font-black text-stone-900">Bundle & Save</h2>
-                <p class="text-stone-500 mt-4 text-lg max-w-xl mx-auto">
+                <h2 class="font-display text-4xl lg:text-5xl font-black text-neutral-900">Bundle & Save</h2>
+                <p class="text-neutral-500 mt-4 text-lg max-w-xl mx-auto">
                     Get multiple challenges in one purchase. Multiple medals. One great price.
                 </p>
             </div>
@@ -276,24 +276,24 @@
                     <div class="relative bg-white rounded-2xl border-2 border-accent/30 shadow-warm overflow-hidden hover:shadow-warm-lg hover:-translate-y-1 transition-all duration-300">
 
                         {{-- Best value ribbon --}}
-                        <div class="absolute top-5 right-0 bg-accent text-stone-900 text-xs font-black px-4 py-1.5 rounded-l-full shadow-md">
+                        <div class="absolute top-5 right-0 bg-accent text-neutral-900 text-xs font-black px-4 py-1.5 rounded-l-full shadow-md">
                             🎉 SAVE MORE
                         </div>
 
                         <div class="p-8">
                             <div class="flex items-center gap-3 mb-4">
                                 <div class="w-12 h-12 rounded-xl bg-accent/10 flex items-center justify-center text-2xl">🎁</div>
-                                <h3 class="font-display text-2xl font-bold text-stone-900">{{ $bundle->name }}</h3>
+                                <h3 class="font-display text-2xl font-bold text-neutral-900">{{ $bundle->name }}</h3>
                             </div>
 
-                            <p class="text-stone-500 text-sm leading-relaxed mb-6">{{ $bundle->description }}</p>
+                            <p class="text-neutral-500 text-sm leading-relaxed mb-6">{{ $bundle->description }}</p>
 
                             {{-- Included challenges --}}
                             @if($bundle->challenges->isNotEmpty())
                                 <div class="space-y-2 mb-6">
-                                    <p class="text-xs font-semibold text-stone-400 uppercase tracking-wider mb-2">Includes</p>
+                                    <p class="text-xs font-semibold text-neutral-400 uppercase tracking-wider mb-2">Includes</p>
                                     @foreach($bundle->challenges as $c)
-                                        <div class="flex items-center gap-2 text-sm text-stone-700">
+                                        <div class="flex items-center gap-2 text-sm text-neutral-700">
                                             <svg class="w-4 h-4 text-primary shrink-0" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/></svg>
                                             {{ $c->name }}
                                         </div>
@@ -301,10 +301,10 @@
                                 </div>
                             @endif
 
-                            <div class="flex items-center justify-between pt-4 border-t border-stone-100">
+                            <div class="flex items-center justify-between pt-4 border-t border-neutral-100">
                                 <div>
-                                    <p class="text-3xl font-black text-stone-900">MYR {{ number_format($bundle->price_myr, 2) }}</p>
-                                    <p class="text-xs text-stone-400">or USD {{ number_format($bundle->price_usd, 2) }}</p>
+                                    <p class="text-3xl font-black text-neutral-900">MYR {{ number_format($bundle->price_myr, 2) }}</p>
+                                    <p class="text-xs text-neutral-400">or USD {{ number_format($bundle->price_usd, 2) }}</p>
                                 </div>
                                 <a href="{{ route('bundles.enroll', $bundle) }}" id="btn-bundle-{{ $bundle->id }}" class="btn btn-accent gap-2">
                                     Get Bundle →
@@ -313,7 +313,7 @@
                         </div>
                     </div>
                 @empty
-                    <div class="col-span-2 text-center py-12 text-stone-400">
+                    <div class="col-span-2 text-center py-12 text-neutral-400">
                         <p>No bundles available yet.</p>
                     </div>
                 @endforelse
@@ -332,10 +332,10 @@
                     {{-- Left: Copy --}}
                     <div class="p-10 lg:p-14 flex flex-col justify-center">
                         <span class="inline-block text-accent font-semibold text-sm uppercase tracking-widest mb-3">Your Collection</span>
-                        <h2 class="font-display text-3xl lg:text-4xl font-black text-stone-900 mb-4">
+                        <h2 class="font-display text-3xl lg:text-4xl font-black text-neutral-900 mb-4">
                             Build Your<br>Hall of Fame
                         </h2>
-                        <p class="text-stone-500 leading-relaxed mb-8">
+                        <p class="text-neutral-500 leading-relaxed mb-8">
                             Every completed challenge earns you a unique digital sticker — displayed in your personal Hall of Fame. Collect them all, show them off, and track your chess journey.
                         </p>
                         <div class="flex flex-col sm:flex-row gap-3">

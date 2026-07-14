@@ -44,12 +44,12 @@
     @if($activeTab === 'challenges')
         <div wire:key="tab-challenges">
             @if($pendingMedalRequests->isNotEmpty())
-                <div class="mb-8 rounded-2xl border border-amber-300 bg-gradient-to-r from-amber-50 to-yellow-50 p-6 shadow-sm">
+                <div class="mb-8 rounded-2xl border border-orange-300 bg-gradient-to-r from-orange-50 to-yellow-50 p-6 shadow-sm">
                     <div class="flex flex-col sm:flex-row items-start sm:items-center gap-4">
                         <div class="text-4xl">🏅</div>
                         <div class="flex-1">
-                            <h2 class="font-display text-xl font-bold text-amber-900">Claim your physical medal{{ $pendingMedalRequests->count() > 1 ? 's' : '' }}!</h2>
-                            <p class="text-sm text-amber-700 mt-1">
+                            <h2 class="font-display text-xl font-bold text-orange-900">Claim your physical medal{{ $pendingMedalRequests->count() > 1 ? 's' : '' }}!</h2>
+                            <p class="text-sm text-orange-700 mt-1">
                                 You've completed {{ $pendingMedalRequests->count() }} challenge{{ $pendingMedalRequests->count() > 1 ? 's' : '' }} but haven't requested your medal yet.
                                 Confirm your shipping address and we'll mail it to you.
                             </p>
@@ -77,15 +77,15 @@
 
             @if($pendingCards->isNotEmpty())
                 <h2 class="text-2xl font-bold font-serif text-gray-800 mb-6 flex items-center gap-2 mt-4">
-                    <span class="w-3 h-3 rounded-full bg-amber-500 animate-pulse"></span>
+                    <span class="w-3 h-3 rounded-full bg-orange-500 animate-pulse"></span>
                     Awaiting Payment
                 </h2>
 
                 <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-12">
                     @foreach($pendingCards as $card)
-                        <div class="card bg-amber-50 shadow-md border border-amber-100" wire:key="pending-{{ $card->id }}">
+                        <div class="card bg-orange-50 shadow-md border border-orange-100" wire:key="pending-{{ $card->id }}">
                             <div class="card-body">
-                                <h3 class="card-title text-xl font-serif text-amber-900">{{ $card->challenge->name }}</h3>
+                                <h3 class="card-title text-xl font-serif text-orange-900">{{ $card->challenge->name }}</h3>
                                 <p class="text-sm text-gray-600 mb-4">Enrollment created on {{ $card->created_at->format('M j, Y') }}</p>
                                 <div class="badge badge-warning badge-outline mb-4">Pending payment</div>
                                 <div class="card-actions justify-end mt-auto">
@@ -144,13 +144,13 @@
                 
                 <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                     @foreach($completedCards as $card)
-                        <div class="card bg-amber-50 shadow-md border border-amber-100 relative overflow-hidden" wire:key="completed-{{ $card->id }}">
+                        <div class="card bg-orange-50 shadow-md border border-orange-100 relative overflow-hidden" wire:key="completed-{{ $card->id }}">
                             <div class="absolute -right-10 -top-10 opacity-10">
                                 <svg width="150" height="150" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
                             </div>
                             
                             <div class="card-body z-10">
-                                <h3 class="card-title text-xl font-serif text-amber-900">{{ $card->challenge->name }}</h3>
+                                <h3 class="card-title text-xl font-serif text-orange-900">{{ $card->challenge->name }}</h3>
                                 
                                 <div class="mt-2 text-sm">
                                     <span class="inline-flex items-center px-2.5 py-0.5 rounded-full font-medium {{ $card->status === 'shipped' ? 'bg-blue-100 text-blue-800' : 'bg-purple-100 text-purple-800' }}">
@@ -184,7 +184,7 @@
     @if($activeTab === 'collection')
         <div wire:key="tab-collection">
             <div class="text-center mb-10">
-                <h2 class="text-3xl font-extrabold font-serif text-amber-600 mb-3">🏆 Sticker Collection</h2>
+                <h2 class="text-3xl font-extrabold font-serif text-orange-600 mb-3">🏆 Sticker Collection</h2>
                 <p class="text-gray-600 max-w-2xl mx-auto">Your collection of earned stickers. Complete challenges to unlock the missing silhouettes!</p>
                 <p class="text-sm text-gray-400 mt-2">{{ count($earnedStickerChallengeIds) }} / {{ $collectionChallenges->count() }} unlocked</p>
             </div>
@@ -203,14 +203,14 @@
                         
                         <div class="flex flex-col items-center justify-center p-6 bg-white rounded-3xl shadow-lg border border-gray-100 transition-all duration-500 hover:-translate-y-2 hover:shadow-2xl relative overflow-hidden group" wire:key="sticker-{{ $challenge->id }}">
                             @if($isEarned)
-                                <div class="absolute inset-0 bg-amber-50 opacity-20 pointer-events-none"></div>
-                                <div class="absolute -top-4 -right-4 w-16 h-16 bg-amber-400 rounded-full opacity-10 filter blur-xl"></div>
+                                <div class="absolute inset-0 bg-orange-50 opacity-20 pointer-events-none"></div>
+                                <div class="absolute -top-4 -right-4 w-16 h-16 bg-orange-400 rounded-full opacity-10 filter blur-xl"></div>
                                 
                                 <div class="relative w-32 h-32 mb-4 drop-shadow-[0_10px_15px_rgba(217,119,6,0.3)] scale-110 transition-transform duration-500 group-hover:scale-125 group-hover:rotate-6">
                                     @if($challenge->sticker_artwork)
                                         <img src="{{ Storage::url($challenge->sticker_artwork) }}" alt="{{ $challenge->name }} Sticker" class="w-full h-full object-contain" />
                                     @else
-                                        <div class="w-full h-full rounded-full bg-gradient-to-br from-amber-300 to-amber-600 flex items-center justify-center text-white p-4 text-center text-sm font-bold shadow-inner">
+                                        <div class="w-full h-full rounded-full bg-gradient-to-br from-orange-300 to-orange-600 flex items-center justify-center text-white p-4 text-center text-sm font-bold shadow-inner">
                                             {{ $challenge->name }}
                                         </div>
                                     @endif
@@ -219,7 +219,7 @@
                                 </div>
                                 
                                 <h3 class="text-center font-bold text-gray-800 text-lg font-serif z-10">{{ $challenge->name }}</h3>
-                                <p class="text-amber-600 text-xs font-bold uppercase tracking-wider mt-1 z-10">Unlocked</p>
+                                <p class="text-orange-600 text-xs font-bold uppercase tracking-wider mt-1 z-10">Unlocked</p>
                             @else
                                 <div class="relative w-32 h-32 mb-4 opacity-30 grayscale saturate-0 contrast-200 transition-all duration-300 group-hover:opacity-60">
                                     @if($challenge->sticker_artwork)

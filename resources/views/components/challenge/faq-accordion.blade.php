@@ -22,7 +22,7 @@
 @if($items !== [])
     <div
         x-data="{ open: {{ (int) $defaultOpen }} }"
-        class="divide-y divide-stone-200 overflow-hidden rounded-2xl border border-stone-200 bg-white shadow-warm"
+        class="divide-y divide-neutral-200 overflow-hidden rounded-2xl border border-neutral-200 bg-white shadow-warm"
     >
         @foreach($items as $i => $item)
             <div class="group" wire:key="faq-{{ md5($item['question']) }}">
@@ -30,13 +30,13 @@
                     type="button"
                     x-on:click="open === {{ $i }} ? open = -1 : open = {{ $i }}"
                     :aria-expanded="open === {{ $i }}"
-                    class="flex w-full items-center justify-between gap-4 px-5 py-5 text-left transition hover:bg-amber-50/50 sm:px-7"
+                    class="flex w-full items-center justify-between gap-4 px-5 py-5 text-left transition hover:bg-orange-50/50 sm:px-7"
                 >
-                    <span class="font-display text-base font-bold text-stone-900 sm:text-lg">
+                    <span class="font-display text-base font-bold text-neutral-900 sm:text-lg">
                         {{ $item['question'] }}
                     </span>
                     <span
-                        :class="open === {{ $i }} ? 'rotate-180 bg-amber-100 text-amber-700' : 'rotate-0 bg-base-200 text-stone-500'"
+                        :class="open === {{ $i }} ? 'rotate-180 bg-orange-100 text-orange-700' : 'rotate-0 bg-base-200 text-neutral-500'"
                         class="grid h-9 w-9 shrink-0 place-items-center rounded-full transition-all duration-300"
                         aria-hidden="true"
                     >
@@ -56,7 +56,7 @@
                     x-transition:leave-end="opacity-0 -translate-y-1"
                     class="px-5 pb-5 sm:px-7"
                 >
-                    <p class="prose prose-stone max-w-none text-sm leading-relaxed text-stone-600 sm:text-base">
+                    <p class="prose prose-neutral max-w-none text-sm leading-relaxed text-neutral-600 sm:text-base">
                         {{ $item['answer'] }}
                     </p>
                 </div>

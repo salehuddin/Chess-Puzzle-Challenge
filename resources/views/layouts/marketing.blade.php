@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="{{ str_replace('_', '-', app()->getLocale()) }}" data-theme="chess">
+<html lang="{{ str_replace('_', '-', app()->getLocale()) }}" data-theme="brand">
     <head>
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -21,37 +21,37 @@
             x-data="{ open: false, scrolled: false }"
             @scroll.window="scrolled = window.scrollY > 10"
             :class="scrolled ? 'shadow-warm-lg bg-white/95 backdrop-blur-sm' : 'bg-white'"
-            class="sticky top-0 z-50 border-b border-amber-100 transition-all duration-300"
+            class="sticky top-0 z-50 border-b border-neutral-200 transition-all duration-300"
         >
             <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                 <div class="flex items-center justify-between h-16">
 
-                    {{-- Logo --}}
+                    {{-- Logo — wordmark uses brand chartreuse on "Challenge" --}}
                     <a href="{{ url('/') }}" class="flex items-center gap-2.5 group">
-                        <span class="text-3xl group-hover:animate-float inline-block transition-all">♟</span>
-                        <span class="font-display font-bold text-lg text-stone-900 leading-tight">
+                        <span class="text-3xl text-brand group-hover:animate-float inline-block transition-all">♟</span>
+                        <span class="font-display font-bold text-lg text-neutral-900 leading-tight">
                             Chess Puzzle
-                            <span class="text-primary">Challenge</span>
+                            <span class="text-brand">Challenge</span>
                         </span>
                     </a>
 
                     {{-- Desktop Nav Links --}}
                     <nav class="hidden md:flex items-center gap-8">
                         <a href="{{ url('/challenges') }}"
-                           class="text-stone-600 hover:text-primary font-medium text-sm transition-colors duration-150
+                           class="text-neutral-600 hover:text-primary font-medium text-sm transition-colors duration-150
                                   {{ request()->is('challenges*') ? 'text-primary font-semibold' : '' }}">
                             Challenges
                         </a>
                         <a href="{{ url('/challenges#bundles') }}"
-                           class="text-stone-600 hover:text-primary font-medium text-sm transition-colors duration-150">
+                           class="text-neutral-600 hover:text-primary font-medium text-sm transition-colors duration-150">
                             Bundles
                         </a>
                         <a href="{{ url('/hall-of-fame') }}"
-                           class="text-stone-600 hover:text-primary font-medium text-sm transition-colors duration-150">
+                           class="text-neutral-600 hover:text-primary font-medium text-sm transition-colors duration-150">
                             🏆 Hall of Fame
                         </a>
                         <a href="{{ route('docs.index') }}"
-                           class="text-stone-600 hover:text-primary font-medium text-sm transition-colors duration-150">
+                           class="text-neutral-600 hover:text-primary font-medium text-sm transition-colors duration-150">
                             Docs
                         </a>
                     </nav>
@@ -63,7 +63,7 @@
                                 My Dashboard <span>→</span>
                             </a>
                         @else
-                            <a href="{{ route('login') }}" class="text-stone-600 hover:text-primary font-medium text-sm transition-colors">
+                            <a href="{{ route('login') }}" class="text-neutral-600 hover:text-primary font-medium text-sm transition-colors">
                                 Login
                             </a>
                             <a href="{{ route('register') }}" class="btn btn-primary btn-sm">
@@ -98,13 +98,13 @@
                     x-transition:leave="transition ease-in duration-150"
                     x-transition:leave-start="opacity-100 translate-y-0"
                     x-transition:leave-end="opacity-0 -translate-y-2"
-                    class="md:hidden border-t border-amber-100 py-4 space-y-1"
+                    class="md:hidden border-t border-neutral-200 py-4 space-y-1"
                 >
-                    <a href="{{ url('/challenges') }}" class="block px-3 py-2 rounded-lg text-stone-700 hover:bg-amber-50 hover:text-primary font-medium text-sm transition-colors">Challenges</a>
-                    <a href="{{ url('/challenges#bundles') }}" class="block px-3 py-2 rounded-lg text-stone-700 hover:bg-amber-50 hover:text-primary font-medium text-sm transition-colors">Bundles</a>
-                    <a href="{{ url('/hall-of-fame') }}" class="block px-3 py-2 rounded-lg text-stone-700 hover:bg-amber-50 hover:text-primary font-medium text-sm transition-colors">🏆 Hall of Fame</a>
-                    <a href="{{ route('docs.index') }}" class="block px-3 py-2 rounded-lg text-stone-700 hover:bg-amber-50 hover:text-primary font-medium text-sm transition-colors">Docs</a>
-                    <div class="pt-3 border-t border-amber-100 flex flex-col gap-2">
+                    <a href="{{ url('/challenges') }}" class="block px-3 py-2 rounded-lg text-neutral-700 hover:bg-primary/10 hover:text-primary font-medium text-sm transition-colors">Challenges</a>
+                    <a href="{{ url('/challenges#bundles') }}" class="block px-3 py-2 rounded-lg text-neutral-700 hover:bg-primary/10 hover:text-primary font-medium text-sm transition-colors">Bundles</a>
+                    <a href="{{ url('/hall-of-fame') }}" class="block px-3 py-2 rounded-lg text-neutral-700 hover:bg-primary/10 hover:text-primary font-medium text-sm transition-colors">🏆 Hall of Fame</a>
+                    <a href="{{ route('docs.index') }}" class="block px-3 py-2 rounded-lg text-neutral-700 hover:bg-primary/10 hover:text-primary font-medium text-sm transition-colors">Docs</a>
+                    <div class="pt-3 border-t border-neutral-200 flex flex-col gap-2">
                         @auth
                             <a href="{{ route('dashboard') }}" class="btn btn-primary btn-sm w-full">My Dashboard →</a>
                         @else
@@ -129,8 +129,8 @@
                     {{-- Brand --}}
                     <div>
                         <div class="flex items-center gap-2.5 mb-3">
-                            <span class="text-4xl opacity-80">♟</span>
-                            <span class="font-display font-bold text-xl opacity-90">Chess Puzzle Challenge</span>
+                            <span class="text-4xl text-brand opacity-90">♟</span>
+                            <span class="font-display font-bold text-xl opacity-90">Chess Puzzle <span class="text-brand">Challenge</span></span>
                         </div>
                         <p class="text-sm opacity-50 leading-relaxed">
                             Solve 100 puzzles. Earn a custom-designed physical medal. Shipped to your door, anywhere in the world.

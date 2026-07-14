@@ -44,7 +44,7 @@
         x-init="start()"
         x-on:mouseenter="stop()"
         x-on:mouseleave="start()"
-        class="relative w-full overflow-hidden rounded-2xl bg-stone-900 shadow-warm-lg"
+        class="relative w-full overflow-hidden rounded-2xl bg-neutral-900 shadow-warm-lg"
     >
         <div class="{{ $aspect }} w-full">
             @foreach($images as $i => $src)
@@ -69,7 +69,7 @@
                 type="button"
                 x-on:click="prev()"
                 aria-label="Previous image"
-                class="absolute left-3 top-1/2 -translate-y-1/2 grid h-10 w-10 place-items-center rounded-full bg-stone-900/60 text-white backdrop-blur-sm transition hover:bg-stone-900/80"
+                class="absolute left-3 top-1/2 -translate-y-1/2 grid h-10 w-10 place-items-center rounded-full bg-neutral-900/60 text-white backdrop-blur-sm transition hover:bg-neutral-900/80"
             >
                 <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/>
@@ -79,7 +79,7 @@
                 type="button"
                 x-on:click="next()"
                 aria-label="Next image"
-                class="absolute right-3 top-1/2 -translate-y-1/2 grid h-10 w-10 place-items-center rounded-full bg-stone-900/60 text-white backdrop-blur-sm transition hover:bg-stone-900/80"
+                class="absolute right-3 top-1/2 -translate-y-1/2 grid h-10 w-10 place-items-center rounded-full bg-neutral-900/60 text-white backdrop-blur-sm transition hover:bg-neutral-900/80"
             >
                 <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
@@ -91,7 +91,7 @@
                     <button
                         type="button"
                         x-on:click="go({{ $i }})"
-                        :class="active === {{ $i }} ? 'bg-amber-400 w-6' : 'bg-white/60 hover:bg-white/90 w-2'"
+                        :class="active === {{ $i }} ? 'bg-orange-400 w-6' : 'bg-white/60 hover:bg-white/90 w-2'"
                         class="h-2 rounded-full transition-all"
                         aria-label="Go to image {{ $i + 1 }}"
                     ></button>

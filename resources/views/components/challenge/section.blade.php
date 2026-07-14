@@ -29,21 +29,21 @@
     $bgClass = match ($bg) {
         'base-2' => 'bg-base-200',
         'white'  => 'bg-white',
-        'dark'   => 'bg-stone-900 text-stone-100',
+        'dark'   => 'bg-neutral-900 text-neutral-100',
         'none'   => '',
         default  => 'bg-base-100',
     };
 
-    $eyebrowColor = $bg === 'dark' ? 'text-amber-300' : 'text-amber-700';
-    $headingColor = $bg === 'dark' ? 'text-white' : 'text-stone-900';
-    $subColor     = $bg === 'dark' ? 'text-stone-300' : 'text-stone-600';
+    $eyebrowColor = $bg === 'dark' ? 'text-orange-300' : 'text-orange-700';
+    $headingColor = $bg === 'dark' ? 'text-white' : 'text-neutral-900';
+    $subColor     = $bg === 'dark' ? 'text-neutral-300' : 'text-neutral-600';
 @endphp
 
 <section @if($id) id="{{ $id }}" @endif class="{{ $bgClass }} py-10 sm:py-12 lg:py-14">
     @if($contained)
         <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
             @if($eyebrow || $heading || $sub)
-                <div class="mb-8 max-w-3xl {{ $bg === 'dark' ? 'text-stone-100' : '' }}">
+                <div class="mb-8 max-w-3xl {{ $bg === 'dark' ? 'text-neutral-100' : '' }}">
                     @if($eyebrow)
                         <p class="text-xs font-semibold uppercase tracking-[0.2em] {{ $eyebrowColor }}">{{ $eyebrow }}</p>
                     @endif
@@ -62,7 +62,7 @@
         {{-- Full-bleed: still emit heading/eyebrow above the slot, but let body escape the container. --}}
         @if($eyebrow || $heading || $sub)
             <div class="mx-auto mb-8 max-w-7xl px-4 sm:px-6 lg:px-8">
-                <div class="max-w-3xl {{ $bg === 'dark' ? 'text-stone-100' : '' }}">
+                <div class="max-w-3xl {{ $bg === 'dark' ? 'text-neutral-100' : '' }}">
                     @if($eyebrow)
                         <p class="text-xs font-semibold uppercase tracking-[0.2em] {{ $eyebrowColor }}">{{ $eyebrow }}</p>
                     @endif

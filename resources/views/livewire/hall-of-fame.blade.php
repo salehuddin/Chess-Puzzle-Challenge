@@ -1,6 +1,6 @@
 <div class="max-w-7xl mx-auto py-12 px-4 sm:px-6 lg:px-8">
     <div class="text-center mb-12">
-        <h1 class="text-5xl font-extrabold font-serif text-amber-600 drop-shadow-sm mb-4">🏆 Hall of Fame</h1>
+        <h1 class="text-5xl font-extrabold font-serif text-orange-600 drop-shadow-sm mb-4">🏆 Hall of Fame</h1>
         <p class="text-xl text-gray-600 max-w-2xl mx-auto">Your collection of earned stickers and physical medals. Complete challenges to unlock the missing silhouettes!</p>
     </div>
 
@@ -14,15 +14,15 @@
                 
                 @if($isEarned)
                     <!-- Confetti background subtle -->
-                    <div class="absolute inset-0 bg-amber-50 opacity-20 pointer-events-none"></div>
-                    <div class="absolute -top-4 -right-4 w-16 h-16 bg-amber-400 rounded-full opacity-10 filter blur-xl"></div>
+                    <div class="absolute inset-0 bg-orange-50 opacity-20 pointer-events-none"></div>
+                    <div class="absolute -top-4 -right-4 w-16 h-16 bg-orange-400 rounded-full opacity-10 filter blur-xl"></div>
                     
                     <div class="relative w-32 h-32 mb-4 drop-shadow-[0_10px_15px_rgba(217,119,6,0.3)] scale-110 transition-transform duration-500 group-hover:scale-125 group-hover:rotate-6">
                         @if($challenge->sticker_artwork)
                             <img src="{{ Storage::url($challenge->sticker_artwork) }}" alt="{{ $challenge->name }} Sticker" class="w-full h-full object-contain" />
                         @else
                             <!-- Placeholder if no image -->
-                            <div class="w-full h-full rounded-full bg-gradient-to-br from-amber-300 to-amber-600 flex items-center justify-center text-white p-4 text-center text-sm font-bold shadow-inner">
+                            <div class="w-full h-full rounded-full bg-gradient-to-br from-orange-300 to-orange-600 flex items-center justify-center text-white p-4 text-center text-sm font-bold shadow-inner">
                                 {{ $challenge->name }}
                             </div>
                         @endif
@@ -32,7 +32,7 @@
                     </div>
                     
                     <h3 class="text-center font-bold text-gray-800 text-lg font-serif z-10">{{ $challenge->name }}</h3>
-                    <p class="text-amber-600 text-xs font-bold uppercase tracking-wider mt-1 z-10">Unlocked</p>
+                    <p class="text-orange-600 text-xs font-bold uppercase tracking-wider mt-1 z-10">Unlocked</p>
                 @else
                     <div class="relative w-32 h-32 mb-4 opacity-30 grayscale saturate-0 contrast-200 transition-all duration-300 group-hover:opacity-60">
                         @if($challenge->sticker_artwork)
