@@ -6,7 +6,12 @@
         eyebrow (string|null) — small uppercase label above the heading.
         heading (string|null) — main section heading (rendered as h2).
         sub     (string|null) — optional lead paragraph below the heading.
-        bg      (string) — background tone: 'base' (default), 'base-2', 'white', 'dark', 'none'.
+        bg      (string) — background tone:
+                  'base'   = warm-ivory (default — used sparingly, avoid)
+                  'white'  = pure white (#FEFEFE)
+                  'dark'   = onyx black (#111111) with white text
+                  'brand'  = chartreuse (#B7FF00) with dark text — use once per page
+                  'none'   = no background, transparent
         id      (string|null) — DOM id (used for anchor links / aria-labelledby).
         contained (bool) — when true (default), wraps body in the standard max-width container.
                             Pass false to render the slot flush (e.g. full-bleed media).
@@ -27,28 +32,42 @@
 
 @php
     $bgClass = match ($bg) {
-        'base-2' => 'bg-base-200',
-        'white'  => 'bg-white',
-        'dark'   => 'bg-neutral-900 text-neutral-100',
+        'white'  => 'bg-white text-neutral-900',
+        'dark'   => 'bg-neutral-900 text-white',
+        'brand'  => 'bg-brand text-neutral-900',
         'none'   => '',
-        default  => 'bg-base-100',
+        default  => 'bg-base-100 text-neutral-900',
     };
 
-    $eyebrowColor = $bg === 'dark' ? 'text-orange-300' : 'text-orange-700';
-    $headingColor = $bg === 'dark' ? 'text-white' : 'text-neutral-900';
-    $subColor     = $bg === 'dark' ? 'text-neutral-300' : 'text-neutral-600';
+    $eyebrowColor = match ($bg) {
+        'dark'   => 'text-brand',
+        'brand'  => 'text-neutral-700',
+        default  => 'text-neutral-500',
+    };
+
+    $headingColor = match ($bg) {
+        'dark'   => 'text-white',
+        'brand'  => 'text-neutral-900',
+        default  => 'text-neutral-900',
+    };
+
+    $subColor = match ($bg) {
+        'dark'   => 'text-neutral-300',
+        'brand'  => 'text-neutral-700',
+        default  => 'text-neutral-500',
+    };
 @endphp
 
-<section @if($id) id="{{ $id }}" @endif class="{{ $bgClass }} py-10 sm:py-12 lg:py-14">
+<section @if($id) id="{{ $id }}" @endif class="{{ $bgClass }} py-12 sm:py-14 lg:py-16">
     @if($contained)
         <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
             @if($eyebrow || $heading || $sub)
-                <div class="mb-8 max-w-3xl {{ $bg === 'dark' ? 'text-neutral-100' : '' }}">
+                <div class="mb-10 max-w-3xl">
                     @if($eyebrow)
-                        <p class="text-xs font-semibold uppercase tracking-[0.2em] {{ $eyebrowColor }}">{{ $eyebrow }}</p>
+                        <p class="text-xs font-bold uppercase tracking-[0.2em] {{ $eyebrowColor }}">{{ $eyebrow }}</p>
                     @endif
                     @if($heading)
-                        <h2 class="mt-2 font-display text-3xl font-black sm:text-4xl {{ $headingColor }}">{{ $heading }}</h2>
+                        <h2 class="mt-2 font-display text-3xl font-black sm:text-4xl lg:text-5xl {{ $headingColor }}">{{ $heading }}</h2>
                     @endif
                     @if($sub)
                         <p class="mt-3 text-base leading-relaxed sm:text-lg {{ $subColor }}">{{ $sub }}</p>
@@ -61,13 +80,13 @@
     @else
         {{-- Full-bleed: still emit heading/eyebrow above the slot, but let body escape the container. --}}
         @if($eyebrow || $heading || $sub)
-            <div class="mx-auto mb-8 max-w-7xl px-4 sm:px-6 lg:px-8">
-                <div class="max-w-3xl {{ $bg === 'dark' ? 'text-neutral-100' : '' }}">
+            <div class="mx-auto mb-10 max-w-7xl px-4 sm:px-6 lg:px-8">
+                <div class="max-w-3xl">
                     @if($eyebrow)
-                        <p class="text-xs font-semibold uppercase tracking-[0.2em] {{ $eyebrowColor }}">{{ $eyebrow }}</p>
+                        <p class="text-xs font-bold uppercase tracking-[0.2em] {{ $eyebrowColor }}">{{ $eyebrow }}</p>
                     @endif
                     @if($heading)
-                        <h2 class="mt-2 font-display text-3xl font-black sm:text-4xl {{ $headingColor }}">{{ $heading }}</h2>
+                        <h2 class="mt-2 font-display text-3xl font-black sm:text-4xl lg:text-5xl {{ $headingColor }}">{{ $heading }}</h2>
                     @endif
                     @if($sub)
                         <p class="mt-3 text-base leading-relaxed sm:text-lg {{ $subColor }}">{{ $sub }}</p>

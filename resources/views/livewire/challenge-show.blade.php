@@ -1,9 +1,6 @@
 <x-slot name="title">{{ $challenge->name }} — Chess Puzzle Challenge</x-slot>
 
 @php
-    use Illuminate\Support\Facades\Route;
-    use Illuminate\Support\Str;
-
     $levelData = match (true) {
         str_contains(strtolower($challenge->name), 'beginner')     => ['🌱', 'Beginner', 'badge-success'],
         str_contains(strtolower($challenge->name), 'intermediate') => ['⚡', 'Intermediate', 'badge-warning'],
@@ -21,8 +18,7 @@
     $hasTerms      = trim(strip_tags($termsHtml)) !== '';
     $faqItems      = is_array($challenge->faq) ? $challenge->faq : [];
 
-    // Placeholder FAQ shown when the challenge has no FAQ authored yet,
-    // so the layout is visible during the design phase.
+    // Placeholder FAQ shown when the challenge has no FAQ authored yet.
     $placeholderFaqs = [
         ['question' => 'How do I start the challenge?', 'answer' => 'Once you enroll, your puzzles unlock immediately. Open the first puzzle from your dashboard and start solving.'],
         ['question' => 'How long do I have to finish?', 'answer' => 'There is no time limit. Take a week or take a year — your enrollment stays open until you complete every puzzle.'],
@@ -45,14 +41,12 @@
     $isGuest = ! auth()->check();
     $isAdmin = auth()->user()?->isAdmin() ?? false;
 
-    // Compose the hero media carousel: poster + medal artwork + image gallery.
     $heroMedia = array_values(array_filter([
         $posterImageUrl,
         $medalArtworkUrl,
         ...$imageGallery,
     ]));
 
-    // Status-aware sticky-CTA label / href.
     $status     = $userEnrollment['status'] ?? null;
     $stickyCtaLabel = match (true) {
         $status === 'active'    => 'Continue Playing',
@@ -97,8 +91,8 @@
     };
 @endphp
 
-<div class="bg-base-100">
-    {{-- 1. Hero ----------------------------------------------------------- --}}
+<div class="bg-white">
+    {{-- 1. Hero (black) --------------------------------------------------- --}}
     <x-challenge.hero
         :name="$challenge->name"
         :description="$description"
@@ -110,7 +104,7 @@
         :mediaImages="$heroMedia"
     />
 
-    {{-- 2. Stats trio ----------------------------------------------------- --}}
+    {{-- 2. Stats trio (white) --------------------------------------------- --}}
     <x-challenge.section eyebrow="At a glance" :bg="'white'">
         <x-challenge.stat-trio
             :puzzleTotal="$puzzleTotal"
@@ -121,14 +115,14 @@
         />
     </x-challenge.section>
 
-    {{-- 3. Journey narrative (Editor.js content) -------------------------- --}}
+    {{-- 3. Journey narrative (white) -------------------------------------- --}}
     @if($contentHtml !== '' || $hasDescription)
         <x-challenge.section
             id="journey"
             eyebrow="The journey"
             heading="What this challenge is about"
             sub="Step-by-step: each puzzle is a checkpoint on your way to the medal."
-            :bg="'base-2'"
+            :bg="'white'"
             :contained="false"
         >
             <div class="mx-auto max-w-3xl px-4 sm:px-6 lg:px-8">
@@ -145,7 +139,7 @@
         </x-challenge.section>
     @endif
 
-    {{-- 4. Media gallery + Videos (combined) ----------------------------- --}}
+    {{-- 4. Media gallery + Videos (white) --------------------------------- --}}
     @if($imageGallery !== [] || $videos !== [])
         <x-challenge.section
             id="gallery"
@@ -163,14 +157,14 @@
         </x-challenge.section>
     @endif
 
-    {{-- 5. Medal showcase ------------------------------------------------- --}}
+    {{-- 5. Medal showcase (BLACK — the visual centerpiece) ---------------- --}}
     @if($medalArtworkUrl || $medalImages !== [])
         <x-challenge.section
             id="medal"
             eyebrow="The prize"
             heading="The finisher's medal"
             sub="A physical medal, designed for this challenge and shipped to you when you finish."
-            :bg="'base-2'"
+            :bg="'dark'"
         >
             <x-challenge.medal-showcase
                 :name="$challenge->name"
@@ -180,7 +174,7 @@
         </x-challenge.section>
     @endif
 
-    {{-- 6. Benefit grid (static placeholder copy) ------------------------ --}}
+    {{-- 6. Benefit grid (white) ------------------------------------------- --}}
     <x-challenge.section
         id="benefits"
         eyebrow="Plus all this"
@@ -190,13 +184,13 @@
         <x-challenge.benefit-grid />
     </x-challenge.section>
 
-    {{-- 7. Pricing / enrollment card ------------------------------------- --}}
+    {{-- 7. Pricing / enrollment (CHARTREUSE — the brand moment) ---------- --}}
     <x-challenge.section
         id="enroll"
         eyebrow="Enroll"
         :heading="$userEnrollment ? 'Your enrollment' : 'Join this challenge'"
         sub="One-time payment. Lifetime access to the puzzles. We ship the medal when you finish."
-        :bg="'base-2'"
+        :bg="'brand'"
     >
         <x-challenge.pricing-card
             :enrollUrl="$enrollUrl"
@@ -210,35 +204,38 @@
             :userEnrollment="$userEnrollment"
             :isGuest="$isGuest"
             :isAdmin="$isAdmin"
+            variant="brand"
         />
     </x-challenge.section>
 
-    {{-- 8. FAQ accordion (placeholder shown when challenge has no FAQ) ----- --}}
-    <x-challenge.section
-        id="faq"
-        eyebrow="FAQ"
-        heading="Frequently asked questions"
-        :bg="'white'"
-    >
-        <x-challenge.faq-accordion :items="$faqItems !== [] ? $faqItems : $placeholderFaqs" />
-    </x-challenge.section>
+    {{-- 8. FAQ accordion (white) ----------------------------------------- --}}
+    @if(true)
+        <x-challenge.section
+            id="faq"
+            eyebrow="FAQ"
+            heading="Frequently asked questions"
+            :bg="'white'"
+        >
+            <x-challenge.faq-accordion :items="$faqItems !== [] ? $faqItems : $placeholderFaqs" />
+        </x-challenge.section>
+    @endif
 
-    {{-- 11. Terms & Conditions ------------------------------------------- --}}
+    {{-- 9. Terms & Conditions (white) ------------------------------------ --}}
     @if($hasTerms)
         <x-challenge.section
             id="terms"
             eyebrow="Fine print"
             heading="Terms & conditions"
-            :bg="'base-2'"
+            :bg="'white'"
         >
-            <details class="group overflow-hidden rounded-2xl border border-neutral-200 bg-white shadow-warm">
+            <details class="group overflow-hidden rounded-2xl bg-white ring-1 ring-neutral-900/10 shadow-warm">
                 <summary class="flex cursor-pointer list-none items-center justify-between gap-3 px-6 py-5 text-sm font-semibold text-neutral-700">
                     <span>Tap to read the full terms for this challenge</span>
                     <svg class="h-5 w-5 shrink-0 text-neutral-400 transition-transform duration-200 group-open:rotate-180" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
                     </svg>
                 </summary>
-                <div class="border-t border-neutral-200 px-6 py-6">
+                <div class="border-t border-neutral-100 px-6 py-6">
                     <article class="prose prose-neutral max-w-none text-base leading-relaxed">
                         {!! $termsHtml !!}
                     </article>
@@ -258,6 +255,5 @@
         :showAfter="500"
     />
 
-    {{-- Spacer so footer isn't hidden by the sticky CTA on small screens --}}
     <div class="h-20 sm:h-24" aria-hidden="true"></div>
 </div>
