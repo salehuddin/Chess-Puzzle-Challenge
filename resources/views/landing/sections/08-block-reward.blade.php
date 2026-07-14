@@ -3,8 +3,8 @@
 {{-- Same structure as Block 1, but bg-neutral-900 / text-white          --}}
 {{-- ═══════════════════════════════════════════════════════════════ --}}
 <section class="bg-neutral-900 text-white py-20 lg:py-28 relative overflow-hidden">
-    <div class="absolute inset-0 bg-chess-pattern-brand-dark pointer-events-none" aria-hidden="true"></div>
-    <div class="absolute inset-0 bg-grid-pattern pointer-events-none" aria-hidden="true"></div>
+    <div class="absolute inset-0 bg-chess-pattern-brand-dark-lg pointer-events-none" aria-hidden="true"></div>
+    <div class="absolute inset-0 bg-fade-edges-dark pointer-events-none" aria-hidden="true"></div>
     <div class="absolute top-0 right-0 w-96 h-96 bg-brand/5 blur-[100px] pointer-events-none" aria-hidden="true"></div>
     <div class="absolute bottom-0 left-0 w-96 h-96 bg-brand/5 blur-[100px] pointer-events-none" aria-hidden="true"></div>
 

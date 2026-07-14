@@ -104,13 +104,47 @@
     }
 
     /* Chess checkerboard pattern — subtle dark squares for light backgrounds */
+    /* SM variant — 24px squares (tight, for accent areas) */
+    .bg-chess-pattern-brand-light-sm {
+        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24'%3E%3Cg fill='%23111111' fill-opacity='0.03'%3E%3Crect width='12' height='12' x='0' y='0'/%3E%3Crect width='12' height='12' x='12' y='12'/%3E%3C/g%3E%3C/svg%3E");
+    }
+
+    /* MD variant — 48px squares (default, balanced) */
     .bg-chess-pattern-brand-light {
-        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='48' height='48' viewBox='0 0 48 48'%3E%3Cg fill='%23111111' fill-opacity='0.04'%3E%3Crect width='24' height='24' x='0' y='0'/%3E%3Crect width='24' height='24' x='24' y='24'/%3E%3C/g%3E%3C/svg%3E");
+        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='48' height='48' viewBox='0 0 48 48'%3E%3Cg fill='%23111111' fill-opacity='0.035'%3E%3Crect width='24' height='24' x='0' y='0'/%3E%3Crect width='24' height='24' x='24' y='24'/%3E%3C/g%3E%3C/svg%3E");
+    }
+
+    /* LG variant — 96px squares (sparse, for large section backgrounds) */
+    .bg-chess-pattern-brand-light-lg {
+        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='96' height='96' viewBox='0 0 96 96'%3E%3Cg fill='%23111111' fill-opacity='0.03'%3E%3Crect width='48' height='48' x='0' y='0'/%3E%3Crect width='48' height='48' x='48' y='48'/%3E%3C/g%3E%3C/svg%3E");
     }
 
     /* Chess checkerboard pattern — subtle chartreuse squares for dark backgrounds */
+    /* SM variant — 24px squares (tight) */
+    .bg-chess-pattern-brand-dark-sm {
+        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24'%3E%3Cg fill='%23B7FF00' fill-opacity='0.03'%3E%3Crect width='12' height='12' x='0' y='0'/%3E%3Crect width='12' height='12' x='12' y='12'/%3E%3C/g%3E%3C/svg%3E");
+    }
+
+    /* MD variant — 48px squares (default) */
     .bg-chess-pattern-brand-dark {
-        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='48' height='48' viewBox='0 0 48 48'%3E%3Cg fill='%23B7FF00' fill-opacity='0.04'%3E%3Crect width='24' height='24' x='0' y='0'/%3E%3Crect width='24' height='24' x='24' y='24'/%3E%3C/g%3E%3C/svg%3E");
+        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='48' height='48' viewBox='0 0 48 48'%3E%3Cg fill='%23B7FF00' fill-opacity='0.035'%3E%3Crect width='24' height='24' x='0' y='0'/%3E%3Crect width='24' height='24' x='24' y='24'/%3E%3C/g%3E%3C/svg%3E");
+    }
+
+    /* LG variant — 96px squares (sparse) */
+    .bg-chess-pattern-brand-dark-lg {
+        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='96' height='96' viewBox='0 0 96 96'%3E%3Cg fill='%23B7FF00' fill-opacity='0.03'%3E%3Crect width='48' height='48' x='0' y='0'/%3E%3Crect width='48' height='48' x='48' y='48'/%3E%3C/g%3E%3C/svg%3E");
+    }
+
+    /* Gradient overlay — fades chess pattern to white at top and bottom edges */
+    .bg-fade-edges-light {
+        background-image:
+            linear-gradient(to bottom, #FEFEFE 0%, transparent 15%, transparent 85%, #FEFEFE 100%);
+    }
+
+    /* Gradient overlay — fades chess pattern to black at top and bottom edges */
+    .bg-fade-edges-dark {
+        background-image:
+            linear-gradient(to bottom, #111111 0%, transparent 15%, transparent 85%, #111111 100%);
     }
 
     /* Radial gradient glow background — chartreuse top-left */

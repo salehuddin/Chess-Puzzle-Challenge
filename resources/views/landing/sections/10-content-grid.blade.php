@@ -3,8 +3,6 @@
 {{-- If $bundles contains content, show first bundle inline as Bundle card --}}
 {{-- ═══════════════════════════════════════════════════════════════ --}}
 <section class="bg-white py-20 lg:py-28 relative overflow-hidden">
-    <div class="absolute inset-0 bg-chess-pattern-brand-light pointer-events-none" aria-hidden="true"></div>
-    <div class="absolute inset-0 bg-radial-brand-tl pointer-events-none" aria-hidden="true"></div>
     <div class="absolute inset-0 bg-radial-brand-br pointer-events-none" aria-hidden="true"></div>
 
     <div class="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">

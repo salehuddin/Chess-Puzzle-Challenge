@@ -5,10 +5,10 @@
 {{-- ═══════════════════════════════════════════════════════════════ --}}
 <section id="how-it-works" class="bg-white py-20 lg:py-28 relative overflow-hidden">
 
-    {{-- Chess checkerboard + radial gradients for depth --}}
-    <div class="absolute inset-0 bg-chess-pattern-brand-light pointer-events-none" aria-hidden="true"></div>
+    {{-- Chess pattern (SM tight) + radial gradient + fade edges --}}
+    <div class="absolute inset-0 bg-chess-pattern-brand-light-sm pointer-events-none" aria-hidden="true"></div>
     <div class="absolute inset-0 bg-radial-brand-tl pointer-events-none" aria-hidden="true"></div>
-    <div class="absolute inset-0 bg-radial-brand-br pointer-events-none" aria-hidden="true"></div>
+    <div class="absolute inset-0 bg-fade-edges-light pointer-events-none" aria-hidden="true"></div>
     <div class="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
 
         {{-- Intro --}}
@@ -80,8 +80,7 @@
                         {{-- Mockup column (sticky on desktop) --}}
                         <div class="lg:sticky lg:top-24 lg:h-fit [direction:ltr]">
                             <div class="reveal-left relative aspect-[4/3] rounded-3xl overflow-hidden ring-1 ring-neutral-900/10 shadow-warm-lg bg-neutral-50">
-                                {{-- Chess pattern + soft radial gradient for depth --}}
-                                <div class="absolute inset-0 bg-chess-pattern-brand-light pointer-events-none" aria-hidden="true"></div>
+                                {{-- Soft radial gradient for depth --}}
                                 <div class="absolute inset-0 bg-radial-brand-center pointer-events-none" aria-hidden="true"></div>
                             @if($step['mockup'] === 'series-picker')
                                 {{-- Mockup: series picker screenshot --}}

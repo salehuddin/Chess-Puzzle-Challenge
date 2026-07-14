@@ -3,8 +3,8 @@
 {{-- Pulls live $challenges; each card = medal poster + metadata + CTA  --}}
 {{-- ═══════════════════════════════════════════════════════════════ --}}
 <section id="challenges" class="bg-neutral-900 text-white py-20 lg:py-28 relative overflow-hidden">
-    <div class="absolute inset-0 bg-chess-pattern-brand-dark pointer-events-none" aria-hidden="true"></div>
-    <div class="absolute inset-0 bg-grid-pattern pointer-events-none" aria-hidden="true"></div>
+    <div class="absolute inset-0 bg-chess-pattern-brand-dark-sm pointer-events-none" aria-hidden="true"></div>
+    <div class="absolute inset-0 bg-fade-edges-dark pointer-events-none" aria-hidden="true"></div>
     <div class="absolute top-0 right-0 w-96 h-96 bg-brand/5 blur-[100px] pointer-events-none" aria-hidden="true"></div>
 
     <div class="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -38,9 +38,16 @@
                     {{-- Medal poster header --}}
                     <div class="h-48 relative bg-neutral-900 overflow-hidden">
                         <div class="absolute inset-0 bg-gradient-to-br from-brand/20 via-neutral-900 to-neutral-900"></div>
-                        <div class="absolute inset-0 flex items-center justify-center">
-                            <div class="text-7xl group-hover:scale-110 transition-transform duration-500 drop-shadow-2xl">🏅</div>
-                        </div>
+                        @if($challenge->poster_image)
+                            <img src="{{ asset('storage/'.$challenge->poster_image) }}" alt="{{ $challenge->name }}" class="absolute inset-0 h-full w-full object-cover">
+                        @elseif($challenge->medal_artwork)
+                            <img src="{{ asset('storage/'.$challenge->medal_artwork) }}" alt="{{ $challenge->name }}" class="absolute inset-0 h-full w-full object-cover">
+                        @else
+                            <div class="absolute inset-0 flex items-center justify-center">
+                                <div class="text-7xl group-hover:scale-110 transition-transform duration-500 drop-shadow-2xl">🏅</div>
+                            </div>
+                        @endif
+                        <div class="absolute inset-0 bg-gradient-to-t from-neutral-900/80 via-transparent to-transparent"></div>
                         <div class="absolute bottom-3 left-4">
                             <span class="badge {{ $levelData[2] }} gap-1 font-semibold">
                                 {{ $levelData[0] }} {{ $levelData[1] }}

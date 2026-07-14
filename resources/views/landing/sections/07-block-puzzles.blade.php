@@ -4,9 +4,7 @@
 {{-- simplified to eyebrow / H2 / 3 micro-features / 2 CTAs / still-art  --}}
 {{-- ═══════════════════════════════════════════════════════════════ --}}
 <section class="bg-white py-20 lg:py-28 relative overflow-hidden">
-    <div class="absolute inset-0 bg-chess-pattern-brand-light pointer-events-none" aria-hidden="true"></div>
     <div class="absolute inset-0 bg-radial-brand-tl pointer-events-none" aria-hidden="true"></div>
-    <div class="absolute inset-0 bg-radial-brand-br pointer-events-none" aria-hidden="true"></div>
 
     <div class="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16 items-center">

@@ -4,10 +4,10 @@
 {{-- ═══════════════════════════════════════════════════════════════ --}}
 <section class="bg-white py-16 lg:py-20 relative overflow-hidden">
 
-    {{-- Chess pattern + radial gradients for depth --}}
-    <div class="absolute inset-0 bg-chess-pattern-brand-light pointer-events-none" aria-hidden="true"></div>
+    {{-- Chess pattern (LG sparse) + radial gradient + fade edges --}}
+    <div class="absolute inset-0 bg-chess-pattern-brand-light-lg pointer-events-none" aria-hidden="true"></div>
     <div class="absolute inset-0 bg-radial-brand-tl pointer-events-none" aria-hidden="true"></div>
-    <div class="absolute inset-0 bg-radial-brand-br pointer-events-none" aria-hidden="true"></div>
+    <div class="absolute inset-0 bg-fade-edges-light pointer-events-none" aria-hidden="true"></div>
 
     <div class="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mb-10">
         <div class="reveal text-center">
@@ -30,30 +30,50 @@
         ];
     @endphp
 
-    {{-- Marquee: 2-row scrolling grid; each row duplicated for seamless loop --}}
+    {{-- Marquee: two identical sets side-by-side for seamless loop --}}
     <div class="relative space-y-3">
-        {{-- Row 1: themes 0-3 --}}
-        <div class="flex gap-3 animate-[marquee_40s_linear_infinite] hover:[animation-play-state:paused]">
-            @foreach(array_merge($themes, $themes) as $theme)
-                <div class="shrink-0 w-72 bg-white ring-1 ring-neutral-900/10 rounded-2xl p-5 hover:ring-brand/40 hover:shadow-warm-lg transition-all duration-300 group">
-                    <div class="flex items-start gap-3">
-                        <span class="w-10 h-10 rounded-xl bg-neutral-100 group-hover:bg-brand group-hover:text-neutral-900 flex items-center justify-center text-xl transition-all duration-300">{{ $theme[0] }}</span>
-                        <div class="flex-1">
-                            <div class="flex items-center gap-1.5 mb-1">
-                                <span class="w-1.5 h-1.5 rounded-full bg-brand"></span>
-                                <h3 class="font-display text-base font-bold text-neutral-900">{{ $theme[1] }}</h3>
+        {{-- Set 1 --}}
+        <div class="flex animate-[marquee_40s_linear_infinite] hover:[animation-play-state:paused]">
+            <div class="flex shrink-0 gap-3 pr-3">
+                @foreach($themes as $theme)
+                    <div class="shrink-0 w-72 bg-white ring-1 ring-neutral-900/10 rounded-2xl p-5 hover:ring-brand/40 hover:shadow-warm-lg transition-all duration-300 group">
+                        <div class="flex items-start gap-3">
+                            <span class="w-10 h-10 rounded-xl bg-neutral-100 group-hover:bg-brand group-hover:text-neutral-900 flex items-center justify-center text-xl transition-all duration-300">{{ $theme[0] }}</span>
+                            <div class="flex-1">
+                                <div class="flex items-center gap-1.5 mb-1">
+                                    <span class="w-1.5 h-1.5 rounded-full bg-brand"></span>
+                                    <h3 class="font-display text-base font-bold text-neutral-900">{{ $theme[1] }}</h3>
+                                </div>
+                                <p class="text-xs text-neutral-500 leading-relaxed">{{ $theme[2] }}</p>
                             </div>
-                            <p class="text-xs text-neutral-500 leading-relaxed">{{ $theme[2] }}</p>
                         </div>
                     </div>
-                </div>
-            @endforeach
+                @endforeach
+            </div>
+
+            {{-- Set 2 (duplicate, hidden from screen readers) --}}
+            <div class="flex shrink-0 gap-3 pr-3" aria-hidden="true">
+                @foreach($themes as $theme)
+                    <div class="shrink-0 w-72 bg-white ring-1 ring-neutral-900/10 rounded-2xl p-5 hover:ring-brand/40 hover:shadow-warm-lg transition-all duration-300 group">
+                        <div class="flex items-start gap-3">
+                            <span class="w-10 h-10 rounded-xl bg-neutral-100 group-hover:bg-brand group-hover:text-neutral-900 flex items-center justify-center text-xl transition-all duration-300">{{ $theme[0] }}</span>
+                            <div class="flex-1">
+                                <div class="flex items-center gap-1.5 mb-1">
+                                    <span class="w-1.5 h-1.5 rounded-full bg-brand"></span>
+                                    <h3 class="font-display text-base font-bold text-neutral-900">{{ $theme[1] }}</h3>
+                                </div>
+                                <p class="text-xs text-neutral-500 leading-relaxed">{{ $theme[2] }}</p>
+                            </div>
+                        </div>
+                    </div>
+                @endforeach
+            </div>
         </div>
     </div>
 
-    {{-- Edge fades --}}
-    <div class="absolute left-0 top-1/2 -translate-y-1/2 w-24 h-32 bg-gradient-to-r from-white to-transparent pointer-events-none"></div>
-    <div class="absolute right-0 top-1/2 -translate-y-1/2 w-24 h-32 bg-gradient-to-l from-white to-transparent pointer-events-none"></div>
+    {{-- Full-height edge fades --}}
+    <div class="absolute left-0 top-0 bottom-0 w-24 bg-gradient-to-r from-white to-transparent pointer-events-none z-10"></div>
+    <div class="absolute right-0 top-0 bottom-0 w-24 bg-gradient-to-l from-white to-transparent pointer-events-none z-10"></div>
 
     <style>
         @keyframes marquee {
