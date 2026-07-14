@@ -3,25 +3,18 @@
 {{-- Background image with bright white overlay for legibility            --}}
 {{-- ═══════════════════════════════════════════════════════════════ --}}
 @php
-    use Illuminate\Support\Facades\Vite;
-    try {
-        $heroBgUrl = Vite::asset('resources/images/home-hero-bg-01.webp');
-    } catch (\Throwable $e) {
-        $heroBgUrl = null;
-    }
+    $heroBgUrl = asset('images/home-hero-bg-01.webp');
 @endphp
 
 <section class="relative overflow-hidden bg-white pt-16 pb-20 lg:pt-24 lg:pb-28">
 
-    {{-- Background image layer (only rendered if asset exists) --}}
-    @if($heroBgUrl)
+    {{-- Background image layer --}}
     <div class="absolute inset-0 pointer-events-none" aria-hidden="true"
          style="background-image: url('{{ $heroBgUrl }}'); background-size: cover; background-position: center;"></div>
 
     {{-- Bright white overlay — fades from solid (top+bottom) to semi-transparent (center) for text legibility --}}
     <div class="absolute inset-0 pointer-events-none" aria-hidden="true"
          style="background: linear-gradient(to bottom, rgba(254,254,254,0.95) 0%, rgba(254,254,254,0.75) 40%, rgba(254,254,254,0.85) 70%, rgba(254,254,254,0.98) 100%);"></div>
-    @endif
 
     {{-- Subtle dot pattern background (atop overlay for texture) --}}
     <div class="absolute inset-0 bg-dot-pattern-dark pointer-events-none" aria-hidden="true"></div>
