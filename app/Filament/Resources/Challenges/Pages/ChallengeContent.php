@@ -7,6 +7,7 @@ use App\Filament\Resources\Challenges\Pages\Concerns\HasChallengeRecordHeader;
 use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\Repeater;
 use Filament\Forms\Components\RichEditor;
+use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\ViewField;
 use Filament\Resources\Pages\EditRecord;
@@ -72,6 +73,27 @@ class ChallengeContent extends EditRecord
                             ])
                             ->columnSpanFull(),
                     ]),
+                Section::make('FAQ')
+                    ->description('Optional. Add question/answer pairs shown in the FAQ accordion on the public challenge page.')
+                    ->schema([
+                        Repeater::make('faq')
+                            ->label('')
+                            ->schema([
+                                TextInput::make('question')
+                                    ->required()
+                                    ->columnSpanFull(),
+                                Textarea::make('answer')
+                                    ->required()
+                                    ->rows(3)
+                                    ->columnSpanFull(),
+                            ])
+                            ->collapsible()
+                            ->collapsed()
+                            ->itemLabel(fn (array $state): ?string => $state['question'] ?? null)
+                            ->columnSpanFull(),
+                    ])
+                    ->collapsible()
+                    ->collapsed(),
             ]);
     }
 }
