@@ -132,6 +132,102 @@
     .shadow-warm-lg {
         box-shadow: 0 10px 25px -3px rgba(17, 17, 17, 0.08), 0 4px 6px -4px rgba(17, 17, 17, 0.05);
     }
+
+    /* ── Background patterns ─────────────────────────────────────────── */
+    .bg-dot-pattern {
+        background-image: radial-gradient(circle, rgba(255,255,255,0.08) 1px, transparent 1px);
+        background-size: 24px 24px;
+    }
+
+    .bg-dot-pattern-dark {
+        background-image: radial-gradient(circle, rgba(17,17,17,0.06) 1px, transparent 1px);
+        background-size: 24px 24px;
+    }
+
+    .bg-grid-pattern {
+        background-image:
+            linear-gradient(to right, rgba(255,255,255,0.04) 1px, transparent 1px),
+            linear-gradient(to bottom, rgba(255,255,255,0.04) 1px, transparent 1px);
+        background-size: 48px 48px;
+    }
+
+    .bg-grid-pattern-dark {
+        background-image:
+            linear-gradient(to right, rgba(17,17,17,0.04) 1px, transparent 1px),
+            linear-gradient(to bottom, rgba(17,17,17,0.04) 1px, transparent 1px);
+        background-size: 48px 48px;
+    }
+
+    .bg-brand-grid {
+        background-image:
+            linear-gradient(to right, rgba(17,17,17,0.06) 1px, transparent 1px),
+            linear-gradient(to bottom, rgba(17,17,17,0.06) 1px, transparent 1px);
+        background-size: 48px 48px;
+    }
+
+    /* ── Scroll-reveal animation system ──────────────────────────────── */
+    .reveal {
+        opacity: 0;
+        transform: translateY(28px);
+        transition: opacity 0.6s cubic-bezier(0.22, 1, 0.36, 1),
+                    transform 0.6s cubic-bezier(0.22, 1, 0.36, 1);
+        transition-delay: var(--reveal-delay, 0ms);
+        will-change: opacity, transform;
+    }
+    .reveal.reveal-visible {
+        opacity: 1;
+        transform: translateY(0);
+    }
+
+    .reveal-scale {
+        opacity: 0;
+        transform: scale(0.94);
+        transition: opacity 0.6s cubic-bezier(0.22, 1, 0.36, 1),
+                    transform 0.6s cubic-bezier(0.22, 1, 0.36, 1);
+        transition-delay: var(--reveal-delay, 0ms);
+        will-change: opacity, transform;
+    }
+    .reveal-scale.reveal-visible {
+        opacity: 1;
+        transform: scale(1);
+    }
+
+    .reveal-left {
+        opacity: 0;
+        transform: translateX(-32px);
+        transition: opacity 0.6s cubic-bezier(0.22, 1, 0.36, 1),
+                    transform 0.6s cubic-bezier(0.22, 1, 0.36, 1);
+        transition-delay: var(--reveal-delay, 0ms);
+        will-change: opacity, transform;
+    }
+    .reveal-left.reveal-visible {
+        opacity: 1;
+        transform: translateX(0);
+    }
+
+    .reveal-right {
+        opacity: 0;
+        transform: translateX(32px);
+        transition: opacity 0.6s cubic-bezier(0.22, 1, 0.36, 1),
+                    transform 0.6s cubic-bezier(0.22, 1, 0.36, 1);
+        transition-delay: var(--reveal-delay, 0ms);
+        will-change: opacity, transform;
+    }
+    .reveal-right.reveal-visible {
+        opacity: 1;
+        transform: translateX(0);
+    }
+
+    /* ── Gradient overlays (for section edges) ───────────────────────── */
+    .gradient-fade-bottom-dark {
+        background: linear-gradient(to bottom, transparent 0%, #111111 100%);
+    }
+    .gradient-fade-top-dark {
+        background: linear-gradient(to top, transparent 0%, #111111 100%);
+    }
+    .gradient-glow-brand {
+        background: radial-gradient(ellipse at center, rgba(183, 255, 0, 0.15) 0%, transparent 70%);
+    }
 }
 
 /* ── Keyframe Animations ───────────────────────────────────────────── */
@@ -155,10 +251,27 @@
     to   { transform: rotate(360deg); }
 }
 
+@keyframes shimmer {
+    0%   { background-position: -200% center; }
+    100% { background-position: 200% center; }
+}
+
+@keyframes pulse-soft {
+    0%, 100% { opacity: 1; }
+    50%       { opacity: 0.6; }
+}
+
+@keyframes gradient-shift {
+    0%, 100% { background-position: 0% 50%; }
+    50%       { background-position: 100% 50%; }
+}
+
 @layer utilities {
     .animate-float       { animation: float 3.5s ease-in-out infinite; }
     .animate-pulse-gold  { animation: pulse-gold 2.2s ease-in-out infinite; }
     .animate-spin-slow   { animation: spin-slow 12s linear infinite; }
+    .animate-pulse-soft  { animation: pulse-soft 3s ease-in-out infinite; }
+    .animate-gradient    { background-size: 200% 200%; animation: gradient-shift 6s ease-in-out infinite; }
 }
 
 @layer components {
