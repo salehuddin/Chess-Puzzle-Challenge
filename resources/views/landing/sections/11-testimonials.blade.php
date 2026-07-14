@@ -23,59 +23,59 @@
                 {{--<a href="#" class="ml-2 underline underline-offset-2 hover:text-brand">Read all reviews →</a>--}}
             </p>
         </div>
+    </div>{{-- /max-w-7xl container --}}
 
-        {{-- Horizontal scroll carousel (same pattern as Themes marquee) --}}
-        {{-- ⚠️ PLACEHOLDER COPY — replace with real testimonials --}}
-        @php
-            $testimonials = [
-                [
-                    'medal' => '🏅',
-                    'quote' => 'I finally stopped hanging pieces. The Forks series drilled the pattern into my brain — and the medal on my desk reminds me why I keep solving.',
-                    'name'  => 'Aisha R.',
-                    'country' => 'Malaysia',
-                    'series' => 'Beginner Forks Series',
-                ],
-                [
-                    'medal' => '♕',
-                    'quote' => "Solved 100 endgames in two evenings. My blitz rating jumped 130 points and I've got the photo to prove it.",
-                    'name'  => 'Tomás V.',
-                    'country' => 'Spain',
-                    'series' => 'Endgame Mastery Series',
-                ],
-                [
-                    'medal' => '♔',
-                    'quote' => "Best $25 I've spent on chess. The Hall of Fame is addictive — three stickers in, working on the fourth.",
-                    'name'  => 'Liam K.',
-                    'country' => 'United Kingdom',
-                    'series' => 'Back-Rank Brutality',
-                ],
-                [
-                    'medal' => '♞',
-                    'quote' => 'The knight tactics series finally made me see royal forks coming. Won three tournament games last month with the exact pattern.',
-                    'name'  => 'Priya S.',
-                    'country' => 'India',
-                    'series' => 'Knight Tactics Series',
-                ],
-                [
-                    'medal' => '♖',
-                    'quote' => 'I always forgot about back-rank mates. After 100 puzzles I see them instantly — my club mates think I improved overnight.',
-                    'name'  => 'Marco B.',
-                    'country' => 'Italy',
-                    'series' => 'Back-Rank Brutality',
-                ],
-                [
-                    'medal' => '♗',
-                    'quote' => 'The pins and skewers series fixed my biggest blind spot. The medal arrived in perfect condition — beautiful craftsmanship.',
-                    'name'  => 'Yuki T.',
-                    'country' => 'Japan',
-                    'series' => 'Pins & Skewers Series',
-                ],
-            ];
-        @endphp
+    {{-- ⚠️ PLACEHOLDER COPY — replace with real testimonials --}}
+    @php
+        $testimonials = [
+            [
+                'medal' => '🏅',
+                'quote' => 'I finally stopped hanging pieces. The Forks series drilled the pattern into my brain — and the medal on my desk reminds me why I keep solving.',
+                'name'  => 'Aisha R.',
+                'country' => 'Malaysia',
+                'series' => 'Beginner Forks Series',
+            ],
+            [
+                'medal' => '♕',
+                'quote' => "Solved 100 endgames in two evenings. My blitz rating jumped 130 points and I've got the photo to prove it.",
+                'name'  => 'Tomás V.',
+                'country' => 'Spain',
+                'series' => 'Endgame Mastery Series',
+            ],
+            [
+                'medal' => '♔',
+                'quote' => "Best $25 I've spent on chess. The Hall of Fame is addictive — three stickers in, working on the fourth.",
+                'name'  => 'Liam K.',
+                'country' => 'United Kingdom',
+                'series' => 'Back-Rank Brutality',
+            ],
+            [
+                'medal' => '♞',
+                'quote' => 'The knight tactics series finally made me see royal forks coming. Won three tournament games last month with the exact pattern.',
+                'name'  => 'Priya S.',
+                'country' => 'India',
+                'series' => 'Knight Tactics Series',
+            ],
+            [
+                'medal' => '♖',
+                'quote' => 'I always forgot about back-rank mates. After 100 puzzles I see them instantly — my club mates think I improved overnight.',
+                'name'  => 'Marco B.',
+                'country' => 'Italy',
+                'series' => 'Back-Rank Brutality',
+            ],
+            [
+                'medal' => '♗',
+                'quote' => 'The pins and skewers series fixed my biggest blind spot. The medal arrived in perfect condition — beautiful craftsmanship.',
+                'name'  => 'Yuki T.',
+                'country' => 'Japan',
+                'series' => 'Pins & Skewers Series',
+            ],
+        ];
+    @endphp
 
-        {{-- Marquee: two identical sets side-by-side for seamless loop --}}
-        <div class="relative">
-            <div class="flex animate-[marquee_50s_linear_infinite] hover:[animation-play-state:paused]">
+    {{-- Marquee: two identical sets side-by-side for seamless loop --}}
+    <div class="relative">
+        <div class="flex animate-[marquee_50s_linear_infinite] hover:[animation-play-state:paused]">
 
                 {{-- Set 1 --}}
                 <div class="flex shrink-0 gap-6 pr-6">
@@ -144,9 +144,8 @@
                 </div>
             </div>
 
-            {{-- Full-height edge fades --}}
+            {{-- Full-height edge fades — anchored to section (full viewport width) --}}
             <div class="absolute left-0 top-0 bottom-0 w-24 bg-gradient-to-r from-white to-transparent pointer-events-none z-10"></div>
             <div class="absolute right-0 top-0 bottom-0 w-24 bg-gradient-to-l from-white to-transparent pointer-events-none z-10"></div>
         </div>
-    </div>
 </section>
