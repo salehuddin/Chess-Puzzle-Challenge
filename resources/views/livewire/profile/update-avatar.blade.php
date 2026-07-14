@@ -1,10 +1,10 @@
 <section>
     <header>
-        <h2 class="text-lg font-medium text-gray-900">
+        <h2 class="text-lg font-medium text-neutral-900">
             {{ __('Avatar') }}
         </h2>
 
-        <p class="mt-1 text-sm text-gray-600">
+        <p class="mt-1 text-sm text-neutral-600">
             {{ __('Upload a square image (JPG, PNG, or WebP, max 1 MB). Used as your profile picture in the navigation and public profile.') }}
         </p>
     </header>

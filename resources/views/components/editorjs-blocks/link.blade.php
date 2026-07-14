@@ -19,7 +19,7 @@
             @if ($description)
                 <span class="mt-1 text-xs text-neutral-500 line-clamp-2">{{ $description }}</span>
             @endif
-            <span class="mt-1 text-xs text-emerald-600">{{ parse_url($url, PHP_URL_HOST) }}</span>
+            <span class="mt-1 text-xs text-green-600">{{ parse_url($url, PHP_URL_HOST) }}</span>
         </div>
     </a>
 @endif

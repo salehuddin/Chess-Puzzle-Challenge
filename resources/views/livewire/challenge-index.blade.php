@@ -47,7 +47,7 @@
                     $enrollmentBadge = match($enrollmentStatus) {
                         'active' => ['In Progress', 'bg-green-100 text-green-800 border-green-200'],
                         'completed' => ['Completed', 'bg-orange-100 text-orange-800 border-orange-200'],
-                        'pending' => ['Payment Pending', 'bg-yellow-100 text-yellow-800 border-yellow-200'],
+                        'pending' => ['Payment Pending', 'bg-orange-100 text-orange-800 border-orange-200'],
                         default => null,
                     };
                 @endphp

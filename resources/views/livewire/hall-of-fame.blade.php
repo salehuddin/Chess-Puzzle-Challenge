@@ -1,7 +1,7 @@
 <div class="max-w-7xl mx-auto py-12 px-4 sm:px-6 lg:px-8">
     <div class="text-center mb-12">
         <h1 class="text-5xl font-extrabold font-serif text-orange-600 drop-shadow-sm mb-4">🏆 Hall of Fame</h1>
-        <p class="text-xl text-gray-600 max-w-2xl mx-auto">Your collection of earned stickers and physical medals. Complete challenges to unlock the missing silhouettes!</p>
+        <p class="text-xl text-neutral-600 max-w-2xl mx-auto">Your collection of earned stickers and physical medals. Complete challenges to unlock the missing silhouettes!</p>
     </div>
 
     <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-8">
@@ -10,7 +10,7 @@
                 $isEarned = in_array($challenge->id, $earnedStickerChallengeIds);
             @endphp
             
-            <div class="flex flex-col items-center justify-center p-6 bg-white rounded-3xl shadow-lg border border-gray-100 transition-all duration-500 hover:-translate-y-2 hover:shadow-2xl relative overflow-hidden group">
+            <div class="flex flex-col items-center justify-center p-6 bg-white rounded-3xl shadow-lg border border-neutral-100 transition-all duration-500 hover:-translate-y-2 hover:shadow-2xl relative overflow-hidden group">
                 
                 @if($isEarned)
                     <!-- Confetti background subtle -->
@@ -31,21 +31,21 @@
                         <div class="absolute -top-1 -right-1 text-2xl animate-pulse delay-150">✨</div>
                     </div>
                     
-                    <h3 class="text-center font-bold text-gray-800 text-lg font-serif z-10">{{ $challenge->name }}</h3>
+                    <h3 class="text-center font-bold text-neutral-800 text-lg font-serif z-10">{{ $challenge->name }}</h3>
                     <p class="text-orange-600 text-xs font-bold uppercase tracking-wider mt-1 z-10">Unlocked</p>
                 @else
                     <div class="relative w-32 h-32 mb-4 opacity-30 grayscale saturate-0 contrast-200 transition-all duration-300 group-hover:opacity-60">
                         @if($challenge->sticker_artwork)
                             <img src="{{ Storage::url($challenge->sticker_artwork) }}" alt="Locked" class="w-full h-full object-contain mix-blend-multiply brightness-0" />
                         @else
-                            <div class="w-full h-full rounded-full bg-gray-800 flex items-center justify-center text-gray-500 text-4xl shadow-inner border-4 border-gray-300">
+                            <div class="w-full h-full rounded-full bg-neutral-800 flex items-center justify-center text-neutral-500 text-4xl shadow-inner border-4 border-neutral-300">
                                 ?
                             </div>
                         @endif
                     </div>
                     
-                    <h3 class="text-center font-bold text-gray-400 text-lg font-serif">{{ $challenge->name }}</h3>
-                    <p class="text-gray-400 text-xs font-medium uppercase tracking-wider mt-1">Locked</p>
+                    <h3 class="text-center font-bold text-neutral-400 text-lg font-serif">{{ $challenge->name }}</h3>
+                    <p class="text-neutral-400 text-xs font-medium uppercase tracking-wider mt-1">Locked</p>
                     
                     <a href="{{ route('challenges.show', $challenge->slug) }}" class="absolute inset-0 z-20 flex items-center justify-center bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity duration-300 backdrop-blur-sm rounded-3xl">
                         <span class="btn btn-primary btn-sm">View Challenge</span>

@@ -1,10 +1,10 @@
 <section>
     <header>
-        <h2 class="text-lg font-medium text-gray-900">
+        <h2 class="text-lg font-medium text-neutral-900">
             {{ __('Default Shipping Address') }}
         </h2>
 
-        <p class="mt-1 text-sm text-gray-600">
+        <p class="mt-1 text-sm text-neutral-600">
             {{ __("Ensure your default shipping address is accurate so your medals/stickers reach you.") }}
         </p>
     </header>
@@ -62,7 +62,7 @@
                     x-show="show"
                     x-transition
                     x-init="setTimeout(() => show = false, 2000)"
-                    class="text-sm text-gray-600"
+                    class="text-sm text-neutral-600"
                 >{{ __('Saved.') }}</p>
             @endif
         </div>
