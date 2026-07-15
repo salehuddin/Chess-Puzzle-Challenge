@@ -124,7 +124,7 @@
             <div class="relative w-full max-w-5xl min-h-[440px]">
                 @foreach($steps as $i => $step)
                     <div class="absolute inset-0 transition-transform duration-[750ms] ease-out"
-                         :class="{{ $i }} <= active ? 'translate-y-0' : 'translate-y-full'"
+                         :class="{{ $i }} <= active ? 'translate-y-0' : 'translate-y-[120vh]'"
                          style="z-index: {{ $i + 10 }};">
                         <div class="bg-brand rounded-3xl p-10 shadow-warm-lg ring-1 ring-neutral-900/5">
                             <div class="grid grid-cols-2 gap-12 {{ $i % 2 === 1 ? '[direction:rtl]' : '' }}">
