@@ -91,7 +91,6 @@
     {{-- Outer: 400vh tall → creates scroll distance for 4 cards             --}}
     {{-- Inner: sticky top-0 h-screen → pins the whole section to viewport    --}}
     {{-- Alpine: tracks scroll progress through the outer container,          --}}
-    "-->
     {{--        sets `active` to 0-3 based on which quarter of scroll we're in --}}
     {{-- Cards: absolute inset-0, transition opacity+transform, z-index stacks  --}}
     <div class="hidden lg:block relative h-[400vh]"
