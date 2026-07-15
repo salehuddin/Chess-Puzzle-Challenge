@@ -75,7 +75,7 @@
 
     {{-- Marquee: two identical sets side-by-side for seamless loop --}}
     <div class="relative overflow-hidden">
-        <div class="flex animate-[marquee_50s_linear_infinite] hover:[animation-play-state:paused]">
+        <div class="flex animate-[marquee_25s_linear_infinite] lg:animate-[marquee_50s_linear_infinite] hover:[animation-play-state:paused]">
 
                 {{-- Set 1 --}}
                 <div class="flex shrink-0 gap-6 pr-6">

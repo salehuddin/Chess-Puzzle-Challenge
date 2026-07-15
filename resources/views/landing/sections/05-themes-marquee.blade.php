@@ -33,7 +33,7 @@
     {{-- Marquee: two identical sets side-by-side for seamless loop --}}
     <div class="relative space-y-3 overflow-hidden">
         {{-- Set 1 --}}
-        <div class="flex animate-[marquee_40s_linear_infinite] hover:[animation-play-state:paused]">
+        <div class="flex animate-[marquee_20s_linear_infinite] lg:animate-[marquee_40s_linear_infinite] hover:[animation-play-state:paused]">
             <div class="flex shrink-0 gap-3 pr-3">
                 @foreach($themes as $theme)
                     <div class="shrink-0 w-72 bg-white ring-1 ring-neutral-900/10 rounded-2xl p-5 hover:ring-brand/40 hover:shadow-warm-lg transition-all duration-300 group">
