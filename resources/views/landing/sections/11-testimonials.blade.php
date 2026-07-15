@@ -74,7 +74,7 @@
     @endphp
 
     {{-- Marquee: two identical sets side-by-side for seamless loop --}}
-    <div class="relative">
+    <div class="relative overflow-hidden">
         <div class="flex animate-[marquee_50s_linear_infinite] hover:[animation-play-state:paused]">
 
                 {{-- Set 1 --}}
@@ -144,7 +144,7 @@
                 </div>
             </div>
 
-            {{-- Full-height edge fades — anchored to section (full viewport width) --}}
+            {{-- Edge fades inside marquee container so they can't overflow into next section --}}
             <div class="absolute left-0 top-0 bottom-0 w-24 bg-gradient-to-r from-white to-transparent pointer-events-none z-10"></div>
             <div class="absolute right-0 top-0 bottom-0 w-24 bg-gradient-to-l from-white to-transparent pointer-events-none z-10"></div>
         </div>

@@ -31,7 +31,7 @@
     @endphp
 
     {{-- Marquee: two identical sets side-by-side for seamless loop --}}
-    <div class="relative space-y-3">
+    <div class="relative space-y-3 overflow-hidden">
         {{-- Set 1 --}}
         <div class="flex animate-[marquee_40s_linear_infinite] hover:[animation-play-state:paused]">
             <div class="flex shrink-0 gap-3 pr-3">
@@ -69,11 +69,11 @@
                 @endforeach
             </div>
         </div>
-    </div>
 
-    {{-- Full-height edge fades --}}
-    <div class="absolute left-0 top-0 bottom-0 w-24 bg-gradient-to-r from-white to-transparent pointer-events-none z-10"></div>
-    <div class="absolute right-0 top-0 bottom-0 w-24 bg-gradient-to-l from-white to-transparent pointer-events-none z-10"></div>
+        {{-- Full-height edge fades (inside marquee container so they can't overflow into next section) --}}
+        <div class="absolute left-0 top-0 bottom-0 w-24 bg-gradient-to-r from-white to-transparent pointer-events-none z-10"></div>
+        <div class="absolute right-0 top-0 bottom-0 w-24 bg-gradient-to-l from-white to-transparent pointer-events-none z-10"></div>
+    </div>
 
     <style>
         @keyframes marquee {
