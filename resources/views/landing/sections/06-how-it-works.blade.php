@@ -1,18 +1,20 @@
 {{-- ═══════════════════════════════════════════════════════════════ --}}
-{{-- SECTION 06: HOW IT WORKS — vertical sticky-scroll story            --}}
-{{-- Left column = mockup, sticks while right column copy scrolls past  --}}
-{{-- 4 steps; falls back to stacked flow below lg breakpoint            --}}
+{{-- SECTION 06: HOW IT WORKS — sticky stacking cards                  --}}
+{{-- Section sticks in viewport; cards arrive one by one and stack      --}}
+{{-- on top of each other (increasing z-index). After the last card     --}}
+{{-- stacks, the section releases and scrolls away normally.            --}}
 {{-- ═══════════════════════════════════════════════════════════════ --}}
-<section id="how-it-works" class="bg-white py-20 lg:py-28 relative overflow-hidden">
+<section id="how-it-works" class="bg-white py-20 lg:py-28 relative">
 
-    {{-- Chess pattern (SM tight) + radial gradient + fade edges --}}
+    {{-- Background patterns (won't clip since no overflow-hidden; they're inset-0 so exactly match section size) --}}
     <div class="absolute inset-0 bg-chess-pattern-brand-light-sm pointer-events-none" aria-hidden="true"></div>
     <div class="absolute inset-0 bg-radial-brand-tl pointer-events-none" aria-hidden="true"></div>
     <div class="absolute inset-0 bg-fade-edges-light pointer-events-none" aria-hidden="true"></div>
+
     <div class="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
 
-        {{-- Intro --}}
-        <div class="reveal text-center mb-16 max-w-2xl mx-auto">
+        {{-- Intro (keeps reveal animation; not sticky so transform is safe) --}}
+        <div class="reveal text-center mb-16 lg:mb-24 max-w-2xl mx-auto">
             <span class="inline-block text-neutral-500 font-bold text-xs uppercase tracking-[0.2em] mb-3">How A Series Works</span>
             <h2 class="font-display text-4xl lg:text-5xl font-black text-neutral-900 mb-4">Four steps. One medal.</h2>
             <p class="text-neutral-500 text-lg">From choosing your series to holding your medal — here's the journey.</p>
@@ -28,7 +30,7 @@
                     'features' => [
                         ['♟', 'Filter by rating band — 800 to 2000+'],
                         ['🎯', 'Tactical themes: forks, pins, endgames'],
-                        [' Bundle', 'Mix-and-match multiple series in bundles'],
+                        ['📦', 'Mix-and-match multiple series in bundles'],
                     ],
                     'mockup' => 'series-picker',
                 ],
@@ -71,12 +73,17 @@
             ];
         @endphp
 
-        {{-- Stacking sticky cards: each card sticks at ~15vh, next card stacks on top (higher z-index) --}}
-        {{-- On mobile, cards stack normally without sticky behavior --}}
-        <div class="space-y-6 lg:space-y-0">
+        {{-- ═══ STICKY STACKING CARDS ═════════════════════════════════════ --}}
+        {{-- structure: each card is position:sticky at top-[15vh]          --}}
+       {{-- gap between cards (lg:space-y-[55vh]) creates scroll distance    --}}
+        {{-- for the next card to travel up and stack on top (higher z-index) --}}
+       {{-- pb-[30vh] gives trailing scroll so last card rests before release --}}
+        {{-- NO reveal class (transform breaks sticky) / NO overflow-hidden   --}}
+        {{-- on section (creates scroll container that traps sticky)          --}}
+        <div class="space-y-6 lg:space-y-[55vh] lg:pb-[30vh]">
             @foreach($steps as $i => $step)
-                <div class="reveal bg-brand rounded-3xl p-8 lg:p-10 shadow-warm-lg ring-1 ring-neutral-900/5
-                            mb-6 lg:mb-[45vh] lg:sticky lg:top-[12vh]"
+                <div class="bg-brand rounded-3xl p-8 lg:p-10 shadow-warm-lg ring-1 ring-neutral-900/5
+                            lg:sticky lg:top-[15vh]"
                      style="z-index: {{ $i + 10 }};">
                     <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12 {{ $i % 2 === 1 ? 'lg:[direction:rtl]' : '' }}">
 
