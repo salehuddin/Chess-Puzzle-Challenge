@@ -120,11 +120,11 @@
                 <p class="text-neutral-500 text-lg">From choosing your series to holding your medal — here's the journey.</p>
             </div>
 
-            {{-- Card stack area: cards overlap, active ones visible --}}
+            {{-- Card stack area: cards slide in from below, stack on top (z-index) --}}
             <div class="relative w-full max-w-5xl min-h-[440px]">
                 @foreach($steps as $i => $step)
-                    <div class="absolute inset-0 transition-all duration-700 ease-out"
-                         :class="{{ $i }} <= active ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-full'"
+                    <div class="absolute inset-0 transition-transform duration-[750ms] ease-out"
+                         :class="{{ $i }} <= active ? 'translate-y-0' : 'translate-y-full'"
                          style="z-index: {{ $i + 10 }};">
                         <div class="bg-brand rounded-3xl p-10 shadow-warm-lg ring-1 ring-neutral-900/5">
                             <div class="grid grid-cols-2 gap-12 {{ $i % 2 === 1 ? '[direction:rtl]' : '' }}">
@@ -132,14 +132,6 @@
                             </div>
                         </div>
                     </div>
-                @endforeach
-            </div>
-
-            {{-- Progress dots (visual indicator of which step we're on) --}}
-            <div class="flex items-center gap-2 mt-8 shrink-0">
-                @foreach($steps as $i => $step)
-                    <div class="h-2 rounded-full transition-all duration-300"
-                         :class="active === {{ $i }} ? 'w-8 bg-neutral-900' : (active > {{ $i }} ? 'w-2 bg-brand/60' : 'w-2 bg-neutral-300')"></div>
                 @endforeach
             </div>
         </div>
