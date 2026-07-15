@@ -70,14 +70,14 @@
     @endphp
 
     {{-- Mobile heading (normal flow) --}}
-    <div class="lg:hidden text-center mb-12 max-w-2xl mx-auto px-4 sm:px-6">
+    <div class="lg:hidden relative z-10 text-center mb-12 max-w-2xl mx-auto px-4 sm:px-6">
         <span class="inline-block text-neutral-500 font-bold text-xs uppercase tracking-[0.2em] mb-3">How A Series Works</span>
         <h2 class="font-display text-4xl font-black text-neutral-900 mb-4">Four steps. One medal.</h2>
         <p class="text-neutral-500 text-lg">From choosing your series to holding your medal — here's the journey.</p>
     </div>
 
     {{-- Mobile: normal stacked cards --}}
-    <div class="lg:hidden space-y-6 px-4 sm:px-6 pb-10 relative">
+    <div class="lg:hidden relative z-10 space-y-6 px-4 sm:px-6 pb-10">
         @foreach($steps as $i => $step)
             <div class="bg-brand rounded-3xl p-8 shadow-warm-lg ring-1 ring-neutral-900/5">
                 <div class="grid grid-cols-1 gap-6">
