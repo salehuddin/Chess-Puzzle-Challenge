@@ -125,6 +125,14 @@ class Challenge extends Model
     }
 
     /**
+     * Player reviews submitted for this challenge.
+     */
+    public function reviews(): HasMany
+    {
+        return $this->hasMany(Review::class);
+    }
+
+    /**
      * The stock movement audit log for this challenge's medal.
      */
     public function stockMovements(): HasMany

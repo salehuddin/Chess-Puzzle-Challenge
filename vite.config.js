@@ -11,6 +11,7 @@ export default defineConfig({
                 'resources/css/filament-tailwind.css',
                 'resources/js/app.js',
                 'resources/js/puzzle-player-page.js',
+                'resources/js/challenge-complete.js',
                 'resources/css/filament-puzzle-preview.css',
                 'resources/js/filament-puzzle-preview.js',
                 'resources/js/filament-editorjs.js',

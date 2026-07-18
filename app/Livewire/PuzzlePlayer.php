@@ -5,6 +5,7 @@ namespace App\Livewire;
 use App\Models\Enrollment;
 use App\Models\Fulfillment;
 use App\Models\PuzzleProgress;
+use App\Models\Review;
 use App\Models\Sticker;
 use Illuminate\Support\Facades\Crypt;
 use Illuminate\Support\Facades\DB;
@@ -49,6 +50,16 @@ class PuzzlePlayer extends Component
     public bool $isFinalPuzzle = false;
 
     public bool $medalRequestPending = false;
+
+    public bool $reviewPending = false;
+
+    public ?int $puzzleRating = null;
+
+    public ?int $platformRating = null;
+
+    public ?string $reviewTitle = null;
+
+    public ?string $reviewBody = null;
 
     public ?string $completionToken = null;
 
@@ -110,6 +121,7 @@ class PuzzlePlayer extends Component
 
             $this->finalizeIfEligible();
             $this->medalRequestPending = $this->resolveMedalRequestPending();
+            $this->reviewPending = $this->resolveReviewPending();
         }
 
         $this->orderedPuzzleIds = $challengePuzzles
@@ -216,6 +228,14 @@ class PuzzlePlayer extends Component
 
             $fulfillment->save();
 
+            Review::firstOrCreate([
+                'enrollment_id' => $enrollment->id,
+            ], [
+                'challenge_id' => $enrollment->challenge_id,
+                'user_id' => auth()->id(),
+                'status' => 'pending',
+            ]);
+
             $this->enrollment = $enrollment->fresh();
         });
     }
@@ -225,6 +245,48 @@ class PuzzlePlayer extends Component
         $fulfillment = Fulfillment::where('enrollment_id', $this->enrollment->id)->first();
 
         return $fulfillment?->status === 'pending';
+    }
+
+    protected function resolveReviewPending(): bool
+    {
+        return Review::where('enrollment_id', $this->enrollment->id)
+            ->where('status', 'pending')
+            ->exists();
+    }
+
+    /**
+     * Submit the player review for this challenge.
+     *
+     * Validates the two chess-piece ratings and optional free-form feedback,
+     * then flips the pending Review record into the submitted state.
+     */
+    public function submitReview(): void
+    {
+        $validated = $this->validate([
+            'puzzleRating' => ['required', 'integer', 'between:1,5'],
+            'platformRating' => ['required', 'integer', 'between:1,5'],
+            'reviewTitle' => ['nullable', 'string', 'max:120'],
+            'reviewBody' => ['nullable', 'string', 'max:2000'],
+        ]);
+
+        $review = Review::where('enrollment_id', $this->enrollment->id)->first();
+
+        abort_if(! $review || $review->user_id !== auth()->id(), 403);
+        abort_if($review->status !== 'pending', 403);
+
+        $review->update([
+            'puzzle_rating' => $validated['puzzleRating'],
+            'platform_rating' => $validated['platformRating'],
+            'title' => $validated['reviewTitle'],
+            'body' => $validated['reviewBody'],
+            'status' => 'submitted',
+            'submitted_at' => now(),
+        ]);
+
+        $this->reviewPending = false;
+        $this->reset(['puzzleRating', 'platformRating', 'reviewTitle', 'reviewBody']);
+
+        $this->dispatch('review-submitted');
     }
 
     protected function generatePuzzleProofToken(int $puzzleId, int $completedCount): string

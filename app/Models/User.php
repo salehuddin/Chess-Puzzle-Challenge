@@ -71,6 +71,14 @@ class User extends Authenticatable implements FilamentUser
         return $this->hasMany(Sticker::class);
     }
 
+    /**
+     * Player reviews this user has submitted.
+     */
+    public function reviews(): HasMany
+    {
+        return $this->hasMany(Review::class);
+    }
+
     public function isAdmin(): bool
     {
         return $this->hasRole('super_admin');

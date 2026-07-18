@@ -52,4 +52,9 @@ class Enrollment extends Model
     {
         return $this->hasOne(Fulfillment::class);
     }
+
+    public function review(): HasOne
+    {
+        return $this->hasOne(Review::class);
+    }
 }

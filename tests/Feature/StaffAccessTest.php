@@ -85,6 +85,7 @@ class StaffAccessTest extends TestCase
             '/admin/enrollments',
             '/admin/fulfillments',
             '/admin/fulfillment-queue',
+            '/admin/reviews',
         ];
     }
 
@@ -125,6 +126,7 @@ class StaffAccessTest extends TestCase
             '/admin/bundles',
             '/admin/users',
             '/admin/settings',
+            '/admin/reviews',
         ];
     }
 

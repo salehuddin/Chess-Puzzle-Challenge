@@ -36,6 +36,7 @@
         "@editorjs/table": "^2.4.5",
         "@editorjs/underline": "^1.2.1",
         "@editorjs/warning": "^1.4.1",
+        "canvas-confetti": "^1.9.4",
         "chess.js": "^1.4.0",
         "chessground": "^9.2.1",
         "daisyui": "^5.5.19"
