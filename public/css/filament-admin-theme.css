@@ -104,14 +104,22 @@ body {
     color: #a3a3a3;
 }
 
-/* Active sidebar item — chartreuse highlight (the /new home page's brand
-   accent, kept for "this is the brand/active" moments).
-   Filament uses `.fi-sidebar-item.fi-active` (descendant selector).
-   We also keep `.fi-sidebar-item-active` as a fallback for older markup. */
+/* Active sidebar item — solid chartreuse fill (the /new home page's brand
+   accent, the "this is the active page" moment). Matches the reference:
+   chartreuse background, onyx icon + label.
+   Filament uses `.fi-sidebar-item.fi-active`; we also keep
+   `.fi-sidebar-item-active` as a fallback for any custom markup. */
+.fi-sidebar-item.fi-active > .fi-sidebar-item-btn,
+.fi-sidebar-item-active > .fi-sidebar-item-btn {
+    background-color: var(--cpc-brand) !important;
+    border-radius: 0.5rem !important;
+    box-shadow: 0 1px 2px rgba(17, 17, 17, 0.06) !important;
+}
+
 .fi-sidebar-item.fi-active,
 .fi-sidebar-item-active {
-    background-color: var(--cpc-brand-soft) !important;
-    border-left: 3px solid var(--cpc-brand) !important;
+    background-color: transparent !important;
+    border-left: 0 !important;
 }
 
 .fi-sidebar-item.fi-active .fi-sidebar-item-label,
@@ -122,19 +130,25 @@ body {
     font-weight: 600;
 }
 
+.dark .fi-sidebar-item.fi-active > .fi-sidebar-item-btn,
+.dark .fi-sidebar-item-active > .fi-sidebar-item-btn {
+    background-color: var(--cpc-brand) !important;
+    color: var(--cpc-onyx) !important;
+}
+
 .dark .fi-sidebar-item.fi-active .fi-sidebar-item-label,
 .dark .fi-sidebar-item.fi-active .fi-sidebar-item-icon,
 .dark .fi-sidebar-item-active .fi-sidebar-item-label,
 .dark .fi-sidebar-item-active .fi-sidebar-item-icon {
-    color: var(--cpc-brand) !important;
+    color: var(--cpc-onyx) !important;
 }
 
-.fi-sidebar-item:hover {
-    background-color: rgba(183, 255, 0, 0.06);
+.fi-sidebar-item:hover > .fi-sidebar-item-btn {
+    background-color: rgba(183, 255, 0, 0.10) !important;
 }
 
-.dark .fi-sidebar-item:hover {
-    background-color: rgba(183, 255, 0, 0.10);
+.dark .fi-sidebar-item:hover > .fi-sidebar-item-btn {
+    background-color: rgba(183, 255, 0, 0.18) !important;
 }
 
 /* Brand wordmark — chartreuse pawn + onyx/white text */
@@ -416,13 +430,28 @@ body {
 }
 
 /* ── Tabs ─────────────────────────────────────────────────── */
+/* Active tab — solid chartreuse fill (matches sidebar active treatment). */
 .fi-tabs-item.fi-tabs-item-active {
+    background-color: var(--cpc-brand) !important;
+    color: var(--cpc-onyx) !important;
+    border-radius: 0.5rem !important;
     border-bottom-color: var(--cpc-brand) !important;
-    color: var(--cpc-onyx);
+    font-weight: 600;
 }
 
 .dark .fi-tabs-item.fi-tabs-item-active {
-    color: #FEFEFE;
+    color: var(--cpc-onyx) !important;
+    background-color: var(--cpc-brand) !important;
+}
+
+.fi-tabs-item:not(.fi-tabs-item-active):hover {
+    background-color: rgba(183, 255, 0, 0.08) !important;
+    color: var(--cpc-onyx) !important;
+}
+
+.dark .fi-tabs-item:not(.fi-tabs-item-active):hover {
+    background-color: rgba(183, 255, 0, 0.14) !important;
+    color: #FEFEFE !important;
 }
 
 /* ── Filters & search ─────────────────────────────────────── */
@@ -459,6 +488,27 @@ body {
 .dark .fi-pagination-items-button:not(.fi-disabled):not(.fi-active) {
     background-color: #0d0d0d !important;
     color: #FEFEFE !important;
+}
+
+/* ── Topbar nav items (admin nav rendered in the topbar) ── */
+.fi-topbar-nav-groups .fi-topbar-item.fi-active .fi-topbar-item-btn {
+    background-color: var(--cpc-brand) !important;
+    color: var(--cpc-onyx) !important;
+    border-radius: 0.5rem !important;
+    font-weight: 600;
+}
+
+.dark .fi-topbar-nav-groups .fi-topbar-item.fi-active .fi-topbar-item-btn {
+    background-color: var(--cpc-brand) !important;
+    color: var(--cpc-onyx) !important;
+}
+
+.fi-topbar-nav-groups .fi-topbar-item:not(.fi-active) .fi-topbar-item-btn:hover {
+    background-color: rgba(183, 255, 0, 0.08) !important;
+}
+
+.dark .fi-topbar-nav-groups .fi-topbar-item:not(.fi-active) .fi-topbar-item-btn:hover {
+    background-color: rgba(183, 255, 0, 0.14) !important;
 }
 
 /* ── Stats overview (KPI widget) ──────────────────────────── */
