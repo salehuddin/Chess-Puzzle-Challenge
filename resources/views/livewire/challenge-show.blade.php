@@ -115,14 +115,14 @@
         />
     </x-challenge.section>
 
-    {{-- 3. Journey narrative (white) -------------------------------------- --}}
+    {{-- 3. Journey narrative (mist) --------------------------------------- --}}
     @if($contentHtml !== '' || $hasDescription)
         <x-challenge.section
             id="journey"
             eyebrow="The journey"
             heading="What this challenge is about"
             sub="Step-by-step: each puzzle is a checkpoint on your way to the medal."
-            :bg="'white'"
+            :bg="'mist'"
             :contained="false"
         >
             <div class="mx-auto max-w-3xl px-4 sm:px-6 lg:px-8">
@@ -174,17 +174,38 @@
         </x-challenge.section>
     @endif
 
-    {{-- 6. Benefit grid (white) ------------------------------------------- --}}
+    {{-- 6. Benefit grid (mist) -------------------------------------------- --}}
     <x-challenge.section
         id="benefits"
         eyebrow="Plus all this"
         heading="Everything you get"
-        :bg="'white'"
+        :bg="'mist'"
     >
         <x-challenge.benefit-grid />
     </x-challenge.section>
 
-    {{-- 7. Pricing / enrollment (CHARTREUSE — the brand moment) ---------- --}}
+    {{-- 7. How this challenge works — 4-step breakdown (white) ----------- --}}
+    <x-challenge.section
+        id="how-it-works"
+        eyebrow="How it works"
+        :heading="'Four steps. One medal.'"
+        :sub="'From enrolling in '.($challenge->name ?? 'this challenge').' to holding your finished medal — here is the journey.'"
+        :bg="'white'"
+    >
+        <x-challenge.how-it-works
+            :name="$challenge->name"
+            :puzzleTotal="$puzzleTotal"
+            :orderLabel="$orderLabel"
+            :timeLimit="$timeLimit"
+            :levelData="$levelData"
+            :stickerArtworkUrl="$stickerArtworkUrl"
+            :medalArtworkUrl="$medalArtworkUrl"
+            :posterImageUrl="$posterImageUrl"
+            :enrollHref="'#enroll'"
+        />
+    </x-challenge.section>
+
+    {{-- 8. Pricing / enrollment (CHARTREUSE — the brand moment) ---------- --}}
     <x-challenge.section
         id="enroll"
         eyebrow="Enroll"
@@ -208,19 +229,19 @@
         />
     </x-challenge.section>
 
-    {{-- 8. FAQ accordion (white) ----------------------------------------- --}}
+    {{-- 9. FAQ accordion (mist) ------------------------------------------ --}}
     @if(true)
         <x-challenge.section
             id="faq"
             eyebrow="FAQ"
             heading="Frequently asked questions"
-            :bg="'white'"
+            :bg="'mist'"
         >
             <x-challenge.faq-accordion :items="$faqItems !== [] ? $faqItems : $placeholderFaqs" />
         </x-challenge.section>
     @endif
 
-    {{-- 9. Terms & Conditions (white) ------------------------------------ --}}
+    {{-- 10. Terms & Conditions (white) ----------------------------------- --}}
     @if($hasTerms)
         <x-challenge.section
             id="terms"

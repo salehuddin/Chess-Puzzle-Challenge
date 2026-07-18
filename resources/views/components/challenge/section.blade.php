@@ -9,6 +9,7 @@
         bg      (string) — background tone:
                   'base'   = warm-ivory (default — used sparingly, avoid)
                   'white'  = pure white (#FEFEFE)
+                  'mist'   = pale grey (#F5F5F5) — use to break up white runs
                   'dark'   = onyx black (#111111) with white text
                   'brand'  = chartreuse (#B7FF00) with dark text — use once per page
                   'none'   = no background, transparent
@@ -33,6 +34,7 @@
 @php
     $bgClass = match ($bg) {
         'white'  => 'bg-white text-neutral-900',
+        'mist'   => 'bg-base-200 text-neutral-900',
         'dark'   => 'bg-neutral-900 text-white',
         'brand'  => 'bg-brand text-neutral-900',
         'none'   => '',
