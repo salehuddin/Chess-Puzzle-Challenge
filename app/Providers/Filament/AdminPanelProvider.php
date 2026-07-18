@@ -62,7 +62,7 @@ class AdminPanelProvider extends PanelProvider
                 'warning' => Color::Amber,
                 'danger' => Color::Red,
                 'info' => Color::Green,
-                'gray' => Color::Slate,
+                'gray' => Color::Neutral,
             ])
             ->font('Inter')
             ->darkMode(true)

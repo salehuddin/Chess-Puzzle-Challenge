@@ -50,12 +50,12 @@ class ListPuzzles extends ListRecords
         return [
             Action::make('import_csv')
                 ->label('Import CSV Data')
-                ->color('success')
+                ->color('gray')
                 ->icon('heroicon-o-cloud-arrow-up')
                 ->url(fn (): string => PuzzleResource::getUrl('import')),
             Action::make('upload_batch')
                 ->label('Upload CSV Batch')
-                ->color('success')
+                ->color('gray')
                 ->icon('heroicon-o-document-arrow-up')
                 ->url(fn (): string => PuzzleResource::getUrl('upload')),
             CreateAction::make(),

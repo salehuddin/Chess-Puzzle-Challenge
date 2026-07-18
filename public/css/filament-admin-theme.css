@@ -300,7 +300,25 @@ body {
 }
 
 /* ── Primary button (the main "Save / Create" CTA) ─────────── */
-/* Light mode: onyx bg + white text (matches home page btn-primary) */
+/* Filament v5 wires the color via CSS variables (`--bg`, `--text`,
+   `--dark-bg`, `--dark-text`) on the .fi-color-primary element, and
+   the actual `background-color` is applied by `.fi-btn.fi-color`
+   using `bg-(--bg)`. We override the variables so the existing
+   pipeline picks up our brand colors. This avoids the specificity
+   war with Filament's loaded-later Tailwind utilities. */
+.fi-color-primary {
+    --bg: var(--cpc-onyx) !important;
+    --text: var(--cpc-white) !important;
+    --hover-bg: #000000 !important;
+    --hover-text: var(--cpc-white) !important;
+    --dark-bg: var(--cpc-gold) !important;
+    --dark-text: #111111 !important;
+    --dark-hover-bg: #FBBF24 !important;
+    --dark-hover-text: #111111 !important;
+}
+
+/* Belt-and-braces: still set the rendered properties directly so
+   that even if some other rule sets them, ours wins. */
 .fi-btn.fi-btn-primary,
 .fi-btn.fi-color-primary {
     background-color: var(--cpc-onyx) !important;
@@ -318,11 +336,10 @@ body {
     box-shadow: 0 4px 12px rgba(17, 17, 17, 0.30);
 }
 
-/* Dark mode: golden orange bg + onyx text so it's visible */
 .dark .fi-btn.fi-btn-primary,
 .dark .fi-btn.fi-color-primary {
     background-color: var(--cpc-gold) !important;
-    color: var(--cpc-onyx) !important;
+    color: #111111 !important;
     border-color: var(--cpc-gold) !important;
     box-shadow: 0 1px 2px rgba(0, 0, 0, 0.40);
 }
@@ -330,7 +347,7 @@ body {
 .dark .fi-btn.fi-btn-primary:hover,
 .dark .fi-btn.fi-color-primary:hover {
     background-color: #FBBF24 !important;
-    color: var(--cpc-onyx) !important;
+    color: #111111 !important;
     box-shadow: 0 4px 12px rgba(245, 158, 11, 0.40);
 }
 
@@ -465,4 +482,242 @@ body {
 .dark .fi-page-title,
 .dark .fi-header-heading {
     color: #FEFEFE !important;
+}
+
+/* ── Preview row (puzzle table — JS sets this on the clicked row) ─ */
+/* Replaces the legacy `bg-amber-50/80 ring-amber-300` Tailwind set
+   that hardcoded a light-mode-only cream background. */
+.cpc-preview-row {
+    background-color: rgba(245, 158, 11, 0.18) !important;
+    box-shadow: inset 0 0 0 1px #fcd34d !important;
+}
+
+.dark .cpc-preview-row {
+    background-color: rgba(245, 158, 11, 0.22) !important;
+    box-shadow: inset 0 0 0 1px #f59e0b !important;
+}
+
+/* ── Side preview panel (puzzles list) ────────────────────── */
+/* Replaces the legacy inline-styled card that hardcoded #ffffff /
+   #111827 and was unreadable in dark mode. All colors now respond
+   to the .dark selector. */
+.cpc-preview-panel {
+    --pp-bg: #ffffff;
+    --pp-border: rgba(17, 24, 39, 0.10);
+    --pp-text: #111111;
+    --pp-text-muted: #525252;
+    --pp-chip-bg: #f3f4f6;
+    --pp-chip-text: #111111;
+    --pp-fen-bg: #ffffff;
+    --pp-side-bg: #fafafa;
+    --pp-shadow: 0 1px 2px rgba(0, 0, 0, 0.06);
+
+    border-radius: 0.75rem;
+    border: 1px solid var(--pp-border);
+    background-color: var(--pp-bg);
+    color: var(--pp-text);
+    padding: 16px;
+    box-shadow: var(--pp-shadow);
+}
+
+.dark .cpc-preview-panel {
+    --pp-bg: #1f1f1f;
+    --pp-border: #2e2e2e;
+    --pp-text: #FEFEFE;
+    --pp-text-muted: #a3a3a3;
+    --pp-chip-bg: #2e2e2e;
+    --pp-chip-text: #FEFEFE;
+    --pp-fen-bg: #0d0d0d;
+    --pp-side-bg: #161616;
+    --pp-shadow: 0 1px 2px rgba(0, 0, 0, 0.40);
+}
+
+.cpc-preview-panel--empty {
+    padding: 20px;
+}
+
+.cpc-preview-panel__title {
+    margin: 0 0 8px;
+    font-size: 1.125rem;
+    line-height: 1.3;
+    font-weight: 700;
+    color: var(--pp-text);
+    font-family: 'Red Hat Display', system-ui, sans-serif;
+}
+
+.cpc-preview-panel__hint {
+    margin: 0;
+    font-size: 0.875rem;
+    line-height: 1.5;
+    color: var(--pp-text-muted);
+}
+
+.cpc-preview-panel__chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    align-items: center;
+    margin-bottom: 12px;
+}
+
+.cpc-preview-panel__chip {
+    display: inline-flex;
+    align-items: center;
+    border-radius: 9999px;
+    padding: 3px 10px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    background-color: var(--pp-chip-bg);
+    color: var(--pp-chip-text);
+}
+
+.cpc-preview-panel__chip--rating {
+    background-color: var(--cpc-gold-soft);
+    color: var(--cpc-onyx);
+    font-weight: 700;
+}
+
+.dark .cpc-preview-panel__chip--rating {
+    color: var(--cpc-gold);
+}
+
+.cpc-preview-panel__fen {
+    margin-bottom: 12px;
+    border-radius: 0.5rem;
+    border: 1px solid var(--pp-border);
+    background-color: var(--pp-fen-bg);
+    padding: 10px 12px;
+}
+
+.cpc-preview-panel__fen-label {
+    margin: 0 0 4px;
+    font-size: 0.6875rem;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    color: var(--pp-text-muted);
+    font-weight: 700;
+}
+
+.cpc-preview-panel__fen-code {
+    display: block;
+    overflow-x: auto;
+    white-space: nowrap;
+    font-size: 0.6875rem;
+    color: var(--pp-text);
+    font-family: ui-monospace, SFMono-Regular, monospace;
+}
+
+.cpc-preview-panel__board-row {
+    position: relative;
+    margin-top: 16px;
+    display: flex;
+    flex-direction: row;
+    gap: 16px;
+    align-items: flex-start;
+    min-height: 0;
+}
+
+.cpc-preview-panel__board-frame {
+    position: relative;
+    width: 320px;
+    max-width: 320px;
+    flex: 0 0 320px;
+    margin: 0 auto;
+    border-radius: 0.625rem;
+    border: 4px solid var(--pp-side-bg);
+    background-color: #f0d9b5;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+    overflow: hidden;
+    aspect-ratio: 1;
+}
+
+.cpc-preview-panel__side {
+    min-height: 0;
+    flex: 1 1 auto;
+    overflow: auto;
+    border-radius: 0.625rem;
+    border: 1px solid var(--pp-border);
+    background-color: var(--pp-side-bg);
+    padding: 16px;
+}
+
+.cpc-preview-panel__loading {
+    color: var(--pp-text-muted);
+    font-weight: 500;
+}
+
+.cpc-preview-panel__turn {
+    margin: 0 0 12px;
+    color: var(--pp-text);
+    font-size: 0.875rem;
+}
+
+.cpc-preview-panel__turn-chip {
+    display: inline-block;
+    margin-left: 6px;
+    border-radius: 6px;
+    padding: 2px 8px;
+    font-size: 0.75rem;
+    font-weight: 700;
+}
+
+.cpc-preview-panel__turn-chip--white {
+    background-color: var(--cpc-gold-soft);
+    color: #92400e;
+}
+
+.dark .cpc-preview-panel__turn-chip--white {
+    background-color: rgba(245, 158, 11, 0.22);
+    color: #fcd34d;
+}
+
+.cpc-preview-panel__turn-chip--black {
+    background-color: #262626;
+    color: #FEFEFE;
+}
+
+.dark .cpc-preview-panel__turn-chip--black {
+    background-color: #0a0a0a;
+    color: #FEFEFE;
+}
+
+.cpc-preview-panel__opponent {
+    padding: 12px;
+    background-color: var(--pp-bg);
+    border-radius: 0.5rem;
+    border: 1px solid var(--pp-border);
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04);
+    width: 100%;
+    margin: 0 auto;
+    max-width: 200px;
+}
+
+.cpc-preview-panel__opponent-label {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    color: var(--pp-text-muted);
+    margin-bottom: 4px;
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    font-weight: 700;
+}
+
+.cpc-preview-panel__opponent-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 9999px;
+    background-color: #f87171;
+    display: inline-block;
+    animation: pulse 2s ease-in-out infinite;
+}
+
+.cpc-preview-panel__opponent-move {
+    font-family: ui-monospace, SFMono-Regular, monospace;
+    font-size: 1.25rem;
+    line-height: 1.5;
+    font-weight: 700;
+    color: var(--pp-text);
 }

@@ -44,7 +44,7 @@ function puzzlePreviewPanel(initialPuzzle = null) {
         },
 
         applyRowHighlight(id) {
-            const rowClassList = ['bg-amber-50/80', 'ring-1', 'ring-inset', 'ring-amber-300'];
+            const rowClassList = ['cpc-preview-row'];
 
             document.querySelectorAll('.fi-ta-row, .fi-ta-record').forEach((row) => {
                 row.classList.remove(...rowClassList);
