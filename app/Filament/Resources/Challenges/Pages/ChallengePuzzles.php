@@ -105,10 +105,7 @@ class ChallengePuzzles extends ManageRelatedRecords
             ])
             ->recordClasses(fn (Puzzle $record): array => $this->previewPuzzleId === $record->id
                 ? [
-                    'bg-amber-50/80',
-                    'ring-1',
-                    'ring-inset',
-                    'ring-amber-300',
+                    'cpc-preview-row',
                 ]
                 : [])
             ->headerActions([

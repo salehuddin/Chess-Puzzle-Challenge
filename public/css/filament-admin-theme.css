@@ -272,11 +272,11 @@ body {
 }
 
 .fi-ta-table tr:hover td {
-    background-color: rgba(245, 158, 11, 0.04) !important;
+    background-color: rgba(183, 255, 0, 0.06) !important;
 }
 
 .dark .fi-ta-table tr:hover td {
-    background-color: rgba(245, 158, 11, 0.10) !important;
+    background-color: rgba(183, 255, 0, 0.12) !important;
 }
 
 /* Selected/active row — chartreuse tint with onyx text (the /new brand accent) */

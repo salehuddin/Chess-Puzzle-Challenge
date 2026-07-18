@@ -149,10 +149,7 @@ class AttachPuzzles extends Page implements HasSchemas, HasTable
             ])
             ->recordClasses(fn (Puzzle $record): array => ((int) ($this->previewPuzzleId ?? 0)) === $record->id
                 ? [
-                    'bg-amber-50/80',
-                    'ring-1',
-                    'ring-inset',
-                    'ring-amber-300',
+                    'cpc-preview-row',
                 ]
                 : [])
             ->filters([
