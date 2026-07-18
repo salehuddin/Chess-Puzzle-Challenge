@@ -84,13 +84,10 @@
     ];
 @endphp
 
-<div class="grid grid-cols-1 gap-5 sm:grid-cols-2">
+<div class="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-4">
     @foreach($steps as $i => $step)
         @php $isLast = $i === 3; @endphp
-        <article @class([
-            'group relative flex h-full flex-col overflow-hidden rounded-2xl border border-neutral-200 bg-white p-6 shadow-warm transition hover:-translate-y-1 hover:shadow-warm-lg',
-            'sm:col-span-2 lg:col-span-1' => $isLast,
-        ])>
+        <article class="group relative flex h-full flex-col overflow-hidden rounded-2xl border border-neutral-200 bg-white p-6 shadow-warm transition hover:-translate-y-1 hover:shadow-warm-lg">
             {{-- Step number + icon --}}
             <div class="flex items-center gap-3">
                 <div class="grid h-11 w-11 place-items-center rounded-full bg-neutral-900 text-sm font-black text-brand ring-4 ring-brand/30">
