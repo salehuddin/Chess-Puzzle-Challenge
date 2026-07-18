@@ -53,6 +53,7 @@ class PuzzlesTable
                     ->sortable(),
                 TextColumn::make('themes')
                     ->badge()
+                    ->color('primary')
                     ->listWithLineBreaks()
                     ->limitList(3),
                 TextColumn::make('popularity')

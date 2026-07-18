@@ -721,3 +721,421 @@ body {
     font-weight: 700;
     color: var(--pp-text);
 }
+
+/* ── Documentation page (custom dark-mode-aware panels + prose) ─ */
+.cpc-doc-panel {
+    --dp-bg: #ffffff;
+    --dp-border: rgba(17, 24, 39, 0.10);
+    --dp-shadow: 0 1px 2px rgba(0, 0, 0, 0.06);
+    --dp-title: #111111;
+    --dp-icon: #111111;
+    --dp-hint: #525252;
+    --dp-category: #6b7280;
+    --dp-link-bg: transparent;
+    --dp-link-border: #e5e7eb;
+    --dp-link-title: #111111;
+    --dp-link-desc: #6b7280;
+    --dp-link-hover-bg: rgba(183, 255, 0, 0.04);
+    --dp-link-hover-border: var(--cpc-brand);
+    --dp-link-active-bg: rgba(183, 255, 0, 0.12);
+    --dp-link-active-border: var(--cpc-brand);
+    --dp-link-active-title: #111111;
+    --dp-pill-bg: #f3f4f6;
+    --dp-pill-text: #1f2937;
+    --dp-pill-category-bg: var(--cpc-onyx);
+    --dp-pill-category-text: var(--cpc-white);
+    --dp-prose-color: #374151;
+    --dp-prose-heading: #111827;
+    --dp-prose-strong: #111827;
+    --dp-prose-link: #111827;
+    --dp-prose-marker: #6b7280;
+    --dp-prose-link-underline: #9ca3af;
+    --dp-prose-th-border: #e5e7eb;
+    --dp-prose-td-border: #f3f4f6;
+    --dp-prose-hr: #e5e7eb;
+    --dp-prose-blockquote: #4b5563;
+    --dp-prose-blockquote-border: #d1d5db;
+    --dp-prose-code-bg: #f3f4f6;
+    --dp-prose-pre-bg: #1f2937;
+    --dp-prose-pre-text: #f9fafb;
+    --dp-prose-th-bg: #f9fafb;
+
+    border-radius: 0.75rem;
+    background-color: var(--dp-bg);
+    border: 1px solid var(--dp-border);
+    box-shadow: var(--dp-shadow);
+    padding: 1.25rem;
+    color: var(--dp-prose-color);
+}
+
+.dark .cpc-doc-panel {
+    --dp-bg: #1f1f1f;
+    --dp-border: #2e2e2e;
+    --dp-shadow: 0 1px 2px rgba(0, 0, 0, 0.40);
+    --dp-title: #FEFEFE;
+    --dp-icon: #B7FF00;
+    --dp-hint: #a3a3a3;
+    --dp-category: #a3a3a3;
+    --dp-link-border: #2e2e2e;
+    --dp-link-title: #FEFEFE;
+    --dp-link-desc: #a3a3a3;
+    --dp-link-hover-bg: rgba(183, 255, 0, 0.08);
+    --dp-link-hover-border: var(--cpc-brand);
+    --dp-link-active-bg: rgba(183, 255, 0, 0.14);
+    --dp-link-active-border: var(--cpc-brand);
+    --dp-link-active-title: var(--cpc-brand);
+    --dp-pill-bg: #2e2e2e;
+    --dp-pill-text: #FEFEFE;
+    --dp-pill-category-bg: var(--cpc-brand);
+    --dp-pill-category-text: #111111;
+}
+
+.cpc-doc-panel__title-row {
+    color: var(--dp-title);
+}
+
+.cpc-doc-panel__title {
+    color: var(--dp-title);
+}
+
+.cpc-doc-panel__icon {
+    color: var(--dp-icon);
+}
+
+.cpc-doc-panel__hint {
+    color: var(--dp-hint);
+}
+
+.cpc-doc-panel__category-label {
+    color: var(--dp-category);
+}
+
+/* Sidebar document link */
+.cpc-doc-link {
+    display: block;
+    border-radius: 0.5rem;
+    border: 1px solid var(--dp-link-border);
+    background-color: var(--dp-link-bg);
+    padding: 0.75rem;
+    transition: background-color 0.15s ease, border-color 0.15s ease, transform 0.15s ease;
+}
+
+.cpc-doc-link:hover {
+    background-color: var(--dp-link-hover-bg);
+    border-color: var(--dp-link-hover-border);
+    transform: translateX(2px);
+}
+
+.cpc-doc-link--active {
+    background-color: var(--dp-link-active-bg);
+    border-color: var(--dp-link-active-border);
+    box-shadow: 0 0 0 1px var(--dp-link-active-border);
+}
+
+.cpc-doc-link__title {
+    font-weight: 600;
+    color: var(--dp-link-title);
+}
+
+.cpc-doc-link__title--active {
+    color: var(--dp-link-active-title);
+    font-weight: 700;
+}
+
+.cpc-doc-link__desc {
+    color: var(--dp-link-desc);
+}
+
+/* Pills (category / updated / path) */
+.cpc-doc-pill {
+    display: inline-flex;
+    align-items: center;
+    border-radius: 9999px;
+    background-color: var(--dp-pill-bg);
+    color: var(--dp-pill-text);
+    padding: 0.25rem 0.75rem;
+    font-size: 0.75rem;
+    font-weight: 500;
+}
+
+.cpc-doc-pill--category {
+    background-color: var(--dp-pill-category-bg);
+    color: var(--dp-pill-category-text);
+    font-weight: 600;
+}
+
+.cpc-doc-pill--mono {
+    font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+}
+
+/* Content panel (the markdown body container) */
+.cpc-doc-content {
+    border-radius: 0.75rem;
+    background-color: var(--dp-bg);
+    border: 1px solid var(--dp-border);
+    box-shadow: var(--dp-shadow);
+    padding: 1.5rem;
+    color: var(--dp-prose-color);
+}
+
+@media (min-width: 1024px) {
+    .cpc-doc-content {
+        padding: 2rem;
+    }
+}
+
+.cpc-doc-content__heading {
+    font-size: 1.875rem;
+    font-weight: 800;
+    color: var(--dp-prose-heading);
+    font-family: 'Red Hat Display', system-ui, sans-serif;
+    letter-spacing: -0.02em;
+}
+
+/* Markdown body — light + dark variants */
+.cpc-doc-prose {
+    color: var(--dp-prose-color);
+    line-height: 1.7;
+    font-family: 'Inter', system-ui, sans-serif;
+}
+
+.cpc-doc-prose > * + * {
+    margin-top: 1.25em;
+}
+
+.cpc-doc-prose h1 {
+    font-size: 1.875rem;
+    font-weight: 800;
+    color: var(--dp-prose-heading);
+    margin-bottom: 0.75em;
+    margin-top: 1.5em;
+    font-family: 'Red Hat Display', system-ui, sans-serif;
+    letter-spacing: -0.02em;
+}
+
+.cpc-doc-prose h2 {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: var(--dp-prose-heading);
+    margin-bottom: 0.5em;
+    margin-top: 1.5em;
+    font-family: 'Red Hat Display', system-ui, sans-serif;
+}
+
+.cpc-doc-prose h3 {
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: var(--dp-prose-heading);
+    margin-bottom: 0.5em;
+    margin-top: 1.25em;
+}
+
+.cpc-doc-prose h4 {
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: var(--dp-prose-heading);
+    margin-bottom: 0.5em;
+    margin-top: 1em;
+}
+
+.cpc-doc-prose p {
+    margin-bottom: 1em;
+}
+
+.cpc-doc-prose ul,
+.cpc-doc-prose ol {
+    margin-left: 1.5em;
+    margin-bottom: 1em;
+}
+
+.cpc-doc-prose ul {
+    list-style-type: disc;
+}
+
+.cpc-doc-prose ol {
+    list-style-type: decimal;
+}
+
+.cpc-doc-prose li {
+    margin-bottom: 0.25em;
+}
+
+.cpc-doc-prose a {
+    color: var(--dp-prose-link);
+    text-decoration: underline;
+    text-decoration-color: var(--dp-prose-link-underline);
+    text-underline-offset: 3px;
+}
+
+.cpc-doc-prose a:hover {
+    text-decoration-color: var(--cpc-brand);
+    color: var(--cpc-brand);
+}
+
+.cpc-doc-prose strong {
+    color: var(--dp-prose-strong);
+    font-weight: 600;
+}
+
+.cpc-doc-prose code {
+    background-color: var(--dp-prose-code-bg);
+    color: var(--dp-prose-strong);
+    padding: 0.125em 0.375em;
+    border-radius: 0.25em;
+    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+    font-size: 0.875em;
+}
+
+.cpc-doc-prose pre {
+    background-color: var(--dp-prose-pre-bg);
+    color: var(--dp-prose-pre-text);
+    padding: 1em;
+    border-radius: 0.5em;
+    overflow-x: auto;
+    margin-bottom: 1em;
+}
+
+.cpc-doc-prose pre code {
+    background-color: transparent;
+    padding: 0;
+    color: inherit;
+}
+
+.cpc-doc-prose blockquote {
+    border-left: 4px solid var(--dp-prose-blockquote-border);
+    padding-left: 1em;
+    color: var(--dp-prose-blockquote);
+    font-style: italic;
+}
+
+.cpc-doc-prose table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 1em;
+}
+
+.cpc-doc-prose th,
+.cpc-doc-prose td {
+    border: 1px solid var(--dp-prose-td-border);
+    padding: 0.625em 0.875em;
+    text-align: left;
+}
+
+.cpc-doc-prose th {
+    background-color: var(--dp-prose-th-bg);
+    font-weight: 600;
+    color: var(--dp-prose-heading);
+    border-color: var(--dp-prose-th-border);
+}
+
+.cpc-doc-prose hr {
+    border: 0;
+    border-top: 1px solid var(--dp-prose-hr);
+    margin: 2em 0;
+}
+
+/* ── Tag pills (theme badges in tables) — make them readable ── */
+.fi-ta-text .fi-badge,
+.fi-ta-text .fi-badge-color {
+    background-color: var(--cpc-surface) !important;
+    color: var(--cpc-onyx) !important;
+    border: 1px solid var(--cpc-border) !important;
+    font-weight: 600 !important;
+}
+
+.dark .fi-ta-text .fi-badge,
+.dark .fi-ta-text .fi-badge-color {
+    background-color: #2e2e2e !important;
+    color: #FEFEFE !important;
+    border-color: #404040 !important;
+}
+
+/* ── More chartreuse accents throughout the admin ── */
+
+/* Subtle chartreuse-tinted hover on sidebar group items */
+.fi-sidebar-group-items .fi-sidebar-item:hover .fi-sidebar-item-icon {
+    color: var(--cpc-brand) !important;
+}
+
+.dark .fi-sidebar-group-items .fi-sidebar-item:hover .fi-sidebar-item-icon {
+    color: var(--cpc-brand) !important;
+}
+
+/* Chartreuse underline on breadcrumb separator / current */
+.fi-breadcrumbs-item-separator svg,
+.fi-breadcrumb-item-separator svg {
+    color: var(--cpc-border) !important;
+}
+
+.fi-breadcrumbs-item-active,
+.fi-breadcrumb-item-active {
+    color: var(--cpc-onyx) !important;
+    font-weight: 600 !important;
+}
+
+.dark .fi-breadcrumbs-item-active,
+.dark .fi-breadcrumb-item-active {
+    color: var(--cpc-brand) !important;
+}
+
+/* Page header accent — chartreuse underline beneath page title */
+.fi-page-header {
+    border-bottom: 1px solid var(--cpc-border) !important;
+    padding-bottom: 1rem !important;
+}
+
+.dark .fi-page-header {
+    border-bottom-color: var(--cpc-border) !important;
+}
+
+/* Search field focus — chartreuse ring */
+.fi-global-search-field:focus-within,
+.fi-ta-search-field:focus-within {
+    border-color: var(--cpc-brand) !important;
+    box-shadow: 0 0 0 3px var(--cpc-brand-soft) !important;
+}
+
+/* Stat / KPI value — chartreuse for emphasis */
+.fi-wi-stats-overview-stat-value {
+    color: var(--cpc-onyx) !important;
+    font-family: 'Red Hat Display', system-ui, sans-serif !important;
+    font-weight: 800 !important;
+}
+
+.dark .fi-wi-stats-overview-stat-value {
+    color: #FEFEFE !important;
+}
+
+/* "and N more" overflow link — chartreuse */
+.fi-ta-text-list-limited-message a,
+.fi-ta-text-list-limited-message {
+    color: var(--cpc-onyx) !important;
+    font-weight: 600;
+}
+
+.dark .fi-ta-text-list-limited-message a,
+.dark .fi-ta-text-list-limited-message {
+    color: var(--cpc-brand) !important;
+}
+
+/* Account widget name — chartreuse accent in dark */
+.dark .fi-account-widget-heading {
+    color: #FEFEFE !important;
+}
+
+/* Section icon in panel headers */
+.fi-section-header-heading,
+.fi-section-header-icon {
+    color: var(--cpc-onyx) !important;
+}
+
+.dark .fi-section-header-heading,
+.dark .fi-section-header-icon {
+    color: #FEFEFE !important;
+}
+
+/* Checkbox checked state in tables — chartreuse */
+.dark .fi-ta-record-checkbox input[type="checkbox"]:checked {
+    background-color: var(--cpc-brand) !important;
+    border-color: var(--cpc-brand) !important;
+}
