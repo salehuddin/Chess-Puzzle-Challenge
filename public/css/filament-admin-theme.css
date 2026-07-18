@@ -2,7 +2,8 @@
 /* Matches the /new home page palette:                          */
 /*   • Base 100 / surface    = #FEFEFE (white)                   */
 /*   • Base content / onyx   = #111111                           */
-/*   • Primary (CTAs)        = #111111                           */
+/*   • Primary (CTAs)        = #111111 (onyx) in light           */
+/*                           = #F59E0B (gold)   in dark           */
 /*   • Accent (golden orange)= #F59E0B                           */
 /*   • Brand (chartreuse)    = #B7FF00 (logo / highlights only) */
 /* Font pairing: Inter (body) + Red Hat Display (headings)      */
@@ -11,24 +12,34 @@
 
 /* ── Root tokens shared by light + dark mode ───────────────── */
 :root {
+    /* Brand identity (mirrors the /new home page) */
     --cpc-onyx: #111111;
+    --cpc-onyx-900: #171717;
+    --cpc-onyx-800: #262626;
+    --cpc-onyx-700: #404040;
     --cpc-white: #FEFEFE;
     --cpc-surface: #F5F5F5;
+    --cpc-surface-2: #FAFAFA;
     --cpc-border: #E5E5E5;
     --cpc-gold: #F59E0B;
-    --cpc-gold-soft: rgba(245, 158, 11, 0.10);
+    --cpc-gold-soft: rgba(245, 158, 11, 0.12);
+    --cpc-gold-soft-2: rgba(245, 158, 11, 0.18);
     --cpc-brand: #B7FF00;
     --cpc-brand-soft: rgba(183, 255, 0, 0.14);
     --cpc-shadow-warm: 0 1px 3px rgba(17, 17, 17, 0.04), 0 1px 2px rgba(17, 17, 17, 0.03);
     --cpc-shadow-warm-lg: 0 10px 25px -3px rgba(17, 17, 17, 0.08), 0 4px 6px -4px rgba(17, 17, 17, 0.05);
 }
 
+/* In dark mode, the brand chartreuse stays for highlights; gold
+   becomes the primary CTA so it's visible on the onyx surface. */
 .dark {
     --cpc-onyx: #FEFEFE;
-    --cpc-white: #0a0a0a;
-    --cpc-surface: #161616;
-    --cpc-border: #1f1f1f;
-    --cpc-gold-soft: rgba(245, 158, 11, 0.16);
+    --cpc-white: #171717;          /* "white" surface = the home page's neutral-900 */
+    --cpc-surface: #1f1f1f;        /* slightly elevated cards/tables */
+    --cpc-surface-2: #262626;
+    --cpc-border: #2e2e2e;
+    --cpc-gold-soft: rgba(245, 158, 11, 0.18);
+    --cpc-gold-soft-2: rgba(245, 158, 11, 0.28);
     --cpc-brand-soft: rgba(183, 255, 0, 0.10);
     --cpc-shadow-warm: 0 1px 3px rgba(0, 0, 0, 0.40), 0 1px 2px rgba(0, 0, 0, 0.30);
     --cpc-shadow-warm-lg: 0 10px 25px -3px rgba(0, 0, 0, 0.50), 0 4px 6px -4px rgba(0, 0, 0, 0.30);
@@ -56,12 +67,44 @@ h1, h2, h3, h4, h5, h6,
     font-family: 'Red Hat Display', 'Inter', system-ui, sans-serif;
 }
 
+/* ── Page-level surfaces (must feel like one continuous panel) ─ */
+.fi-app,
+.fi-main,
+.fi-main-ctn,
+body {
+    background-color: var(--cpc-white);
+}
+
+.dark .fi-app,
+.dark .fi-main,
+.dark .fi-main-ctn,
+.dark body {
+    background-color: var(--cpc-white);
+}
+
 /* ── Sidebar ────────────────────────────────────────────────── */
 .fi-sidebar {
     border-right: 1px solid var(--cpc-border);
     background-color: var(--cpc-surface) !important;
 }
 
+.dark .fi-sidebar {
+    background-color: #0d0d0d !important;
+    border-right-color: #2e2e2e;
+}
+
+/* Sidebar item text/icons */
+.fi-sidebar-item-label,
+.fi-sidebar-item-icon {
+    color: var(--cpc-onyx-700);
+}
+
+.dark .fi-sidebar-item-label,
+.dark .fi-sidebar-item-icon {
+    color: #a3a3a3;
+}
+
+/* Active sidebar item — golden orange highlight (works on light + dark) */
 .fi-sidebar-item-active {
     background-color: var(--cpc-gold-soft) !important;
     border-left: 3px solid var(--cpc-gold) !important;
@@ -70,17 +113,23 @@ h1, h2, h3, h4, h5, h6,
 .fi-sidebar-item-active .fi-sidebar-item-label,
 .fi-sidebar-item-active .fi-sidebar-item-icon {
     color: var(--cpc-onyx) !important;
+    font-weight: 600;
+}
+
+.dark .fi-sidebar-item-active .fi-sidebar-item-label,
+.dark .fi-sidebar-item-active .fi-sidebar-item-icon {
+    color: var(--cpc-gold) !important;
 }
 
 .fi-sidebar-item:hover {
-    background-color: rgba(17, 17, 17, 0.04);
+    background-color: rgba(245, 158, 11, 0.06);
 }
 
 .dark .fi-sidebar-item:hover {
-    background-color: rgba(255, 255, 255, 0.04);
+    background-color: rgba(245, 158, 11, 0.10);
 }
 
-/* Brand wordmark gets the chartreuse accent like the public site. */
+/* Brand wordmark — chartreuse pawn + onyx/white text */
 .fi-brand .fi-brand-text,
 .fi-brand-logo-text {
     color: var(--cpc-onyx);
@@ -138,29 +187,70 @@ h1, h2, h3, h4, h5, h6,
     background-color: var(--cpc-white) !important;
 }
 
+.dark .fi-topbar {
+    background-color: var(--cpc-white) !important;
+    border-bottom-color: #2e2e2e;
+}
+
 /* ── Cards & widgets ───────────────────────────────────────── */
 .fi-wi-stats-overview-stat {
     border-radius: 0.75rem !important;
     box-shadow: var(--cpc-shadow-warm) !important;
     border: 1px solid var(--cpc-border) !important;
+    background-color: var(--cpc-white) !important;
     transition: box-shadow 0.2s ease, transform 0.2s ease;
+}
+
+.dark .fi-wi-stats-overview-stat {
+    background-color: var(--cpc-surface) !important;
+    border-color: var(--cpc-border) !important;
 }
 
 .fi-wi-stats-overview-stat:hover {
     box-shadow: 0 4px 12px rgba(245, 158, 11, 0.10), 0 2px 4px rgba(17, 17, 17, 0.04) !important;
 }
 
-/* ── Section cards ─────────────────────────────────────────── */
+/* ── Section cards (forms, panels, tables) ─────────────────── */
 .fi-section,
 .fi-fo-repeater,
 .fi-fo-builder,
+.fi-ta-ctn {
+    border-radius: 0.75rem !important;
+    box-shadow: var(--cpc-shadow-warm) !important;
+    border: 1px solid var(--cpc-border) !important;
+    background-color: var(--cpc-white) !important;
+}
+
+.dark .fi-section,
+.dark .fi-fo-repeater,
+.dark .fi-fo-builder,
+.dark .fi-ta-ctn {
+    background-color: var(--cpc-surface) !important;
+    border-color: var(--cpc-border) !important;
+}
+
 .fi-ta {
     border-radius: 0.75rem !important;
     box-shadow: var(--cpc-shadow-warm) !important;
     border: 1px solid var(--cpc-border) !important;
+    overflow: hidden;
+}
+
+.dark .fi-ta {
+    border-color: var(--cpc-border) !important;
 }
 
 /* ── Tables ────────────────────────────────────────────────── */
+.fi-ta-table {
+    color: var(--cpc-onyx) !important;
+    background-color: var(--cpc-white) !important;
+}
+
+.dark .fi-ta-table {
+    color: #FEFEFE !important;
+    background-color: var(--cpc-surface) !important;
+}
+
 .fi-ta-table th {
     background-color: var(--cpc-surface) !important;
     color: var(--cpc-onyx) !important;
@@ -170,17 +260,52 @@ h1, h2, h3, h4, h5, h6,
     letter-spacing: 0.05em;
 }
 
+.dark .fi-ta-table th {
+    background-color: #0d0d0d !important;
+    color: #d4d4d4 !important;
+}
+
+/* Table body — keep transparent so the section surface shows through */
+.fi-ta-table tbody tr {
+    background-color: transparent !important;
+}
+
 .fi-ta-table tr:hover td {
-    background-color: rgba(245, 158, 11, 0.03);
+    background-color: rgba(245, 158, 11, 0.04) !important;
 }
 
 .dark .fi-ta-table tr:hover td {
-    background-color: rgba(245, 158, 11, 0.06);
+    background-color: rgba(245, 158, 11, 0.10) !important;
 }
 
-/* ── Buttons ──────────────────────────────────────────────── */
+/* Selected/active row — golden orange tint with white text (visible in both modes) */
+.fi-ta-row.fi-selected {
+    background-color: var(--cpc-gold-soft) !important;
+}
+
+.fi-ta-row.fi-selected td,
+.fi-ta-row.fi-selected .fi-ta-text-item {
+    color: #FEFEFE !important;
+    font-weight: 500;
+}
+
+.dark .fi-ta-row.fi-selected {
+    background-color: rgba(245, 158, 11, 0.20) !important;
+}
+
+.dark .fi-ta-row.fi-selected td,
+.dark .fi-ta-row.fi-selected .fi-ta-text-item {
+    color: #FEFEFE !important;
+    font-weight: 500;
+}
+
+/* ── Primary button (the main "Save / Create" CTA) ─────────── */
+/* Light mode: onyx bg + white text (matches home page btn-primary) */
 .fi-btn.fi-btn-primary,
 .fi-btn.fi-color-primary {
+    background-color: var(--cpc-onyx) !important;
+    color: var(--cpc-white) !important;
+    border: 1px solid var(--cpc-onyx) !important;
     border-radius: 0.5rem !important;
     font-weight: 600;
     box-shadow: 0 1px 2px rgba(17, 17, 17, 0.20);
@@ -188,7 +313,25 @@ h1, h2, h3, h4, h5, h6,
 
 .fi-btn.fi-btn-primary:hover,
 .fi-btn.fi-color-primary:hover {
+    background-color: #000000 !important;
+    color: var(--cpc-white) !important;
     box-shadow: 0 4px 12px rgba(17, 17, 17, 0.30);
+}
+
+/* Dark mode: golden orange bg + onyx text so it's visible */
+.dark .fi-btn.fi-btn-primary,
+.dark .fi-btn.fi-color-primary {
+    background-color: var(--cpc-gold) !important;
+    color: var(--cpc-onyx) !important;
+    border-color: var(--cpc-gold) !important;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.40);
+}
+
+.dark .fi-btn.fi-btn-primary:hover,
+.dark .fi-btn.fi-color-primary:hover {
+    background-color: #FBBF24 !important;
+    color: var(--cpc-onyx) !important;
+    box-shadow: 0 4px 12px rgba(245, 158, 11, 0.40);
 }
 
 /* ── Form inputs ──────────────────────────────────────────── */
@@ -197,13 +340,23 @@ h1, h2, h3, h4, h5, h6,
 .fi-fo-textarea textarea {
     border-radius: 0.5rem !important;
     border-color: var(--cpc-border);
+    background-color: var(--cpc-white) !important;
+    color: var(--cpc-onyx) !important;
+}
+
+.dark .fi-fo-text-input input,
+.dark .fi-fo-select select,
+.dark .fi-fo-textarea textarea {
+    background-color: #0d0d0d !important;
+    border-color: #404040 !important;
+    color: #FEFEFE !important;
 }
 
 .fi-fo-text-input input:focus,
 .fi-fo-select select:focus,
 .fi-fo-textarea textarea:focus {
-    border-color: var(--cpc-gold);
-    box-shadow: 0 0 0 2px var(--cpc-gold-soft);
+    border-color: var(--cpc-gold) !important;
+    box-shadow: 0 0 0 2px var(--cpc-gold-soft) !important;
 }
 
 /* ── Badges ────────────────────────────────────────────────── */
@@ -228,6 +381,13 @@ h1, h2, h3, h4, h5, h6,
 .fi-dropdown-panel {
     border-radius: 0.75rem !important;
     box-shadow: var(--cpc-shadow-warm-lg);
+    background-color: var(--cpc-white) !important;
+}
+
+.dark .fi-modal-window,
+.dark .fi-dropdown-panel {
+    background-color: var(--cpc-surface) !important;
+    border: 1px solid var(--cpc-border) !important;
 }
 
 /* ── Tabs ─────────────────────────────────────────────────── */
@@ -236,40 +396,73 @@ h1, h2, h3, h4, h5, h6,
     color: var(--cpc-onyx);
 }
 
+.dark .fi-tabs-item.fi-tabs-item-active {
+    color: #FEFEFE;
+}
+
 /* ── Filters & search ─────────────────────────────────────── */
 .fi-fo-filter-select .choices__inner {
     border-radius: 0.5rem !important;
 }
 
-/* ── Dark mode surface adjustments ────────────────────────── */
-.dark .fi-sidebar {
-    background-color: #0d0d0d !important;
-    border-right-color: var(--cpc-border);
+/* ── Global search (matches the /new nav style) ───────────── */
+.fi-global-search-field {
+    background-color: var(--cpc-surface) !important;
+    border-color: var(--cpc-border) !important;
 }
 
-.dark .fi-topbar {
-    border-bottom-color: var(--cpc-border);
+.dark .fi-global-search-field {
     background-color: #0d0d0d !important;
+    border-color: #404040 !important;
+    color: #FEFEFE !important;
 }
 
-.dark .fi-ta-table th {
-    background-color: #161616 !important;
+/* ── Pagination ───────────────────────────────────────────── */
+.fi-pagination {
     color: var(--cpc-onyx);
 }
 
-.dark .fi-wi-stats-overview-stat {
-    border-color: var(--cpc-border) !important;
+.dark .fi-pagination {
+    color: #FEFEFE;
 }
 
-.dark .fi-section,
-.dark .fi-fo-repeater,
-.dark .fi-ta {
-    border-color: var(--cpc-border) !important;
+.fi-pagination-items-button:not(.fi-disabled):not(.fi-active) {
+    background-color: var(--cpc-surface) !important;
+    color: var(--cpc-onyx) !important;
 }
 
-/* Filament dark mode renders a dark page background; match the onyx home page footer tone */
-.dark body,
-.dark .fi-app,
-.dark .fi-main {
-    background-color: #0a0a0a;
+.dark .fi-pagination-items-button:not(.fi-disabled):not(.fi-active) {
+    background-color: #0d0d0d !important;
+    color: #FEFEFE !important;
+}
+
+/* ── Stats overview (KPI widget) ──────────────────────────── */
+.fi-wi-stats-overview-stat-value {
+    color: var(--cpc-onyx) !important;
+}
+
+.dark .fi-wi-stats-overview-stat-value {
+    color: #FEFEFE !important;
+}
+
+.fi-wi-stats-overview-stat-label {
+    color: #525252 !important;
+}
+
+.dark .fi-wi-stats-overview-stat-label {
+    color: #a3a3a3 !important;
+}
+
+/* ── Page heading — large bold Red Hat Display ─────────────── */
+.fi-page-title,
+.fi-header-heading {
+    color: var(--cpc-onyx) !important;
+    font-family: 'Red Hat Display', system-ui, sans-serif !important;
+    font-weight: 800 !important;
+    letter-spacing: -0.02em;
+}
+
+.dark .fi-page-title,
+.dark .fi-header-heading {
+    color: #FEFEFE !important;
 }
