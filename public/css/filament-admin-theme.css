@@ -105,18 +105,25 @@ body {
 }
 
 /* Active sidebar item — chartreuse highlight (the /new home page's brand
-   accent, kept for "this is the brand/active" moments). */
+   accent, kept for "this is the brand/active" moments).
+   Filament uses `.fi-sidebar-item.fi-active` (descendant selector).
+   We also keep `.fi-sidebar-item-active` as a fallback for older markup. */
+.fi-sidebar-item.fi-active,
 .fi-sidebar-item-active {
     background-color: var(--cpc-brand-soft) !important;
     border-left: 3px solid var(--cpc-brand) !important;
 }
 
+.fi-sidebar-item.fi-active .fi-sidebar-item-label,
+.fi-sidebar-item.fi-active .fi-sidebar-item-icon,
 .fi-sidebar-item-active .fi-sidebar-item-label,
 .fi-sidebar-item-active .fi-sidebar-item-icon {
     color: var(--cpc-onyx) !important;
     font-weight: 600;
 }
 
+.dark .fi-sidebar-item.fi-active .fi-sidebar-item-label,
+.dark .fi-sidebar-item.fi-active .fi-sidebar-item-icon,
 .dark .fi-sidebar-item-active .fi-sidebar-item-label,
 .dark .fi-sidebar-item-active .fi-sidebar-item-icon {
     color: var(--cpc-brand) !important;
