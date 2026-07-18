@@ -104,10 +104,11 @@ body {
     color: #a3a3a3;
 }
 
-/* Active sidebar item — golden orange highlight (works on light + dark) */
+/* Active sidebar item — chartreuse highlight (the /new home page's brand
+   accent, kept for "this is the brand/active" moments). */
 .fi-sidebar-item-active {
-    background-color: var(--cpc-gold-soft) !important;
-    border-left: 3px solid var(--cpc-gold) !important;
+    background-color: var(--cpc-brand-soft) !important;
+    border-left: 3px solid var(--cpc-brand) !important;
 }
 
 .fi-sidebar-item-active .fi-sidebar-item-label,
@@ -118,15 +119,15 @@ body {
 
 .dark .fi-sidebar-item-active .fi-sidebar-item-label,
 .dark .fi-sidebar-item-active .fi-sidebar-item-icon {
-    color: var(--cpc-gold) !important;
+    color: var(--cpc-brand) !important;
 }
 
 .fi-sidebar-item:hover {
-    background-color: rgba(245, 158, 11, 0.06);
+    background-color: rgba(183, 255, 0, 0.06);
 }
 
 .dark .fi-sidebar-item:hover {
-    background-color: rgba(245, 158, 11, 0.10);
+    background-color: rgba(183, 255, 0, 0.10);
 }
 
 /* Brand wordmark — chartreuse pawn + onyx/white text */
@@ -137,7 +138,7 @@ body {
 
 .fi-brand .fi-brand-text span.brand-accent,
 .fi-sidebar .fi-brand strong.brand-accent {
-    color: var(--cpc-gold);
+    color: var(--cpc-brand);
 }
 
 /* ── Custom brand logo (matches the /new home page wordmark) ─ */
@@ -278,25 +279,25 @@ body {
     background-color: rgba(245, 158, 11, 0.10) !important;
 }
 
-/* Selected/active row — golden orange tint with white text (visible in both modes) */
+/* Selected/active row — chartreuse tint with onyx text (the /new brand accent) */
 .fi-ta-row.fi-selected {
-    background-color: var(--cpc-gold-soft) !important;
+    background-color: var(--cpc-brand-soft) !important;
 }
 
 .fi-ta-row.fi-selected td,
 .fi-ta-row.fi-selected .fi-ta-text-item {
-    color: #FEFEFE !important;
-    font-weight: 500;
+    color: #111111 !important;
+    font-weight: 600;
 }
 
 .dark .fi-ta-row.fi-selected {
-    background-color: rgba(245, 158, 11, 0.20) !important;
+    background-color: rgba(183, 255, 0, 0.22) !important;
 }
 
 .dark .fi-ta-row.fi-selected td,
 .dark .fi-ta-row.fi-selected .fi-ta-text-item {
-    color: #FEFEFE !important;
-    font-weight: 500;
+    color: #111111 !important;
+    font-weight: 600;
 }
 
 /* ── Primary button (the main "Save / Create" CTA) ─────────── */
@@ -311,9 +312,9 @@ body {
     --text: var(--cpc-white) !important;
     --hover-bg: #000000 !important;
     --hover-text: var(--cpc-white) !important;
-    --dark-bg: var(--cpc-gold) !important;
+    --dark-bg: var(--cpc-brand) !important;
     --dark-text: #111111 !important;
-    --dark-hover-bg: #FBBF24 !important;
+    --dark-hover-bg: #D4F500 !important;
     --dark-hover-text: #111111 !important;
 }
 
@@ -338,17 +339,17 @@ body {
 
 .dark .fi-btn.fi-btn-primary,
 .dark .fi-btn.fi-color-primary {
-    background-color: var(--cpc-gold) !important;
+    background-color: var(--cpc-brand) !important;
     color: #111111 !important;
-    border-color: var(--cpc-gold) !important;
+    border-color: var(--cpc-brand) !important;
     box-shadow: 0 1px 2px rgba(0, 0, 0, 0.40);
 }
 
 .dark .fi-btn.fi-btn-primary:hover,
 .dark .fi-btn.fi-color-primary:hover {
-    background-color: #FBBF24 !important;
+    background-color: #D4F500 !important;
     color: #111111 !important;
-    box-shadow: 0 4px 12px rgba(245, 158, 11, 0.40);
+    box-shadow: 0 4px 12px rgba(183, 255, 0, 0.40);
 }
 
 /* ── Form inputs ──────────────────────────────────────────── */
@@ -372,8 +373,8 @@ body {
 .fi-fo-text-input input:focus,
 .fi-fo-select select:focus,
 .fi-fo-textarea textarea:focus {
-    border-color: var(--cpc-gold) !important;
-    box-shadow: 0 0 0 2px var(--cpc-gold-soft) !important;
+    border-color: var(--cpc-brand) !important;
+    box-shadow: 0 0 0 2px var(--cpc-brand-soft) !important;
 }
 
 /* ── Badges ────────────────────────────────────────────────── */
@@ -409,7 +410,7 @@ body {
 
 /* ── Tabs ─────────────────────────────────────────────────── */
 .fi-tabs-item.fi-tabs-item-active {
-    border-bottom-color: var(--cpc-gold) !important;
+    border-bottom-color: var(--cpc-brand) !important;
     color: var(--cpc-onyx);
 }
 
@@ -485,16 +486,15 @@ body {
 }
 
 /* ── Preview row (puzzle table — JS sets this on the clicked row) ─ */
-/* Replaces the legacy `bg-amber-50/80 ring-amber-300` Tailwind set
-   that hardcoded a light-mode-only cream background. */
+/* Chartreuse tint to mark the row whose preview is showing on the right. */
 .cpc-preview-row {
-    background-color: rgba(245, 158, 11, 0.18) !important;
-    box-shadow: inset 0 0 0 1px #fcd34d !important;
+    background-color: rgba(183, 255, 0, 0.16) !important;
+    box-shadow: inset 0 0 0 1px #B7FF00 !important;
 }
 
 .dark .cpc-preview-row {
-    background-color: rgba(245, 158, 11, 0.22) !important;
-    box-shadow: inset 0 0 0 1px #f59e0b !important;
+    background-color: rgba(183, 255, 0, 0.22) !important;
+    box-shadow: inset 0 0 0 1px #D4F500 !important;
 }
 
 /* ── Side preview panel (puzzles list) ────────────────────── */
