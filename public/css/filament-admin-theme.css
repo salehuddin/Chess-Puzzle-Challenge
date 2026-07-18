@@ -1,70 +1,194 @@
 /* ── Chess Puzzle Challenge · Admin Theme ──────────────────── */
-/* Emerald-green, modern, card-based Filament admin panel.    */
+/* Matches the /new home page palette:                          */
+/*   • Base 100 / surface    = #FEFEFE (white)                   */
+/*   • Base content / onyx   = #111111                           */
+/*   • Primary (CTAs)        = #111111                           */
+/*   • Accent (golden orange)= #F59E0B                           */
+/*   • Brand (chartreuse)    = #B7FF00 (logo / highlights only) */
+/* Font pairing: Inter (body) + Red Hat Display (headings)      */
 
-/* ── Sidebar ──────────────────────────────────────────────── */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Red+Hat+Display:wght@400;500;600;700;800;900&display=swap');
+
+/* ── Root tokens shared by light + dark mode ───────────────── */
+:root {
+    --cpc-onyx: #111111;
+    --cpc-white: #FEFEFE;
+    --cpc-surface: #F5F5F5;
+    --cpc-border: #E5E5E5;
+    --cpc-gold: #F59E0B;
+    --cpc-gold-soft: rgba(245, 158, 11, 0.10);
+    --cpc-brand: #B7FF00;
+    --cpc-brand-soft: rgba(183, 255, 0, 0.14);
+    --cpc-shadow-warm: 0 1px 3px rgba(17, 17, 17, 0.04), 0 1px 2px rgba(17, 17, 17, 0.03);
+    --cpc-shadow-warm-lg: 0 10px 25px -3px rgba(17, 17, 17, 0.08), 0 4px 6px -4px rgba(17, 17, 17, 0.05);
+}
+
+.dark {
+    --cpc-onyx: #FEFEFE;
+    --cpc-white: #0a0a0a;
+    --cpc-surface: #161616;
+    --cpc-border: #1f1f1f;
+    --cpc-gold-soft: rgba(245, 158, 11, 0.16);
+    --cpc-brand-soft: rgba(183, 255, 0, 0.10);
+    --cpc-shadow-warm: 0 1px 3px rgba(0, 0, 0, 0.40), 0 1px 2px rgba(0, 0, 0, 0.30);
+    --cpc-shadow-warm-lg: 0 10px 25px -3px rgba(0, 0, 0, 0.50), 0 4px 6px -4px rgba(0, 0, 0, 0.30);
+}
+
+/* ── Typography ─────────────────────────────────────────────── */
+.fi-body,
+.fi-app,
+body {
+    font-family: 'Inter', system-ui, sans-serif;
+}
+
+h1, h2, h3, h4, h5, h6,
+.fi-page-title,
+.fi-section-heading,
+.fi-resource-relation-manager-heading,
+.fi-wi-stats-overview-stat-label,
+.fi-wi-stats-overview-stat-value,
+.fi-brand,
+.fi-breadcrumb,
+.fi-ta-table th,
+.fi-tabs-item,
+.fi-btn,
+.fi-badge {
+    font-family: 'Red Hat Display', 'Inter', system-ui, sans-serif;
+}
+
+/* ── Sidebar ────────────────────────────────────────────────── */
 .fi-sidebar {
-    border-right: 1px solid rgba(5, 150, 105, 0.08);
-    background-color: #f8faf9 !important;
+    border-right: 1px solid var(--cpc-border);
+    background-color: var(--cpc-surface) !important;
 }
 
 .fi-sidebar-item-active {
-    background-color: rgba(5, 150, 105, 0.10) !important;
-    border-left: 3px solid #059669 !important;
+    background-color: var(--cpc-gold-soft) !important;
+    border-left: 3px solid var(--cpc-gold) !important;
+}
+
+.fi-sidebar-item-active .fi-sidebar-item-label,
+.fi-sidebar-item-active .fi-sidebar-item-icon {
+    color: var(--cpc-onyx) !important;
 }
 
 .fi-sidebar-item:hover {
-    background-color: rgba(5, 150, 105, 0.05);
+    background-color: rgba(17, 17, 17, 0.04);
 }
 
-/* ── Top bar ──────────────────────────────────────────────── */
+.dark .fi-sidebar-item:hover {
+    background-color: rgba(255, 255, 255, 0.04);
+}
+
+/* Brand wordmark gets the chartreuse accent like the public site. */
+.fi-brand .fi-brand-text,
+.fi-brand-logo-text {
+    color: var(--cpc-onyx);
+}
+
+.fi-brand .fi-brand-text span.brand-accent,
+.fi-sidebar .fi-brand strong.brand-accent {
+    color: var(--cpc-gold);
+}
+
+/* ── Custom brand logo (matches the /new home page wordmark) ─ */
+.cpc-brand-logo {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    height: 100%;
+}
+
+.cpc-brand-pawn {
+    color: var(--cpc-brand);
+    font-size: 1.4rem;
+    line-height: 1;
+    transition: transform 0.3s ease;
+}
+
+.cpc-brand-logo:hover .cpc-brand-pawn {
+    transform: translateY(-2px);
+}
+
+.cpc-brand-text {
+    font-family: 'Red Hat Display', system-ui, sans-serif;
+    font-weight: 700;
+    font-size: 1rem;
+    line-height: 1.2;
+    color: #111111;
+    white-space: nowrap;
+}
+
+.cpc-brand-text .cpc-brand-accent {
+    color: var(--cpc-brand);
+}
+
+/* Dark mode: invert "Chess Puzzle" to light, keep chartreuse on pawn + accent */
+.cpc-brand-logo-dark .cpc-brand-text {
+    color: #FEFEFE;
+}
+
+.dark .cpc-brand-logo:not(.cpc-brand-logo-dark) .cpc-brand-text {
+    color: #FEFEFE;
+}
+
+/* ── Top bar ───────────────────────────────────────────────── */
 .fi-topbar {
-    border-bottom: 1px solid rgba(5, 150, 105, 0.08);
+    border-bottom: 1px solid var(--cpc-border);
+    background-color: var(--cpc-white) !important;
 }
 
-/* ── Cards & widgets ──────────────────────────────────────── */
+/* ── Cards & widgets ───────────────────────────────────────── */
 .fi-wi-stats-overview-stat {
-    border-radius: 1rem !important;
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04), 0 1px 2px rgba(0, 0, 0, 0.03) !important;
-    border: 1px solid rgba(5, 150, 105, 0.06) !important;
+    border-radius: 0.75rem !important;
+    box-shadow: var(--cpc-shadow-warm) !important;
+    border: 1px solid var(--cpc-border) !important;
     transition: box-shadow 0.2s ease, transform 0.2s ease;
 }
 
 .fi-wi-stats-overview-stat:hover {
-    box-shadow: 0 4px 12px rgba(5, 150, 105, 0.10), 0 2px 4px rgba(0, 0, 0, 0.04) !important;
+    box-shadow: 0 4px 12px rgba(245, 158, 11, 0.10), 0 2px 4px rgba(17, 17, 17, 0.04) !important;
 }
 
-/* ── Section cards ────────────────────────────────────────── */
+/* ── Section cards ─────────────────────────────────────────── */
 .fi-section,
 .fi-fo-repeater,
 .fi-fo-builder,
 .fi-ta {
-    border-radius: 1rem !important;
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.03), 0 1px 2px rgba(0, 0, 0, 0.02) !important;
-    border: 1px solid rgba(15, 23, 42, 0.06) !important;
+    border-radius: 0.75rem !important;
+    box-shadow: var(--cpc-shadow-warm) !important;
+    border: 1px solid var(--cpc-border) !important;
 }
 
-/* ── Tables ───────────────────────────────────────────────── */
+/* ── Tables ────────────────────────────────────────────────── */
 .fi-ta-table th {
-    background-color: #f0fdf6 !important;
-    color: #065f46 !important;
+    background-color: var(--cpc-surface) !important;
+    color: var(--cpc-onyx) !important;
     font-weight: 600;
+    text-transform: uppercase;
+    font-size: 0.72rem;
+    letter-spacing: 0.05em;
 }
 
 .fi-ta-table tr:hover td {
-    background-color: rgba(5, 150, 105, 0.03);
+    background-color: rgba(245, 158, 11, 0.03);
+}
+
+.dark .fi-ta-table tr:hover td {
+    background-color: rgba(245, 158, 11, 0.06);
 }
 
 /* ── Buttons ──────────────────────────────────────────────── */
 .fi-btn.fi-btn-primary,
 .fi-btn.fi-color-primary {
-    border-radius: 0.6rem !important;
-    font-weight: 500;
-    box-shadow: 0 1px 2px rgba(5, 150, 105, 0.20);
+    border-radius: 0.5rem !important;
+    font-weight: 600;
+    box-shadow: 0 1px 2px rgba(17, 17, 17, 0.20);
 }
 
 .fi-btn.fi-btn-primary:hover,
 .fi-btn.fi-color-primary:hover {
-    box-shadow: 0 4px 12px rgba(5, 150, 105, 0.30);
+    box-shadow: 0 4px 12px rgba(17, 17, 17, 0.30);
 }
 
 /* ── Form inputs ──────────────────────────────────────────── */
@@ -72,29 +196,30 @@
 .fi-fo-select select,
 .fi-fo-textarea textarea {
     border-radius: 0.5rem !important;
-    border-color: rgba(15, 23, 42, 0.12);
+    border-color: var(--cpc-border);
 }
 
 .fi-fo-text-input input:focus,
 .fi-fo-select select:focus,
 .fi-fo-textarea textarea:focus {
-    border-color: #059669;
-    ring-color: #059669;
+    border-color: var(--cpc-gold);
+    box-shadow: 0 0 0 2px var(--cpc-gold-soft);
 }
 
-/* ── Badges ───────────────────────────────────────────────── */
+/* ── Badges ────────────────────────────────────────────────── */
 .fi-badge {
     border-radius: 0.5rem !important;
+    font-weight: 600;
 }
 
 /* ── Progress bar ─────────────────────────────────────────── */
 .fi-progress-bar {
     border-radius: 999px !important;
-    background-color: rgba(5, 150, 105, 0.10);
+    background-color: var(--cpc-gold-soft);
 }
 
 .fi-progress-bar .fi-progress-bar-fill {
-    background-color: #059669 !important;
+    background-color: var(--cpc-gold) !important;
     border-radius: 999px !important;
 }
 
@@ -102,13 +227,13 @@
 .fi-modal-window,
 .fi-dropdown-panel {
     border-radius: 0.75rem !important;
-    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.08);
+    box-shadow: var(--cpc-shadow-warm-lg);
 }
 
 /* ── Tabs ─────────────────────────────────────────────────── */
 .fi-tabs-item.fi-tabs-item-active {
-    border-bottom-color: #059669 !important;
-    color: #059669;
+    border-bottom-color: var(--cpc-gold) !important;
+    color: var(--cpc-onyx);
 }
 
 /* ── Filters & search ─────────────────────────────────────── */
@@ -116,30 +241,35 @@
     border-radius: 0.5rem !important;
 }
 
-/* ── Dark mode adjustments ────────────────────────────────── */
+/* ── Dark mode surface adjustments ────────────────────────── */
 .dark .fi-sidebar {
-    background-color: #0a1a14 !important;
-    border-right-color: rgba(5, 150, 105, 0.10);
+    background-color: #0d0d0d !important;
+    border-right-color: var(--cpc-border);
 }
 
 .dark .fi-topbar {
-    border-bottom-color: rgba(5, 150, 105, 0.10);
+    border-bottom-color: var(--cpc-border);
+    background-color: #0d0d0d !important;
 }
 
 .dark .fi-ta-table th {
-    background-color: #0a2a1e !important;
-    color: #6ee7b7;
-}
-
-.dark .fi-ta-table tr:hover td {
-    background-color: rgba(5, 150, 105, 0.06);
+    background-color: #161616 !important;
+    color: var(--cpc-onyx);
 }
 
 .dark .fi-wi-stats-overview-stat {
-    border-color: rgba(5, 150, 105, 0.08) !important;
+    border-color: var(--cpc-border) !important;
 }
 
 .dark .fi-section,
-.dark .fi-fo-repeater {
-    border-color: rgba(15, 23, 42, 0.15) !important;
+.dark .fi-fo-repeater,
+.dark .fi-ta {
+    border-color: var(--cpc-border) !important;
+}
+
+/* Filament dark mode renders a dark page background; match the onyx home page footer tone */
+.dark body,
+.dark .fi-app,
+.dark .fi-main {
+    background-color: #0a0a0a;
 }

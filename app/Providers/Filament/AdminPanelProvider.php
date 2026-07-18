@@ -22,6 +22,7 @@ use Illuminate\Foundation\Http\Middleware\PreventRequestForgery;
 use Illuminate\Routing\Middleware\SubstituteBindings;
 use Illuminate\Session\Middleware\StartSession;
 use Illuminate\Support\Facades\Vite;
+use Illuminate\Support\HtmlString;
 use Illuminate\View\Middleware\ShareErrorsFromSession;
 
 class AdminPanelProvider extends PanelProvider
@@ -35,18 +36,36 @@ class AdminPanelProvider extends PanelProvider
             ->login()
             ->profile()
             ->brandName('Chess Puzzle Challenge')
+            ->brandLogo(new HtmlString(<<<'HTML'
+                <span class="cpc-brand-logo">
+                    <span class="cpc-brand-pawn">&#9823;</span>
+                    <span class="cpc-brand-text">
+                        Chess Puzzle
+                        <span class="cpc-brand-accent">Challenge</span>
+                    </span>
+                </span>
+                HTML))
+            ->darkModeBrandLogo(new HtmlString(<<<'HTML'
+                <span class="cpc-brand-logo cpc-brand-logo-dark">
+                    <span class="cpc-brand-pawn">&#9823;</span>
+                    <span class="cpc-brand-text">
+                        Chess Puzzle
+                        <span class="cpc-brand-accent">Challenge</span>
+                    </span>
+                </span>
+                HTML))
             ->favicon(asset('favicon.ico'))
             ->colors([
-                'primary' => Color::Emerald,
-                'secondary' => Color::Teal,
-                'success' => Color::Emerald,
+                'primary' => '#111111',
+                'secondary' => '#F59E0B',
+                'success' => Color::Green,
                 'warning' => Color::Amber,
                 'danger' => Color::Red,
-                'info' => Color::Cyan,
+                'info' => Color::Green,
                 'gray' => Color::Slate,
             ])
             ->font('Inter')
-            ->darkMode(false)
+            ->darkMode(true)
             ->sidebarCollapsibleOnDesktop(true)
             ->globalSearch(true)
             ->databaseNotifications(false)
