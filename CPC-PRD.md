@@ -41,6 +41,13 @@ The platform allows users to participate in themed chess puzzle "Series" (e.g., 
 * **Logistics Dashboard:** Admin marks challenges as "Shipped" and enters a tracking number.
 * **Direct Tracking:** The platform provides a direct link to the courier’s tracking page (PosLaju, FedEx, DHL, etc.) for the user.
 
+### 3.5. Player Reviews & Social Sharing
+* **Completion Celebration:** Upon solving the final puzzle, the player sees a congrats card with confetti, animated stats (puzzles solved, difficulty band, sticker earned), and a chess-piece rating selector.
+* **Chess-Piece Ratings:** Instead of stars, players rate using chess pieces ascending from pawn (1) to queen (5). Two ratings are collected: per-puzzle (the specific challenge just completed) and per-platform (overall CPC experience).
+* **Feedback Form:** Optional headline + free-form textarea. A pending `Review` row is created atomically with the sticker and fulfillment rows on completion; the player's rating submission flips it to `submitted`.
+* **Social Share:** Copy-link, X (Twitter), Facebook, and WhatsApp share buttons are revealed after the review is submitted (or if no review is pending).
+* **Admin Moderation:** A Filament `ReviewResource` lets `super_admin` and `editor` staff curate reviews — toggling `is_public` (shown on landing testimonials) and `is_featured` (surfaced first). Fulfillment staff are denied access.
+
 ---
 
 ## 4. Technical Stack
@@ -62,7 +69,9 @@ The platform allows users to participate in themed chess puzzle "Series" (e.g., 
 | **User** | Profile, Default Address, Hall of Fame (Stickers). |
 | **Puzzle** | FEN, Solution, Rating, Themes, Popularity. |
 | **Challenge** | Name, Medal Artwork, Sticker Artwork, Rule JSON, USD/MYR Price. |
-| **Subscription** | User ID, Challenge ID, Status (Paid, Completed, Shipped), **Address Snapshot**, Tracking URL. |
+| **Enrollment** | User ID, Challenge ID, Status (Active, Completed), Activated/Completed timestamps. |
+| **Fulfillment** | Enrollment ID, Status (Pending, Ready To Ship, Shipped, Delivered), Address Snapshot, Tracking. |
+| **Review** | Enrollment ID, Puzzle Rating, Platform Rating, Title, Body, Is Public, Is Featured, Status (Pending, Submitted). |
 | **Bundle** | Bundle Name, List of Challenges, Custom Price (USD/MYR). |
 
 ---
@@ -71,14 +80,17 @@ The platform allows users to participate in themed chess puzzle "Series" (e.g., 
 * **Completion Rate:** Percentage of users who finish a series after paying.
 * **Global Reach:** Ratio of MYR vs. USD transactions.
 * **Customer Satisfaction:** Successful delivery of physical medals without address errors.
+* **Review Engagement:** Percentage of completed challenges that yield a submitted review; average puzzle and platform ratings over time.
 
 ---
 
 ## 7. Roadmap & Future Considerations
 * **V2:** Google Maps API integration for address autocomplete.
 * **V2:** Automated email notifications for shipping updates.
+* **V2:** Replace placeholder testimonials copy with DB-backed query of approved (is_public) reviews.
+* **V2:** Track elapsed time + hints used per challenge for richer completion stats.
 * **V3:** Animated/Premium digital stickers.
-* **V3:** Social sharing features for the "Hall of Fame."
+* **V3:** Social sharing features for the "Hall of Fame." — *Partially delivered on completion screen (copy-link / X / Facebook / WhatsApp); Hall of Fame share remains future scope.*
 
 ---
 

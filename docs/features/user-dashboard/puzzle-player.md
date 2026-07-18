@@ -40,7 +40,14 @@ When all puzzles are solved:
 1. Enrollment status → `completed`, `completed_at` timestamp recorded.
 2. A `Sticker` record is created for the player.
 3. A `Fulfillment` record is created with status `pending`.
-4. The player sees a congratulations screen with their sticker and medal shipment info.
+4. A `Review` record is created with status `pending`.
+5. The player sees a congrats card with:
+   - **Confetti celebration** fired on mount (canvas-confetti, respects `prefers-reduced-motion`).
+   - **Stats grid**: puzzles solved (N/N), difficulty band (Beginner/Intermediate/Advanced), sticker-earned badge.
+   - **Chess-piece rating CTA**: "What did you think of this puzzle?" with 5 pieces ascending from pawn (1) to queen (5). Clicking a piece reveals the review card.
+   - **Review card**: per-puzzle rating (shown selected), overall CPC platform rating, optional headline + feedback textarea. Submitting flips the `Review` to `submitted` and reveals social share buttons.
+   - **Social share**: copy-link, X (Twitter), Facebook, WhatsApp — revealed after submit (or if no review is pending). Falls back to dashboard link if the user's profile isn't publicly viewable.
+   - **Medal CTA**: the existing "Claim your physical medal" / "View Dashboard" buttons, preserved below the review flow.
 
 ## Access Control
 
@@ -49,6 +56,8 @@ When all puzzles are solved:
 
 ## Related Files
 
-- `app/Livewire/PuzzlePlayer.php` — The Livewire component with game logic
-- `resources/views/livewire/puzzle-player.blade.php` — The player template
+- `app/Livewire/PuzzlePlayer.php` — The Livewire component with game logic, completion hook (`finalizeIfEligible`), and `submitReview()` action
+- `resources/views/livewire/puzzle-player.blade.php` — The player template (includes the completion card with confetti, rating CTA, review card, share buttons)
+- `resources/js/challenge-complete.js` — Alpine `challengeComplete()` component + `canvas-confetti` celebration
+- `resources/views/components/challenge/piece-rating.blade.php` — Inline-SVG chess-piece rating selector (pawn→queen)
 - `routes/web.php` — Route: `/play/{enrollment}`

@@ -376,9 +376,14 @@ Challenge ────< Puzzle (via challenge_puzzle.pivot, sequence)
             ├── PuzzleProgress (user_id + challenge_id + puzzle_id, unique)
             │     solved_at
             │
-            └── Fulfillment (enrollment_id, unique)
-                  status: pending → ready_to_ship → shipped → delivered
-                  address_snapshot, courier, tracking_number, tracking_url
+            ├── Fulfillment (enrollment_id, unique)
+            │     status: pending → ready_to_ship → shipped → delivered
+            │     address_snapshot, courier, tracking_number, tracking_url
+            │
+            └── Review (enrollment_id, unique)
+                  status: pending → submitted
+                  puzzle_rating, platform_rating (1–5)
+                  title, body, is_public, is_featured, submitted_at
 
 Order (user_id)
   status: pending → paid → failed/refunded
@@ -404,7 +409,8 @@ Browse Challenges → Challenge Detail → Enroll
     │        └── Solve puzzles one by one → PuzzleProgress tracked
     │              │
     │              └── All solved → Enrollment: completed → Sticker unlocked
-    │                    └── Fulfillment: ready_to_ship
+    │                    ├── Fulfillment: pending (medal claim CTA)
+    │                    └── Review: pending (chess-piece rating + feedback CTA → submitted)
     │
     └── User: Order status = pending → redirect /checkout/{order}
              ├── Sandbox mode ON: Pay with Sandbox → Order paid → play
@@ -435,6 +441,7 @@ Browse Challenges → Challenge Detail → Enroll
 | Orders | Commerce | CRUD, multi-item via Repeater |
 | Enrollments | Commerce | CRUD, activation/completion tracking |
 | Bundles | Commerce | CRUD, challenge assignment (BelongsToManyMultiSelect) |
+| Reviews | Commerce | List + Edit only (no Create — born from player flow); moderation of `is_public` / `is_featured` toggles |
 | Fulfillments | Operations | CRUD, Queue page for logistics |
 | FulfillmentQueue | Operations | Custom page: ready_to_ship + shipped filters |
 
@@ -445,6 +452,8 @@ Browse Challenges → Challenge Detail → Enroll
 | M1 | Hall of Fame Dashboard | Done |
 | M1 | PuzzlePlayer gameplay loop | Done |
 | M1 | Completion trigger → sticker + fulfillment | Done |
+| M1 | Player review flow (chess-piece ratings + feedback) | Done |
+| M1 | Social share on completion | Done |
 | M2 | Stripe payment integration | Not started |
 | M2 | GeoIP pricing (MYR/USD) | Not started |
 | M2 | Payment webhook → auto-enrollment | Not started |
@@ -456,6 +465,10 @@ Browse Challenges → Challenge Detail → Enroll
 | Admin S7 | Documentation Sync | Done |
 | Admin S8 | Automated tests | Not started |
 | Admin S9 | Final QA pass | Not started |
+| — | Reviews admin moderation UI | Done |
+| — | Replace placeholder testimonials with DB-backed reviews | Not started |
+| — | Dashboard "pending review" nudge banner | Not started |
+| — | Elapsed-time + hints-used tracking per challenge | Not started |
 | Deploy | Staging/production VPS deployment | Done |
 | Deploy | SSL via Let's Encrypt | Done |
 | Deploy | Admin user creation | Pending (run via Coolify terminal) |
@@ -507,3 +520,71 @@ Browse Challenges → Challenge Detail → Enroll
 - [ ] Lichess CSV uploaded (if testing imports)
 - [ ] Queue worker configured (for CSV import jobs)
 - [ ] Scheduler configured (for scheduled tasks)
+
+---
+
+## 🎉 Player Reviews Workstream (July 18, 2026)
+
+Adds a player-facing review flow on challenge completion and a moderation UI in the admin panel. Mirrors the existing `fulfillments` one-to-one architecture: a `Review` row is born as `pending` inside `PuzzlePlayer::finalizeIfEligible()` alongside the sticker and fulfillment rows, and is flipped to `submitted` by the player's rating action.
+
+### What Was Created
+
+```
+New Table: reviews
+  enrollment_id (unique FK), challenge_id, user_id
+  puzzle_rating, platform_rating (1–5, nullable)
+  title, body (nullable)
+  is_public, is_featured (default false)
+  status: pending → submitted
+  submitted_at (nullable)
+  Indexes: unique(enrollment_id), [challenge_id, is_public, is_featured], user_id
+
+New Model: Review
+  Casts: puzzle_rating/platform_rating → integer, is_public/is_featured → boolean, submitted_at → datetime
+  Scopes: submitted(), public(), featured()
+  Helper: isSubmitted()
+
+New Policy: ReviewPolicy
+  view/viewAny/update → admin || editor
+  create → false (born from player flow only)
+  delete/deleteAny/restore/forceDelete → admin only
+
+New Filament Resource: ReviewResource (Commerce group, sort 4)
+  Icon: OutlinedChatBubbleBottomCenterText
+  Pages: ListReviews + EditReview (no Create)
+  Schemas\ReviewForm: 3 sections (Review Content / Feedback / Moderation)
+  Tables\ReviewsTable: chess-piece rating badges + tooltips, ternary filters, default sort newest first
+
+New Frontend:
+  resources/js/challenge-complete.js — Alpine component with canvas-confetti
+  resources/views/components/challenge/piece-rating.blade.php — inline-SVG chess pieces (pawn→queen)
+```
+
+### What Was Modified
+
+| File | Change |
+|---|---|
+| `app/Livewire/PuzzlePlayer.php` | Hooked `Review::firstOrCreate()` into `finalizeIfEligible()` transaction; added `$reviewPending` flag + `resolveReviewPending()` + `submitReview()` Livewire action + 4 rating props |
+| `app/Models/Enrollment.php` | Added `review()` HasOne |
+| `app/Models/Challenge.php` | Added `reviews()` HasMany |
+| `app/Models/User.php` | Added `reviews()` HasMany |
+| `resources/views/livewire/puzzle-player.blade.php` | Rewrote completion card with confetti, stats grid, chess-piece rating CTA, review card, social share; preserved existing medal CTA flow |
+| `vite.config.js` | Added `resources/js/challenge-complete.js` entry |
+| `package.json` | Added `canvas-confetti` dependency |
+| `tests/Feature/StaffAccessTest.php` | Asserted `/admin/reviews` is editor-allowed + fulfillment-denied |
+
+### Design Decisions
+
+- **Chess-piece icons instead of stars** — pawn=1 (tough/OK), knight=2, bishop=3, rook=4, queen=5 (masterpiece). Uses inline SVGs (Wikipedia standard chess pieces, public domain) so they animate on hover/select. No icon library introduced (consistent with codebase convention).
+- **Two rating questions** — per-puzzle rating + overall CPC platform rating. Both required to submit. Single combined review card (not two separate modals) for cleaner UX.
+- **Inline `submitReview()` on `PuzzlePlayer`** (Option A) rather than a standalone `/review/{enrollment}` route (Option B) — matches the existing `$medalRequestPending` pattern, avoids an extra HTTP round-trip.
+- **`is_public` defaults to `false`** — admin-curated gatekeeping. Reviews stay hidden from the public landing page until an admin/editor flips `is_public=true` in the Filament resource. Avoids moderation headaches at launch.
+- **Social share only shown after review submitted (or if not pending)** — share buttons (copy-link / X / Facebook / WhatsApp) revealed as a thank-you state. Falls back to `route('dashboard')` if the user's profile isn't publicly viewable.
+- **Stats scope (v1)** — only puzzles-solved + difficulty band shown as stat cards. Elapsed-time + hints-used tracking deferred to a follow-up ticket (would need new `enrollments.started_at` column + JS state persistence).
+- **Policy gating** — Reviews are content moderation, not operations. `fulfillment` role is explicitly denied access (asserted in `StaffAccessTest`).
+
+### Test Coverage
+
+- `tests/Feature/ReviewTest.php` — 5 tests: pending row creation on completion, submission flips status, validation rejects 0/6 ratings, 403 on resubmit, scope filters.
+- `tests/Feature/AdminReviewsPageTest.php` — 5 tests: list+edit render for admin, editor access granted, fulfillment staff denied, non-staff denied.
+- Full suite: **86 pass / 266 assertions**, no regressions.

@@ -34,6 +34,18 @@ A lightweight project board for tracking features, improvements, and bugs.
   - [x] `bootstrap/app.php` trusts all proxies and `AppServiceProvider` forces HTTPS in production, fixing the Livewire signed-URL 401 caused by `APP_URL` scheme mismatch behind Traefik.
   - [x] `bootstrap/app.php` exception handler returns JSON for `livewire/upload-file` errors so 500s are diagnosable from the browser DevTools without server log access.
   - [x] Removed leftover `public/test_upload.php` debug file.
+- [x] Player review flow on challenge completion (July 18, 2026):
+  - [x] Confetti celebration + animated stats card on the completion screen (puzzles solved, difficulty band, sticker earned).
+  - [x] Chess-piece rating selector (pawn → queen, 1–5) for per-puzzle and overall platform ratings.
+  - [x] Inline review card with optional headline + free-form feedback textarea, submitted via Livewire.
+  - [x] `reviews` table (one-to-one with `enrollments`, mirrors `fulfillments` pattern), `Review` model with `pending`/`submitted` status lifecycle.
+  - [x] Social share buttons (copy link, X, Facebook, WhatsApp) revealed after submit.
+  - [x] `ReviewPolicy` gates moderation to `super_admin` + `editor`; fulfillment staff denied.
+- [x] Reviews moderation UI in admin (July 18, 2026):
+  - [x] Filament `ReviewResource` (List + Edit pages, no Create — reviews are born from the player flow).
+  - [x] Table columns: chess-piece rating badges with tooltips, status badge, public/featured toggles, default sort newest first.
+  - [x] Filters: status, is_public (ternary), is_featured (ternary), challenge.
+  - [x] Moderation form with `is_public` / `is_featured` toggles powering the landing-page testimonials section.
 
 ## In Progress
 
@@ -51,6 +63,9 @@ A lightweight project board for tracking features, improvements, and bugs.
 - [ ] Stripe payment integration (FPX + cards).
 - [ ] GeoIP-based PPP pricing (MYR/USD).
 - [ ] Upload Lichess CSV to production for puzzle data.
+- [ ] Replace placeholder testimonials copy in `landing/sections/11-testimonials.blade.php` with DB-backed query of approved reviews.
+- [ ] Add "pending review" nudge banner on the dashboard (mirrors the existing pending-medal banner).
+- [ ] Track elapsed time + hints used per challenge (new `enrollments.started_at` column + JS state persistence).
 
 ## Notes
 
