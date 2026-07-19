@@ -430,28 +430,43 @@ body {
 }
 
 /* ── Tabs ─────────────────────────────────────────────────── */
-/* Active tab — solid chartreuse fill (matches sidebar active treatment). */
+/* Active tab — solid chartreuse fill (matches sidebar active treatment).
+   Filament v5 uses `.fi-tabs-item.fi-active` (NOT `fi-tabs-item-active`). */
+.fi-tabs-item.fi-active,
 .fi-tabs-item.fi-tabs-item-active {
     background-color: var(--cpc-brand) !important;
     color: var(--cpc-onyx) !important;
     border-radius: 0.5rem !important;
-    border-bottom-color: var(--cpc-brand) !important;
     font-weight: 600;
+    box-shadow: 0 1px 2px rgba(17, 17, 17, 0.06) !important;
 }
 
+.dark .fi-tabs-item.fi-active,
 .dark .fi-tabs-item.fi-tabs-item-active {
-    color: var(--cpc-onyx) !important;
     background-color: var(--cpc-brand) !important;
-}
-
-.fi-tabs-item:not(.fi-tabs-item-active):hover {
-    background-color: rgba(183, 255, 0, 0.08) !important;
     color: var(--cpc-onyx) !important;
 }
 
-.dark .fi-tabs-item:not(.fi-tabs-item-active):hover {
-    background-color: rgba(183, 255, 0, 0.14) !important;
-    color: #FEFEFE !important;
+.fi-tabs-item.fi-active .fi-tabs-item-label,
+.fi-tabs-item.fi-active > .fi-icon,
+.fi-tabs-item.fi-tabs-item-active .fi-tabs-item-label,
+.fi-tabs-item.fi-tabs-item-active > .fi-icon {
+    color: var(--cpc-onyx) !important;
+}
+
+.dark .fi-tabs-item.fi-active .fi-tabs-item-label,
+.dark .fi-tabs-item.fi-active > .fi-icon,
+.dark .fi-tabs-item.fi-tabs-item-active .fi-tabs-item-label,
+.dark .fi-tabs-item.fi-tabs-item-active > .fi-icon {
+    color: var(--cpc-onyx) !important;
+}
+
+.fi-tabs-item:not(.fi-active):not(.fi-tabs-item-active):hover {
+    background-color: rgba(183, 255, 0, 0.10) !important;
+}
+
+.dark .fi-tabs-item:not(.fi-active):not(.fi-tabs-item-active):hover {
+    background-color: rgba(183, 255, 0, 0.18) !important;
 }
 
 /* ── Filters & search ─────────────────────────────────────── */
