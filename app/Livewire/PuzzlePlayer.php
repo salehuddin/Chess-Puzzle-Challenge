@@ -7,6 +7,7 @@ use App\Models\Fulfillment;
 use App\Models\PuzzleProgress;
 use App\Models\Review;
 use App\Models\Sticker;
+use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Crypt;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
@@ -44,6 +45,18 @@ class PuzzlePlayer extends Component
      * @var array<int, int>
      */
     public array $solvedPuzzleIds = [];
+
+    /**
+     * Chronological solve history for the "More info" panel.
+     *
+     * Each entry: ['sequence' => int, 'solved_at' => CarbonInterface|null]
+     * Ordered oldest → newest so the latest solve appears at the bottom.
+     *
+     * @var array<int, array{sequence: int, solved_at: Carbon|null}>
+     */
+    public array $challengeProgress = [];
+
+    public bool $showHistory = false;
 
     public bool $isComplete = false;
 
@@ -83,6 +96,14 @@ class PuzzlePlayer extends Component
         $this->totalPuzzles = $this->challenge->puzzles->count();
 
         $this->loadCurrentPuzzle();
+    }
+
+    /**
+     * Toggle the "More info" disclosure on the challenge info card.
+     */
+    public function toggleHistory(): void
+    {
+        $this->showHistory = ! $this->showHistory;
     }
 
     public function loadCurrentPuzzle()
@@ -131,6 +152,23 @@ class PuzzlePlayer extends Component
             ->all();
 
         $this->solvedPuzzleIds = array_map('intval', $solvedPuzzleIds);
+
+        // Build a puzzle_id → 1-based sequence map (matches the grid order).
+        $sequenceMap = collect($this->orderedPuzzleIds)
+            ->mapWithKeys(fn ($id, $index) => [$id => $index + 1]);
+
+        $this->challengeProgress = PuzzleProgress::query()
+            ->where('user_id', auth()->id())
+            ->where('challenge_id', $this->enrollment->challenge_id)
+            ->whereNotNull('solved_at')
+            ->orderBy('solved_at')
+            ->get(['puzzle_id', 'solved_at'])
+            ->map(fn ($record) => [
+                'sequence' => $sequenceMap->get((int) $record->puzzle_id, 0),
+                'solved_at' => $record->solved_at,
+            ])
+            ->values()
+            ->all();
 
         $this->dispatch('puzzle-loaded');
     }
@@ -389,7 +427,7 @@ class PuzzlePlayer extends Component
         }
     }
 
-    #[Layout('layouts.app')]
+    #[Layout('layouts.play')]
     public function render()
     {
         return view('livewire.puzzle-player');

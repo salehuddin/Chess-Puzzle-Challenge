@@ -2,54 +2,149 @@
     @vite(['resources/js/puzzle-player-page.js', 'resources/js/challenge-complete.js'])
 @endpush
 
-<div class="max-w-5xl mx-auto py-10 px-4 sm:px-6 lg:px-8">
+<div class="max-w-5xl mx-auto py-6 sm:py-10 px-4 sm:px-6 lg:px-8">
 
-    {{-- Header Options --}}
-    <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-6">
-        <div>
-            <h1 class="text-3xl sm:text-4xl font-display font-black text-neutral-900">{{ $challenge->name }}</h1>
-            <p class="text-neutral-600 mt-1">
-                Puzzle
-                <span class="font-bold text-neutral-900">{{ $completedPuzzles + ($isComplete ? 0 : 1) }}</span>
-                of {{ $totalPuzzles }}
-            </p>
+    {{-- ============================================================ --}}
+    {{-- Challenge Info Card                                            --}}
+    {{--   • Sticker image                                              --}}
+    {{--   • Challenge name + link to challenge page                    --}}
+    {{--   • GitHub-style progress grid (below title)                   --}}
+    {{--   • "More info" toggle → expandable puzzle solve history       --}}
+    {{-- ============================================================ --}}
+    <div
+        x-data="{ open: @entangle('showHistory') }"
+        class="mb-8 bg-white rounded-2xl border border-neutral-200 shadow-warm overflow-hidden"
+    >
+        {{-- Top row: sticker + name + link --}}
+        <div class="flex items-start sm:items-center gap-4 p-5 sm:p-6">
+            {{-- Sticker image (with chartreuse fallback tile) --}}
+            @php
+                $stickerSrc = $challenge->sticker_artwork
+                    ? \Illuminate\Support\Facades\Storage::url($challenge->sticker_artwork)
+                    : ($challenge->poster_image
+                        ? \Illuminate\Support\Facades\Storage::url($challenge->poster_image)
+                        : null);
+            @endphp
+            <div class="flex-shrink-0 w-16 h-16 sm:w-20 sm:h-20 rounded-xl overflow-hidden border border-neutral-900/10 bg-brand flex items-center justify-center">
+                @if($stickerSrc)
+                    <img src="{{ $stickerSrc }}" alt="{{ $challenge->name }} sticker" class="w-full h-full object-cover" />
+                @else
+                    <span class="text-3xl text-neutral-900">♟</span>
+                @endif
+            </div>
+
+            <div class="min-w-0 flex-1">
+                <h1 class="text-2xl sm:text-3xl font-display font-black text-neutral-900 leading-tight truncate">
+                    {{ $challenge->name }}
+                </h1>
+                <a href="{{ route('challenges.show', $challenge) }}"
+                   class="inline-flex items-center gap-1 mt-1 text-xs sm:text-sm text-neutral-500 hover:text-brand transition-colors"
+                   wire:navigate>
+                    View challenge page
+                    <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"/>
+                    </svg>
+                </a>
+            </div>
+
+            {{-- Solved count chip (compact, right-aligned) --}}
+            <div class="hidden sm:flex flex-col items-end flex-shrink-0">
+                <span class="text-2xl font-display font-black text-neutral-900 leading-none">{{ $completedPuzzles }}<span class="text-base text-neutral-400">/{{ $totalPuzzles }}</span></span>
+                <span class="text-[10px] font-bold uppercase tracking-[0.2em] text-neutral-500 mt-1">Solved</span>
+            </div>
         </div>
-        <a href="{{ route('dashboard') }}" class="btn btn-outline mt-4 md:mt-0">Back to Dashboard</a>
+
+        {{-- Progress tracker (GitHub-style grid) --}}
+        @if(!empty($orderedPuzzleIds))
+            <div class="px-5 sm:px-6 pb-5">
+                <div class="flex items-center justify-between mb-2.5">
+                    <h3 class="text-[10px] font-bold uppercase tracking-[0.2em] text-neutral-500">Progress</h3>
+                    <p class="text-[10px] text-neutral-500">{{ $completedPuzzles }} / {{ $totalPuzzles }} solved</p>
+                </div>
+
+                <div class="grid grid-cols-[repeat(15,minmax(0,1fr))] sm:grid-cols-[repeat(20,minmax(0,1fr))] lg:grid-cols-[repeat(25,minmax(0,1fr))] gap-1">
+                    @foreach($orderedPuzzleIds as $index => $puzzleId)
+                        @php
+                            $solved = in_array($puzzleId, $solvedPuzzleIds);
+                            $current = $puzzleId === ($currentPuzzleId ?? null);
+                        @endphp
+                        <div
+                            class="h-3.5 rounded-sm border {{ $solved ? 'bg-brand border-transparent' : ($current ? 'bg-neutral-900 border-transparent ring-2 ring-brand/60' : 'bg-base-200 border-neutral-200') }}"
+                            title="Puzzle {{ $index + 1 }}{{ $current ? ' (current)' : '' }}{{ $solved ? ' (solved)' : '' }}"
+                        ></div>
+                    @endforeach
+                </div>
+
+                <div class="mt-2.5 flex flex-wrap items-center gap-3 text-[11px] text-neutral-600">
+                    <span class="flex items-center gap-1.5"><span class="inline-block w-3 h-3 rounded-sm bg-brand"></span><span>Solved</span></span>
+                    <span class="flex items-center gap-1.5"><span class="inline-block w-3 h-3 rounded-sm bg-neutral-900"></span><span>Current</span></span>
+                    <span class="flex items-center gap-1.5"><span class="inline-block w-3 h-3 rounded-sm bg-base-200 border border-neutral-200"></span><span>Remaining</span></span>
+                </div>
+            </div>
+
+            {{-- More info toggle --}}
+            <button
+                type="button"
+                wire:click="toggleHistory"
+                :aria-expanded="open.toString()"
+                class="w-full flex items-center justify-between gap-2 px-5 sm:px-6 py-3 border-t border-neutral-200 bg-base-200/50 hover:bg-base-200 transition-colors text-left"
+            >
+                <span class="text-xs font-bold uppercase tracking-[0.2em] text-neutral-700">More info</span>
+                <svg
+                    class="w-4 h-4 text-neutral-500 transition-transform duration-200"
+                    :class="open ? 'rotate-180' : ''"
+                    fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
+                </svg>
+            </button>
+
+            {{-- Expandable history panel --}}
+            <div
+                x-show="open"
+                x-cloak
+                x-transition:enter="transition ease-out duration-300"
+                x-transition:enter-start="opacity-0 -translate-y-2"
+                x-transition:enter-end="opacity-100 translate-y-0"
+                x-transition:leave="transition ease-in duration-200"
+                x-transition:leave-start="opacity-100 translate-y-0"
+                x-transition:leave-end="opacity-0 -translate-y-2"
+                class="border-t border-neutral-200 bg-white"
+            >
+                <div class="px-5 sm:px-6 py-5">
+                    <h3 class="text-xs font-bold uppercase tracking-[0.2em] text-neutral-500 mb-3">Solve history</h3>
+
+                    @if(empty($challengeProgress))
+                        <p class="text-sm text-neutral-500">No puzzles solved yet — make your first move to start your history.</p>
+                    @else
+                        <ul class="divide-y divide-neutral-100">
+                            @foreach($challengeProgress as $entry)
+                                <li class="flex items-center justify-between gap-3 py-2.5">
+                                    <div class="flex items-center gap-3 min-w-0">
+                                        <span class="w-8 h-8 flex-shrink-0 rounded-md bg-brand/20 text-neutral-900 font-display font-bold text-sm flex items-center justify-center">
+                                            {{ $entry['sequence'] > 0 ? '#'.$entry['sequence'] : '#' }}
+                                        </span>
+                                        <span class="font-medium text-neutral-800 text-sm truncate">Puzzle {{ $entry['sequence'] > 0 ? $entry['sequence'] : '' }}</span>
+                                    </div>
+                                    <time
+                                        datetime="{{ $entry['solved_at']?->toIso8601String() }}"
+                                        title="{{ $entry['solved_at']?->format('M j, Y · g:ia') }}"
+                                        class="text-xs text-neutral-500 flex-shrink-0"
+                                    >
+                                        {{ $entry['solved_at']?->diffForHumans() }}
+                                    </time>
+                                </li>
+                            @endforeach
+                        </ul>
+                    @endif
+                </div>
+            </div>
+        @endif
     </div>
 
-    {{-- Progress Bar --}}
-    <div class="w-full bg-base-200 rounded-full h-2.5 mb-8 overflow-hidden">
-        <div class="bg-neutral-900 h-full rounded-full transition-all duration-500 ease-out" style="width: {{ $totalPuzzles > 0 ? ($completedPuzzles / $totalPuzzles) * 100 : 0 }}%"></div>
+    {{-- Mobile solved-count chip (below card so sm:flex users see it too) --}}
+    <div class="sm:hidden -mt-4 mb-6 flex justify-end">
+        <span class="text-xs text-neutral-500">{{ $completedPuzzles }} / {{ $totalPuzzles }} solved</span>
     </div>
-
-    {{-- Puzzle Progress Grid --}}
-    @if(!empty($orderedPuzzleIds))
-        <div class="mb-8 bg-white rounded-2xl border border-neutral-200 shadow-warm p-5">
-            <div class="flex items-center justify-between mb-3">
-                <h3 class="text-xs font-bold uppercase tracking-[0.2em] text-neutral-500">Puzzle Progress Map</h3>
-                <p class="text-xs text-neutral-500">{{ $completedPuzzles }} / {{ $totalPuzzles }} solved</p>
-            </div>
-
-            <div class="grid grid-cols-10 sm:grid-cols-12 md:grid-cols-15 lg:grid-cols-20 gap-1.5">
-                @foreach($orderedPuzzleIds as $index => $puzzleId)
-                    @php
-                        $solved = in_array($puzzleId, $solvedPuzzleIds);
-                        $current = $puzzleId === ($currentPuzzleId ?? null);
-                    @endphp
-                    <div
-                        class="h-4 rounded-sm border {{ $solved ? 'bg-green-500 border-green-600' : ($current ? 'bg-orange-400 border-orange-500' : 'bg-base-200 border-neutral-200') }}"
-                        title="Puzzle {{ $index + 1 }}{{ $current ? ' (current)' : '' }}{{ $solved ? ' (solved)' : '' }}"
-                    ></div>
-                @endforeach
-            </div>
-
-            <div class="mt-3 flex flex-wrap items-center gap-4 text-xs text-neutral-600">
-                <div class="flex items-center gap-1.5"><span class="inline-block w-3 h-3 rounded-sm bg-green-500 border border-green-600"></span><span>Solved</span></div>
-                <div class="flex items-center gap-1.5"><span class="inline-block w-3 h-3 rounded-sm bg-orange-400 border border-orange-500"></span><span>Current</span></div>
-                <div class="flex items-center gap-1.5"><span class="inline-block w-3 h-3 rounded-sm bg-base-200 border border-neutral-200"></span><span>Remaining</span></div>
-            </div>
-        </div>
-    @endif
 
     @if($isComplete)
         @php
@@ -348,9 +443,31 @@
 
             {{-- Sidebar / Instructions --}}
             <div class="w-full lg:w-1/3">
+
+                {{-- Puzzle themes tags — above the Your Turn card --}}
+                <div
+                    x-show="ready && !puzzleError"
+                    x-cloak
+                    x-transition:enter="transition ease-out duration-300"
+                    x-transition:enter-start="opacity-0 -translate-y-1"
+                    x-transition:enter-end="opacity-100 translate-y-0"
+                    class="mb-3"
+                >
+                    @if(!empty($currentPuzzleThemes))
+                        <div class="flex flex-wrap gap-1.5">
+                            @foreach($currentPuzzleThemes as $theme)
+                                <span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-medium bg-base-200 text-neutral-800 border border-neutral-200">
+                                    <span class="inline-block w-1.5 h-1.5 rounded-full bg-brand"></span>
+                                    {{ ucfirst(str_replace(['-', '_'], ' ', $theme)) }}
+                                </span>
+                            @endforeach
+                        </div>
+                    @endif
+                </div>
+
                 <div class="rounded-2xl border border-neutral-200 bg-white shadow-warm h-full">
                     <div class="p-6">
-                        <h3 class="text-2xl font-display font-black text-neutral-900">Your Turn</h3>
+                        <h3 class="text-2xl font-display font-black text-neutral-900 border-l-2 border-brand pl-4">Your Turn</h3>
 
                         <div x-show="puzzleError" class="py-10 text-center">
                             <p class="text-red-600 font-semibold">Puzzle data error</p>
@@ -363,20 +480,10 @@
                         </div>
 
                         <div x-show="ready && !puzzleError" x-cloak class="mt-4">
-                            @if(!empty($currentPuzzleThemes))
-                                <div class="flex flex-wrap gap-1.5 mb-4">
-                                    @foreach($currentPuzzleThemes as $theme)
-                                        <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-orange-50 text-orange-700 border border-orange-200">
-                                            {{ ucfirst(str_replace(['-', '_'], ' ', $theme)) }}
-                                        </span>
-                                    @endforeach
-                                </div>
-                            @endif
-
                             <p class="text-neutral-700 text-base sm:text-lg">
                                 Find the best move for
                                 <span class="font-bold inline-block px-3 py-1 rounded-md"
-                                      :class="playerColor === 'white' ? 'bg-orange-100 text-orange-900' : 'bg-neutral-800 text-white'"
+                                      :class="playerColor === 'white' ? 'bg-brand text-neutral-900' : 'bg-neutral-900 text-white'"
                                       x-text="playerColor === 'white' ? 'White' : 'Black'">
                                 </span>.
                             </p>
