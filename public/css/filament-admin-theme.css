@@ -93,7 +93,8 @@ body {
     border-right-color: #2e2e2e;
 }
 
-/* Sidebar item text/icons */
+/* Sidebar item text/icons (default state) */
+/* Light: muted dark gray. Dark: muted light gray. */
 .fi-sidebar-item-label,
 .fi-sidebar-item-icon {
     color: var(--cpc-onyx-700);
@@ -104,11 +105,38 @@ body {
     color: #a3a3a3;
 }
 
+/* Hover — light: onyx icon+label (the link color). Dark: chartreuse icon+label. */
+.fi-sidebar-item:hover .fi-sidebar-item-label,
+.fi-sidebar-item:hover .fi-sidebar-item-icon {
+    color: var(--cpc-onyx) !important;
+}
+
+.dark .fi-sidebar-item:hover .fi-sidebar-item-label,
+.dark .fi-sidebar-item:hover .fi-sidebar-item-icon {
+    color: var(--cpc-brand) !important;
+}
+
+/* Hover button background — soft chartreuse tint in both modes */
+.fi-sidebar-item:hover > .fi-sidebar-item-btn {
+    background-color: rgba(183, 255, 0, 0.10) !important;
+}
+
+.dark .fi-sidebar-item:hover > .fi-sidebar-item-btn {
+    background-color: rgba(183, 255, 0, 0.18) !important;
+}
+
 /* Active sidebar item — solid chartreuse fill (the /new home page's brand
-   accent, the "this is the active page" moment). Matches the reference:
-   chartreuse background, onyx icon + label.
+   accent, the "this is the active page" moment). Same treatment in light
+   and dark mode: chartreuse background, shallow rounded corners, ONYX
+   icon + label (NOT chartreuse — the text reads as the title of the page).
    Filament uses `.fi-sidebar-item.fi-active`; we also keep
    `.fi-sidebar-item-active` as a fallback for any custom markup. */
+.fi-sidebar-item.fi-active,
+.fi-sidebar-item-active {
+    background-color: transparent !important;
+    border-left: 0 !important;
+}
+
 .fi-sidebar-item.fi-active > .fi-sidebar-item-btn,
 .fi-sidebar-item-active > .fi-sidebar-item-btn {
     background-color: var(--cpc-brand) !important;
@@ -116,39 +144,26 @@ body {
     box-shadow: 0 1px 2px rgba(17, 17, 17, 0.06) !important;
 }
 
-.fi-sidebar-item.fi-active,
-.fi-sidebar-item-active {
-    background-color: transparent !important;
-    border-left: 0 !important;
-}
-
 .fi-sidebar-item.fi-active .fi-sidebar-item-label,
 .fi-sidebar-item.fi-active .fi-sidebar-item-icon,
 .fi-sidebar-item-active .fi-sidebar-item-label,
 .fi-sidebar-item-active .fi-sidebar-item-icon {
-    color: var(--cpc-onyx) !important;
+    color: #111111 !important;
     font-weight: 600;
 }
 
+/* Dark mode active: same as light mode (onyx text/icon on chartreuse bg) */
 .dark .fi-sidebar-item.fi-active > .fi-sidebar-item-btn,
 .dark .fi-sidebar-item-active > .fi-sidebar-item-btn {
     background-color: var(--cpc-brand) !important;
-    color: var(--cpc-onyx) !important;
 }
 
 .dark .fi-sidebar-item.fi-active .fi-sidebar-item-label,
 .dark .fi-sidebar-item.fi-active .fi-sidebar-item-icon,
 .dark .fi-sidebar-item-active .fi-sidebar-item-label,
 .dark .fi-sidebar-item-active .fi-sidebar-item-icon {
-    color: var(--cpc-onyx) !important;
-}
-
-.fi-sidebar-item:hover > .fi-sidebar-item-btn {
-    background-color: rgba(183, 255, 0, 0.10) !important;
-}
-
-.dark .fi-sidebar-item:hover > .fi-sidebar-item-btn {
-    background-color: rgba(183, 255, 0, 0.18) !important;
+    color: #111111 !important;
+    font-weight: 600;
 }
 
 /* Brand wordmark — chartreuse pawn + onyx/white text */
@@ -1124,14 +1139,9 @@ body {
 
 /* ── More chartreuse accents throughout the admin ── */
 
-/* Subtle chartreuse-tinted hover on sidebar group items */
-.fi-sidebar-group-items .fi-sidebar-item:hover .fi-sidebar-item-icon {
-    color: var(--cpc-brand) !important;
-}
-
-.dark .fi-sidebar-group-items .fi-sidebar-item:hover .fi-sidebar-item-icon {
-    color: var(--cpc-brand) !important;
-}
+/* (Sidebar hover behavior moved to the sidebar section above.)
+   Light mode hover = onyx (~the link color).
+   Dark mode hover = chartreuse, matching the user's request. */
 
 /* Chartreuse underline on breadcrumb separator / current */
 .fi-breadcrumbs-item-separator svg,
