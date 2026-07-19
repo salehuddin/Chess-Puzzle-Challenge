@@ -446,11 +446,12 @@ body {
 
 /* ── Tabs ─────────────────────────────────────────────────── */
 /* Active tab — solid chartreuse fill (matches sidebar active treatment).
-   Filament v5 uses `.fi-tabs-item.fi-active` (NOT `fi-tabs-item-active`). */
+   Filament v5 uses `.fi-tabs-item.fi-active` (NOT `fi-tabs-item-active`).
+   Same treatment in light and dark mode: chartreuse bg + ONYX text/icon. */
 .fi-tabs-item.fi-active,
 .fi-tabs-item.fi-tabs-item-active {
     background-color: var(--cpc-brand) !important;
-    color: var(--cpc-onyx) !important;
+    color: #111111 !important;
     border-radius: 0.5rem !important;
     font-weight: 600;
     box-shadow: 0 1px 2px rgba(17, 17, 17, 0.06) !important;
@@ -459,29 +460,37 @@ body {
 .dark .fi-tabs-item.fi-active,
 .dark .fi-tabs-item.fi-tabs-item-active {
     background-color: var(--cpc-brand) !important;
-    color: var(--cpc-onyx) !important;
+    color: #111111 !important;
 }
 
 .fi-tabs-item.fi-active .fi-tabs-item-label,
 .fi-tabs-item.fi-active > .fi-icon,
 .fi-tabs-item.fi-tabs-item-active .fi-tabs-item-label,
 .fi-tabs-item.fi-tabs-item-active > .fi-icon {
-    color: var(--cpc-onyx) !important;
+    color: #111111 !important;
 }
 
 .dark .fi-tabs-item.fi-active .fi-tabs-item-label,
 .dark .fi-tabs-item.fi-active > .fi-icon,
 .dark .fi-tabs-item.fi-tabs-item-active .fi-tabs-item-label,
 .dark .fi-tabs-item.fi-tabs-item-active > .fi-icon {
-    color: var(--cpc-onyx) !important;
+    color: #111111 !important;
 }
 
+/* Hover — non-active tabs only */
+/* Light: just a soft chartreuse wash (icon stays default). Dark: chartreuse wash + onyx text/icon. */
 .fi-tabs-item:not(.fi-active):not(.fi-tabs-item-active):hover {
     background-color: rgba(183, 255, 0, 0.10) !important;
 }
 
 .dark .fi-tabs-item:not(.fi-active):not(.fi-tabs-item-active):hover {
     background-color: rgba(183, 255, 0, 0.18) !important;
+    color: var(--cpc-brand) !important;
+}
+
+.dark .fi-tabs-item:not(.fi-active):not(.fi-tabs-item-active):hover .fi-tabs-item-label,
+.dark .fi-tabs-item:not(.fi-active):not(.fi-tabs-item-active):hover > .fi-icon {
+    color: var(--cpc-brand) !important;
 }
 
 /* ── Filters & search ─────────────────────────────────────── */
@@ -521,24 +530,42 @@ body {
 }
 
 /* ── Topbar nav items (admin nav rendered in the topbar) ── */
+/* Active = solid chartreuse + onyx text (matches sidebar/tabs treatment). */
 .fi-topbar-nav-groups .fi-topbar-item.fi-active .fi-topbar-item-btn {
     background-color: var(--cpc-brand) !important;
-    color: var(--cpc-onyx) !important;
+    color: #111111 !important;
     border-radius: 0.5rem !important;
     font-weight: 600;
 }
 
 .dark .fi-topbar-nav-groups .fi-topbar-item.fi-active .fi-topbar-item-btn {
     background-color: var(--cpc-brand) !important;
-    color: var(--cpc-onyx) !important;
+    color: #111111 !important;
 }
 
+.fi-topbar-nav-groups .fi-topbar-item.fi-active .fi-topbar-item-btn > .fi-icon,
+.fi-topbar-nav-groups .fi-topbar-item.fi-active .fi-topbar-item-btn .fi-topbar-item-label {
+    color: #111111 !important;
+}
+
+.dark .fi-topbar-nav-groups .fi-topbar-item.fi-active .fi-topbar-item-btn > .fi-icon,
+.dark .fi-topbar-nav-groups .fi-topbar-item.fi-active .fi-topbar-item-btn .fi-topbar-item-label {
+    color: #111111 !important;
+}
+
+/* Hover — light: just chartreuse wash. Dark: chartreuse wash + chartreuse text/icon. */
 .fi-topbar-nav-groups .fi-topbar-item:not(.fi-active) .fi-topbar-item-btn:hover {
-    background-color: rgba(183, 255, 0, 0.08) !important;
+    background-color: rgba(183, 255, 0, 0.10) !important;
 }
 
 .dark .fi-topbar-nav-groups .fi-topbar-item:not(.fi-active) .fi-topbar-item-btn:hover {
-    background-color: rgba(183, 255, 0, 0.14) !important;
+    background-color: rgba(183, 255, 0, 0.18) !important;
+    color: var(--cpc-brand) !important;
+}
+
+.dark .fi-topbar-nav-groups .fi-topbar-item:not(.fi-active) .fi-topbar-item-btn:hover > .fi-icon,
+.dark .fi-topbar-nav-groups .fi-topbar-item:not(.fi-active) .fi-topbar-item-btn:hover .fi-topbar-item-label {
+    color: var(--cpc-brand) !important;
 }
 
 /* ── Stats overview (KPI widget) ──────────────────────────── */
