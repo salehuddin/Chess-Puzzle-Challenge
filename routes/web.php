@@ -10,12 +10,13 @@ use App\Http\Controllers\PublicProfileController;
 use App\Livewire\ChallengeIndex;
 use App\Livewire\ChallengeShow;
 use App\Livewire\Dashboard;
+use App\Livewire\EnrolledChallenge;
 use App\Livewire\HallOfFame;
 use App\Livewire\MedalRequest;
-use App\Livewire\OrderTracking;
 use App\Livewire\PuzzlePlayer;
 use App\Models\Bundle;
 use App\Models\Challenge;
+use App\Models\Enrollment;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
@@ -52,9 +53,10 @@ Route::middleware('auth')->group(function () {
     Route::post('/checkout/{order}/pay', [CheckoutController::class, 'pay'])->name('checkout.pay');
 
     Route::get('/play/{enrollment}', PuzzlePlayer::class)->name('play');
+    Route::get('/enrollments/{enrollment}', EnrolledChallenge::class)->name('enrollments.show');
     Route::get('/medal-request/{enrollment}', MedalRequest::class)->name('medal-request');
     Route::get('/hall-of-fame', HallOfFame::class)->name('hall-of-fame');
-    Route::get('/orders/{enrollment}', OrderTracking::class)->name('orders.track');
+    Route::get('/orders/{enrollment}', fn (Enrollment $enrollment) => redirect()->route('enrollments.show', $enrollment, 301))->name('orders.track');
 
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');

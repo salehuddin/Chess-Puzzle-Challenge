@@ -90,7 +90,7 @@
                                 <div class="badge badge-warning badge-outline mb-4">Pending payment</div>
                                 <div class="card-actions justify-end mt-auto">
                                     <a href="{{ route('checkout.show', $card->order_id) }}" class="btn btn-primary btn-sm w-full">Complete Payment</a>
-                                    <a href="{{ route('orders.track', $card->enrollment_id) }}" class="btn btn-outline btn-sm w-full">View Enrollment</a>
+                                    <a href="{{ route('enrollments.show', $card->enrollment_id) }}" class="btn btn-outline btn-sm w-full">View Enrollment</a>
                                 </div>
                             </div>
                         </div>
@@ -169,7 +169,7 @@
                                     @elseif($card->status === 'shipped' && $card->tracking_url)
                                         <a href="{{ $card->tracking_url }}" target="_blank" class="btn btn-outline btn-primary btn-sm w-full">Track Package ({{ $card->courier }})</a>
                                     @else
-                                        <a href="{{ route('orders.track', $card->enrollment_id) }}" class="btn btn-outline btn-sm w-full">View Order Details</a>
+                                        <a href="{{ route('enrollments.show', $card->enrollment_id) }}" class="btn btn-outline btn-sm w-full">View Order Details</a>
                                     @endif
                                 </div>
                             </div>
@@ -290,9 +290,9 @@
                                                 <p class="font-medium text-neutral-800">{{ $item->name_snapshot }}</p>
                                                 <p class="text-xs text-neutral-400">{{ $item->sku_snapshot }} &middot; Qty {{ $item->quantity }}</p>
                                                 @foreach($item->enrollments as $enrollment)
-                                                    <a href="{{ route('orders.track', $enrollment->id) }}" class="text-xs text-primary hover:underline mt-1 inline-flex items-center gap-1">
+                                                    <a href="{{ route('enrollments.show', $enrollment->id) }}" class="text-xs text-primary hover:underline mt-1 inline-flex items-center gap-1">
                                                         <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6"/></svg>
-                                                        Track enrollment ({{ $enrollment->status }})
+                                                        View enrollment ({{ $enrollment->status }})
                                                     </a>
                                                 @endforeach
                                             </div>

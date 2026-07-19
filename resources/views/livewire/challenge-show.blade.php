@@ -36,7 +36,7 @@
         ? route('checkout.show', $userEnrollment['order_id'])
         : null;
     $playUrl = ($userEnrollment['id'] ?? null) ? route('play', $userEnrollment['id']) : null;
-    $trackUrl = ($userEnrollment['id'] ?? null) ? route('orders.track', $userEnrollment['id']) : null;
+    $trackUrl = ($userEnrollment['id'] ?? null) ? route('enrollments.show', $userEnrollment['id']) : null;
 
     $isGuest = ! auth()->check();
     $isAdmin = auth()->user()?->isAdmin() ?? false;

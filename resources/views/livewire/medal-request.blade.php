@@ -16,7 +16,7 @@
                 <p class="text-neutral-600">Your physical medal for <strong>{{ $challenge->name }}</strong> is being prepared for shipment.</p>
             </div>
             <div class="p-8 text-center">
-                <a href="{{ route('orders.track', $enrollment) }}" class="btn btn-primary gap-2">
+                <a href="{{ route('enrollments.show', $enrollment) }}" class="btn btn-primary gap-2">
                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"/></svg>
                     Track My Medal
                 </a>

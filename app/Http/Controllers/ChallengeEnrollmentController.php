@@ -33,7 +33,7 @@ class ChallengeEnrollmentController extends Controller
                 return redirect()->route('play', $existing);
             }
 
-            return redirect()->route('orders.track', $existing);
+            return redirect()->route('enrollments.show', $existing);
         }
 
         $orderStatus = $user->isAdmin() ? 'paid' : 'pending';
