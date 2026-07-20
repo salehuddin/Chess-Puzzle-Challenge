@@ -38,11 +38,11 @@
 
         $percent = $totalPuzzles > 0 ? (int) round(($completedPuzzles / $totalPuzzles) * 100) : 0;
 
-        $showProgress  = in_array($derivedStatus, ['active', 'completed', 'medal_pending', 'preparing', 'shipped'], true);
-        $showSticker   = in_array($derivedStatus, ['completed', 'medal_pending', 'preparing', 'shipped'], true) && $sticker;
-        $showMedalPipeline = in_array($derivedStatus, ['completed', 'medal_pending', 'preparing', 'shipped'], true);
-        $showReview    = in_array($derivedStatus, ['completed', 'medal_pending', 'preparing', 'shipped'], true);
-        $showHistory   = in_array($derivedStatus, ['active', 'completed', 'medal_pending', 'preparing', 'shipped'], true);
+        $showProgress      = in_array($derivedStatus, ['active', 'completed', 'medal_pending', 'preparing', 'shipped'], true);
+        $showSticker       = true;  // locked silhouette if not yet earned
+        $showMedalPipeline = true;  // stepper shows current step
+        $showReview        = in_array($derivedStatus, ['completed', 'medal_pending', 'preparing', 'shipped'], true);
+        $showHistory       = in_array($derivedStatus, ['active', 'completed', 'medal_pending', 'preparing', 'shipped'], true);
     @endphp
 
     {{-- =============================================================== --}}
@@ -174,13 +174,17 @@
     @endif
 
     {{-- =============================================================== --}}
-    {{-- 4. Sticker card (only after completion) --}}
+    {{-- 4. Sticker card — earned when completed, locked silhouette otherwise --}}
     {{-- =============================================================== --}}
     @if($showSticker)
+        @php
+            $isStickerEarned = $sticker && $sticker->unlocked_at !== null;
+            $stickerHeading = $isStickerEarned ? 'Sticker Earned' : 'Sticker to Earn';
+        @endphp
         <section class="mb-6 bg-white rounded-2xl border border-neutral-200 shadow-warm p-5 sm:p-6">
-            <h2 class="text-sm font-bold uppercase tracking-[0.2em] text-neutral-500 mb-4">Sticker Earned</h2>
+            <h2 class="text-sm font-bold uppercase tracking-[0.2em] text-neutral-500 mb-4">{{ $stickerHeading }}</h2>
             <div class="flex items-center gap-5">
-                <div class="relative w-28 h-28 sm:w-32 sm:h-32 flex-shrink-0 drop-shadow-[0_10px_15px_rgba(183,255,0,0.25)]">
+                <div class="relative w-28 h-28 sm:w-32 sm:h-32 flex-shrink-0 @if($isStickerEarned) drop-shadow-[0_10px_15px_rgba(183,255,0,0.25)] @else opacity-40 grayscale saturate-0 @endif">
                     @if($stickerSrc)
                         <img src="{{ $stickerSrc }}" alt="{{ $challenge->name }} sticker" class="w-full h-full object-contain" />
                     @else
@@ -191,17 +195,28 @@
                 </div>
                 <div class="min-w-0">
                     <p class="font-display font-black text-neutral-900 text-lg">{{ $challenge->name }}</p>
-                    <p class="text-xs text-neutral-500 mt-1">
-                        Unlocked {{ $sticker->unlocked_at?->format('M j, Y') }}
-                    </p>
-                    <a href="{{ route('hall-of-fame') }}"
-                       class="inline-flex items-center gap-1 mt-3 text-xs sm:text-sm text-neutral-500 hover:text-brand transition-colors"
-                       wire:navigate>
-                        View in Hall of Fame
-                        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"/>
-                        </svg>
-                    </a>
+                    @if($isStickerEarned)
+                        <p class="text-xs text-neutral-500 mt-1">
+                            Unlocked {{ $sticker->unlocked_at?->format('M j, Y') }}
+                        </p>
+                        <a href="{{ route('hall-of-fame') }}"
+                           class="inline-flex items-center gap-1 mt-3 text-xs sm:text-sm text-neutral-500 hover:text-brand transition-colors"
+                           wire:navigate>
+                            View in Hall of Fame
+                            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"/>
+                            </svg>
+                        </a>
+                    @else
+                        <p class="text-xs text-neutral-500 mt-1">
+                            Solve all {{ $totalPuzzles }} puzzles to unlock this sticker
+                        </p>
+                        @if($totalPuzzles > 0)
+                            <p class="text-xs text-neutral-400 mt-0.5">
+                                {{ $completedPuzzles }} / {{ $totalPuzzles }} solved
+                            </p>
+                        @endif
+                    @endif
                 </div>
             </div>
         </section>
@@ -216,7 +231,8 @@
 
             @php
                 $fulfillmentStatus = $fulfillment?->status ?? 'pending';
-                $isPurchased = true; // always true if we got here
+                // Pending payment — step 1 not even complete yet
+                $isPurchased = $derivedStatus !== 'pending';
                 $isCompleted = in_array($derivedStatus, ['completed', 'medal_pending', 'preparing', 'shipped'], true);
                 $isPreparingOrFurther = in_array($derivedStatus, ['preparing', 'shipped'], true);
                 $isShipped = $derivedStatus === 'shipped';
@@ -224,11 +240,11 @@
 
             {{-- DaisyUI stepper — 4 stages --}}
             <ul class="steps steps-vertical sm:steps-horizontal w-full mb-6">
-                <li class="step step-primary" data-content="✓">
+                <li class="step {{ $isPurchased ? 'step-primary' : '' }}" data-content="{{ $isPurchased ? '✓' : '⏳' }}">
                     Purchased
                 </li>
                 <li class="step {{ $isCompleted ? 'step-primary' : '' }}" data-content="♟">
-                    Challenge Completed
+                    {{ $derivedStatus === 'active' ? 'In Progress' : 'Challenge Completed' }}
                 </li>
                 <li class="step {{ $isPreparingOrFurther ? 'step-primary' : '' }}" data-content="{{ $isPreparingOrFurther ? '✓' : '📦' }}">
                     Preparing
@@ -243,7 +259,35 @@
                 <div class="border border-neutral-200 rounded-xl p-4">
                     <h3 class="text-xs font-bold uppercase tracking-[0.2em] text-neutral-500 mb-2 border-b pb-2">Status</h3>
 
-                    @if($derivedStatus === 'completed')
+                    @if($derivedStatus === 'pending')
+                        <div class="flex items-start gap-3">
+                            <span class="text-2xl">⏳</span>
+                            <div>
+                                <p class="font-semibold text-neutral-900">Awaiting Payment</p>
+                                <p class="text-xs text-neutral-500 mt-1">Complete payment to unlock the puzzles and start your challenge.</p>
+                                @if($enrollment->orderItem?->order_id)
+                                    <a href="{{ route('checkout.show', $enrollment->orderItem->order_id) }}" class="btn btn-primary btn-sm mt-3 gap-2" wire:navigate>
+                                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z"/></svg>
+                                        Complete Payment
+                                    </a>
+                                @endif
+                            </div>
+                        </div>
+                    @elseif($derivedStatus === 'active')
+                        <div class="flex items-start gap-3">
+                            <span class="text-2xl">♟</span>
+                            <div>
+                                <p class="font-semibold text-neutral-900">In Progress</p>
+                                <p class="text-xs text-neutral-500 mt-1">
+                                    Solve {{ $totalPuzzles - $completedPuzzles }} more puzzle{{ ($totalPuzzles - $completedPuzzles) === 1 ? '' : 's' }} to complete the challenge and unlock your medal claim.
+                                </p>
+                                <a href="{{ route('play', $enrollment) }}" class="btn btn-primary btn-sm mt-3 gap-2" wire:navigate>
+                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                                    Resume Playing
+                                </a>
+                            </div>
+                        </div>
+                    @elseif($derivedStatus === 'completed')
                         <div class="flex items-start gap-3">
                             <span class="text-2xl">🏆</span>
                             <div>
@@ -322,8 +366,10 @@
                         <p class="text-xs text-neutral-500">
                             @if(in_array($derivedStatus, ['completed', 'medal_pending'], true))
                                 Address will be captured when you claim your medal.
+                            @elseif($derivedStatus === 'pending')
+                                Address captured after payment.
                             @else
-                                No shipping address on file.
+                                Address captured when you claim your medal after completion.
                             @endif
                         </p>
                     @endif
