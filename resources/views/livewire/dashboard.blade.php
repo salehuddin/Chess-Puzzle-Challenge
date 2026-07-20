@@ -132,6 +132,9 @@
                                             Start Challenge
                                         @endif
                                     </a>
+                                    <a href="{{ route('enrollments.show', $card->enrollment_id) }}" class="text-xs text-neutral-500 hover:text-brand transition-colors w-full text-center mt-1" wire:navigate>
+                                        View details →
+                                    </a>
                                 </div>
                             </div>
                         </div>
