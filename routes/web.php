@@ -20,18 +20,13 @@ use App\Models\Enrollment;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
-    $challenges = Challenge::active()->withCount('puzzles')->take(3)->get();
-    $bundles = Bundle::active()->with('challenges')->take(2)->get();
-
-    return view('welcome', compact('challenges', 'bundles'));
-});
-
-Route::get('/new', function () {
     $challenges = Challenge::active()->withCount('puzzles')->take(6)->get();
     $bundles = Bundle::active()->with('challenges')->take(3)->get();
 
     return view('landing.welcome-v2', compact('challenges', 'bundles'));
-})->name('landing.new');
+})->name('home');
+
+Route::redirect('/new', '/', 301)->name('landing.new');
 
 Route::get('/challenges', ChallengeIndex::class)->name('challenges.index');
 Route::get('/challenges/{challenge:slug}', ChallengeShow::class)->name('challenges.show');
