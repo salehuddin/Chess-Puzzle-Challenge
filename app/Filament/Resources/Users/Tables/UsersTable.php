@@ -2,6 +2,8 @@
 
 namespace App\Filament\Resources\Users\Tables;
 
+use App\Filament\Resources\Users\Actions\SendPasswordResetLinkAction;
+use App\Filament\Resources\Users\Actions\SetUserPasswordAction;
 use App\Filament\Resources\Users\UserResource;
 use App\Models\Enrollment;
 use App\Models\Order;
@@ -136,6 +138,8 @@ class UsersTable
                     ->label('Orders')
                     ->icon('heroicon-o-shopping-cart')
                     ->url(fn ($record): string => UserResource::getUrl('orders', ['record' => $record])),
+                SendPasswordResetLinkAction::make(),
+                SetUserPasswordAction::make(),
             ])
             ->toolbarActions([
                 BulkActionGroup::make([

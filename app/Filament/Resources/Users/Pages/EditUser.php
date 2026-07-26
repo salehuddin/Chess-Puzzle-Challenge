@@ -2,8 +2,11 @@
 
 namespace App\Filament\Resources\Users\Pages;
 
+use App\Filament\Resources\Users\Actions\SendPasswordResetLinkAction;
+use App\Filament\Resources\Users\Actions\SetUserPasswordAction;
 use App\Filament\Resources\Users\Pages\Concerns\HasUserRecordHeader;
 use App\Filament\Resources\Users\UserResource;
+use Filament\Actions\ActionGroup;
 use Filament\Actions\DeleteAction;
 use Filament\Resources\Pages\EditRecord;
 
@@ -20,6 +23,10 @@ class EditUser extends EditRecord
     protected function getHeaderActions(): array
     {
         return [
+            ActionGroup::make([
+                SendPasswordResetLinkAction::make(),
+                SetUserPasswordAction::make(),
+            ])->label('Password'),
             DeleteAction::make(),
         ];
     }

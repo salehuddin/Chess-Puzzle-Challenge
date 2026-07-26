@@ -2,10 +2,13 @@
 
 namespace App\Filament\Resources\Users\Pages;
 
+use App\Filament\Resources\Users\Actions\SendPasswordResetLinkAction;
+use App\Filament\Resources\Users\Actions\SetUserPasswordAction;
 use App\Filament\Resources\Users\Pages\Concerns\HasUserRecordHeader;
 use App\Filament\Resources\Users\UserResource;
 use App\Filament\Resources\Users\Widgets\UserActivityTimeline;
 use App\Filament\Resources\Users\Widgets\UserOverview;
+use Filament\Actions\ActionGroup;
 use Filament\Infolists\Components\TextEntry;
 use Filament\Resources\Pages\ViewRecord;
 use Filament\Schemas\Components\Section;
@@ -20,6 +23,16 @@ class ViewUser extends ViewRecord
     protected static ?string $navigationLabel = 'Overview';
 
     protected static ?string $title = 'User Overview';
+
+    protected function getHeaderActions(): array
+    {
+        return [
+            ActionGroup::make([
+                SendPasswordResetLinkAction::make(),
+                SetUserPasswordAction::make(),
+            ])->label('Password'),
+        ];
+    }
 
     public function infolist(Schema $schema): Schema
     {
