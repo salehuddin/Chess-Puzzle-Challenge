@@ -442,7 +442,7 @@ class Settings extends Page implements HasForms
             $mailer = new Mailer(
                 'test-smtp',
                 app('view'),
-                new \Symfony\Component\Mailer\Mailer($transport),
+                $transport,
                 app('events'),
             );
 
