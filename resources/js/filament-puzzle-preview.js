@@ -36,9 +36,8 @@ function puzzlePreviewPanel(initialPuzzle = null) {
                     payload.lichessId,
                     null,
                     false,
-                    '',
                     'board-preview-client',
-                    0,
+                    600,
                 );
             });
         },

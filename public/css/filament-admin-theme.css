@@ -760,6 +760,17 @@ body {
     font-weight: 500;
 }
 
+.cpc-preview-panel__error {
+    color: #dc2626;
+    background-color: #fef2f2;
+    border: 1px solid #fecaca;
+    border-radius: 0.5rem;
+    padding: 8px 12px;
+    font-size: 0.75rem;
+    line-height: 1.4;
+    font-weight: 500;
+}
+
 .cpc-preview-panel__turn {
     margin: 0 0 12px;
     color: var(--pp-text);

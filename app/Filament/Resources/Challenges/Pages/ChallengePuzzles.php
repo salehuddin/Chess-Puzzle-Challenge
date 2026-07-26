@@ -9,6 +9,7 @@ use Filament\Actions\Action;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DetachAction;
 use Filament\Actions\DetachBulkAction;
+use Filament\Notifications\Notification;
 use Filament\Resources\Pages\ManageRelatedRecords;
 use Filament\Schemas\Components\EmbeddedTable;
 use Filament\Schemas\Components\Grid;
@@ -109,6 +110,64 @@ class ChallengePuzzles extends ManageRelatedRecords
                 ]
                 : [])
             ->headerActions([
+                Action::make('attachRecent')
+                    ->label('Quick Attach Recent')
+                    ->icon('heroicon-o-bolt')
+                    ->color('success')
+                    ->requiresConfirmation()
+                    ->modalHeading('Attach recently uploaded puzzles')
+                    ->modalDescription(function (): string {
+                        $challenge = $this->getOwnerRecord();
+                        $attachedIds = $challenge->puzzles()->pluck('puzzles.id')->all();
+
+                        $count = Puzzle::query()
+                            ->where('created_at', '>=', now()->subHour())
+                            ->whereNotIn('id', $attachedIds)
+                            ->count();
+
+                        return $count.' puzzle(s) uploaded in the last hour will be attached to "'.$challenge->name.'".';
+                    })
+                    ->modalSubmitActionLabel('Attach All Recent')
+                    ->action(function (): void {
+                        $challenge = $this->getOwnerRecord();
+                        $attachedIds = $challenge->puzzles()->pluck('puzzles.id')->all();
+
+                        $puzzleIds = Puzzle::query()
+                            ->where('created_at', '>=', now()->subHour())
+                            ->whereNotIn('id', $attachedIds)
+                            ->orderBy('id')
+                            ->pluck('id')
+                            ->all();
+
+                        if ($puzzleIds === []) {
+                            Notification::make()
+                                ->title('No recent puzzles to attach')
+                                ->body('No puzzles were uploaded in the last hour, or they are already attached.')
+                                ->warning()
+                                ->send();
+
+                            return;
+                        }
+
+                        $existingCount = $challenge->puzzles()->count();
+
+                        $attachments = [];
+                        foreach ($puzzleIds as $index => $puzzleId) {
+                            $attachments[$puzzleId] = ['sequence' => $existingCount + $index + 1];
+                        }
+
+                        $challenge->puzzles()->attach($attachments);
+
+                        $this->normalizeSequence();
+
+                        Notification::make()
+                            ->title(count($puzzleIds).' puzzle(s) attached')
+                            ->body('All puzzles uploaded in the last hour have been attached to '.$challenge->name.'.')
+                            ->success()
+                            ->send();
+
+                        $this->resetTable();
+                    }),
                 Action::make('attachPuzzles')
                     ->label('Attach Puzzles')
                     ->icon('heroicon-o-plus')

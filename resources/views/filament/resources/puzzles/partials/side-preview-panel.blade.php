@@ -12,8 +12,6 @@
         : null;
 @endphp
 
-@vite(['resources/css/filament-puzzle-preview.css', 'resources/js/filament-puzzle-preview.js'])
-
 <div style="position: sticky; top: 1rem;" x-data="puzzlePreviewPanel(@js($initialPuzzlePayload))" x-init="init()">
     <template x-if="!selected">
         <div class="cpc-preview-panel cpc-preview-panel--empty">
@@ -48,7 +46,10 @@
 
                 <div class="cpc-preview-panel__side">
                     <div x-show="!ready" class="cpc-preview-panel__loading">Loading puzzle UI...</div>
-                    <div x-show="ready" x-cloak class="w-full text-center">
+                    <template x-if="puzzleError">
+                        <div class="cpc-preview-panel__error" x-text="puzzleErrorMessage"></div>
+                    </template>
+                    <div x-show="ready && !puzzleError" x-cloak class="w-full text-center">
                         <p class="cpc-preview-panel__turn">
                             Find the best move for
                             <span class="cpc-preview-panel__turn-chip"
@@ -66,6 +67,9 @@
                             </div>
                         </template>
                     </div>
+                    <template x-if="showError">
+                        <div class="cpc-preview-panel__error" x-text="lastMoveError"></div>
+                    </template>
                 </div>
             </div>
         </div>

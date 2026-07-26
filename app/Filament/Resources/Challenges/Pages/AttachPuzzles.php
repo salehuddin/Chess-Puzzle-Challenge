@@ -117,6 +117,7 @@ class AttachPuzzles extends Page implements HasSchemas, HasTable
                     'nb_plays',
                     'fen',
                     'moves',
+                    'created_at',
                 ])
                 ->whereNotIn('id', $this->getRecord()->puzzles()->pluck('puzzles.id'))
             )
@@ -146,6 +147,11 @@ class AttachPuzzles extends Page implements HasSchemas, HasTable
                 TextColumn::make('nb_plays')
                     ->numeric()
                     ->sortable(),
+                TextColumn::make('created_at')
+                    ->label('Uploaded')
+                    ->dateTime()
+                    ->sortable()
+                    ->toggleable(isToggledHiddenByDefault: false),
             ])
             ->recordClasses(fn (Puzzle $record): array => ((int) ($this->previewPuzzleId ?? 0)) === $record->id
                 ? [
@@ -218,6 +224,11 @@ class AttachPuzzles extends Page implements HasSchemas, HasTable
                     )
                     ->indicateUsing(fn (array $data): array => ($data['min_plays'] ?? null) ? ['Min plays: '.$data['min_plays']] : []
                     ),
+
+                Filter::make('recently_uploaded')
+                    ->label('Recently Uploaded')
+                    ->query(fn (Builder $query): Builder => $query->where('created_at', '>=', now()->subHour()))
+                    ->indicateUsing(fn (): array => ['Recently uploaded (last hour)']),
             ])
             ->bulkActions([
                 BulkActionGroup::make([
@@ -286,6 +297,64 @@ class AttachPuzzles extends Page implements HasSchemas, HasTable
     protected function getHeaderActions(): array
     {
         return [
+            Action::make('attachRecent')
+                ->label('Quick Attach Recent')
+                ->icon('heroicon-o-bolt')
+                ->color('success')
+                ->requiresConfirmation()
+                ->modalHeading('Attach recently uploaded puzzles')
+                ->modalDescription(function (): string {
+                    $challenge = $this->getRecord();
+                    $attachedIds = $challenge->puzzles()->pluck('puzzles.id')->all();
+
+                    $count = Puzzle::query()
+                        ->where('created_at', '>=', now()->subHour())
+                        ->whereNotIn('id', $attachedIds)
+                        ->count();
+
+                    return $count.' puzzle(s) uploaded in the last hour will be attached to "'.$challenge->name.'".';
+                })
+                ->modalSubmitActionLabel('Attach All Recent')
+                ->action(function (): void {
+                    $challenge = $this->getRecord();
+                    $attachedIds = $challenge->puzzles()->pluck('puzzles.id')->all();
+
+                    $puzzleIds = Puzzle::query()
+                        ->where('created_at', '>=', now()->subHour())
+                        ->whereNotIn('id', $attachedIds)
+                        ->orderBy('id')
+                        ->pluck('id')
+                        ->all();
+
+                    if ($puzzleIds === []) {
+                        Notification::make()
+                            ->title('No recent puzzles to attach')
+                            ->body('No puzzles were uploaded in the last hour, or they are already attached.')
+                            ->warning()
+                            ->send();
+
+                        return;
+                    }
+
+                    $existingCount = $challenge->puzzles()->count();
+
+                    $attachments = [];
+                    foreach ($puzzleIds as $index => $puzzleId) {
+                        $attachments[$puzzleId] = ['sequence' => $existingCount + $index + 1];
+                    }
+
+                    $challenge->puzzles()->attach($attachments);
+
+                    $this->normalizeSequence();
+
+                    Notification::make()
+                        ->title(count($puzzleIds).' puzzle(s) attached')
+                        ->body('All puzzles uploaded in the last hour have been attached to '.$challenge->name.'.')
+                        ->success()
+                        ->send();
+
+                    $this->redirect(ChallengeResource::getUrl('puzzles', ['record' => $challenge]));
+                }),
             Action::make('back')
                 ->label('Back to challenge puzzles')
                 ->icon('heroicon-o-arrow-left')
