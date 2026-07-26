@@ -392,7 +392,8 @@ class CsvPuzzleService
         }
 
         if (! empty($newRows)) {
-            Puzzle::insert(array_map(fn (array $row): array => $this->buildInsertRow($row), $newRows));
+            $insertRows = array_map(fn (array $row): array => $this->buildInsertRow($row), $newRows);
+            Puzzle::query()->insertOrIgnore($insertRows);
         }
 
         return ['imported' => count($newRows), 'skipped' => $skipped];

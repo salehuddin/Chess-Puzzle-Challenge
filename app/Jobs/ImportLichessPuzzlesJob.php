@@ -173,7 +173,7 @@ class ImportLichessPuzzlesJob implements ShouldQueue
         }
 
         if (! empty($newRows)) {
-            Puzzle::insert($newRows);
+            Puzzle::query()->insertOrIgnore($newRows);
         }
 
         return ['imported' => count($newRows), 'skipped' => $skipped];
