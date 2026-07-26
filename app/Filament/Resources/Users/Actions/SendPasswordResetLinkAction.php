@@ -26,7 +26,7 @@ class SendPasswordResetLinkAction extends Action
             ->modalDescription(fn (User $record): string => "An email with a password-reset link will be sent to {$record->email}. The link expires in 60 minutes.")
             ->modalSubmitActionLabel('Send link')
             ->requiresConfirmation()
-            ->visible(fn (User $record): bool => auth()->user()->can('sendPasswordResetLink', $record))
+            ->authorize('sendPasswordResetLink')
             ->action(function (User $record): void {
                 $status = Password::sendResetLink(['email' => $record->email]);
 

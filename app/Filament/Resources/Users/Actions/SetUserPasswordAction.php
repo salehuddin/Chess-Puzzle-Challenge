@@ -28,7 +28,7 @@ class SetUserPasswordAction extends Action
             ->modalHeading('Set new password')
             ->modalDescription(fn (User $record): string => "Set a new password for {$record->name}. A password-reset link will also be emailed to {$record->email} so they can choose their own password on next sign in.")
             ->modalSubmitActionLabel('Set password & send link')
-            ->visible(fn (User $record): bool => auth()->user()->can('resetPassword', $record))
+            ->authorize('resetPassword')
             ->form([
                 TextInput::make('password')
                     ->password()
