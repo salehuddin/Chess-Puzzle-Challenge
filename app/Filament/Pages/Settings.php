@@ -414,17 +414,18 @@ class Settings extends Page implements HasForms
         $htmlBody = $this->buildTestEmailHtml($title, $body, $buttonText);
 
         try {
-            // Symfony's EsmtpTransport $tls flag controls *implicit* TLS
-            // (the ssl:// stream wrapper), not STARTTLS. STARTTLS is handled
-            // separately via $autoTls, which defaults to true.
-            //   'ssl'  → implicit TLS (port 465)         → $tls=true
-            //   'tls'  → plain TCP + STARTTLS (port 587) → $tls=false, autoTls=true
-            //   ''     → no encryption                   → $tls=false, autoTls=false
-            $transport = new EsmtpTransport(
-                $host,
-                $port,
-                $encryption === 'ssl',
-            );
+            // Symfony's $tls flag controls *implicit* TLS (the ssl:// stream
+            // wrapper), NOT STARTTLS. STARTTLS is handled by $autoTls.
+            //   'ssl'  → $tls=true (implicit TLS, port 465)
+            //   'tls'  → $tls=null (auto-detect: port 465→implicit, else plain TCP+STARTTLS)
+            //   ''     → $tls=false, autoTls=false (no encryption)
+            $tls = match ($encryption) {
+                'ssl' => true,
+                'tls' => null,
+                default => false,
+            };
+
+            $transport = new EsmtpTransport($host, $port, $tls);
 
             $transport->setAutoTls($encryption === 'tls');
 
