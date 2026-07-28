@@ -6,7 +6,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     libpng-dev libjpeg-dev libfreetype6-dev libwebp-dev \
     libzip-dev libonig-dev libxml2-dev libicu-dev \
     && docker-php-ext-configure gd --with-freetype --with-jpeg --with-webp \
-    && docker-php-ext-install -j$(nproc) \
+    && docker-php-ext-install -j2 \
         pdo_mysql bcmath gd zip intl \
     && apt-get clean && rm -rf /var/lib/apt/lists/*
 
