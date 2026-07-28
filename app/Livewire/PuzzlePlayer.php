@@ -681,11 +681,6 @@ class PuzzlePlayer extends Component
     #[Layout('layouts.play')]
     public function render()
     {
-        return view('livewire.puzzle-player')->layoutData([
-            'challengeName' => $this->challenge->name,
-            'completedPuzzles' => $this->completedPuzzles,
-            'totalPuzzles' => $this->totalPuzzles,
-            'enrollmentId' => $this->enrollment->id,
-        ]);
+        return view('livewire.puzzle-player');
     }
 }

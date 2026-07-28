@@ -11,6 +11,27 @@
     {{--   • GitHub-style progress grid (below title)                   --}}
     {{--   • "More info" toggle → expandable puzzle solve history       --}}
     {{-- ============================================================ --}}
+
+    {{-- Top action row: status + dashboard links (right-aligned, above the card) --}}
+    <div class="flex items-center justify-end gap-1 sm:gap-2 mb-3">
+        @isset($enrollment)
+            <a href="{{ route('enrollments.show', $enrollment) }}"
+               class="btn btn-ghost btn-xs sm:btn-sm gap-1"
+               wire:navigate
+               title="Challenge status page">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+                <span class="hidden sm:inline">Status</span>
+            </a>
+        @endisset
+        <a href="{{ route('dashboard') }}"
+           class="btn btn-ghost btn-xs sm:btn-sm gap-1"
+           wire:navigate
+           title="Back to dashboard">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/></svg>
+            <span class="hidden sm:inline">Dashboard</span>
+        </a>
+    </div>
+
     <div
         x-data="{ open: @entangle('showHistory') }"
         class="mb-8 bg-white rounded-2xl border border-neutral-200 shadow-warm overflow-hidden"
@@ -59,7 +80,6 @@
             <div class="px-5 sm:px-6 pb-5">
                 <div class="flex items-center justify-between mb-2.5">
                     <h3 class="text-[10px] font-bold uppercase tracking-[0.2em] text-neutral-500">Progress</h3>
-                    <p class="text-[10px] text-neutral-500">{{ $completedPuzzles }} / {{ $totalPuzzles }} solved</p>
                 </div>
 
                 <div class="grid grid-cols-[repeat(15,minmax(0,1fr))] sm:grid-cols-[repeat(20,minmax(0,1fr))] lg:grid-cols-[repeat(25,minmax(0,1fr))] gap-1">
