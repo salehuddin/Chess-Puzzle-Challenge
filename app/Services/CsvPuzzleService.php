@@ -2,8 +2,10 @@
 
 namespace App\Services;
 
+use App\Models\Challenge;
 use App\Models\Puzzle;
 use Generator;
+use Illuminate\Support\Facades\DB;
 use RuntimeException;
 
 class CsvPuzzleService
@@ -213,6 +215,140 @@ class CsvPuzzleService
         }
 
         return ['imported' => $imported, 'skipped' => $skipped];
+    }
+
+    /**
+     * Stream a CSV into the shared puzzle pool, then attach every resolved
+     * puzzle (newly inserted or already present) to the given challenge.
+     *
+     * Dedup is keyed on lichess_id at three layers:
+     *  1. within the stream (skip second occurrence)
+     *  2. against the puzzles table (insertOrIgnore — pool stays clean)
+     *  3. against the challenge_puzzle pivot (don't double-attach)
+     *
+     * @return array<string, int> keys: imported_into_pool, attached_to_challenge, skipped_already_attached
+     */
+    public function importRowsForChallenge(string $path, array $filters, int $challengeId): array
+    {
+        $imported = 0;
+        $attached = 0;
+        $skippedAlreadyAttached = 0;
+
+        $batchSize = 2500;
+        $batch = [];
+        $seenInStream = [];
+
+        /** @var Challenge $challenge */
+        $challenge = Challenge::query()->findOrFail($challengeId);
+
+        foreach ($this->streamMatches($path, $filters) as $row) {
+            $lichessId = $row['lichess_id'];
+
+            if (isset($seenInStream[$lichessId])) {
+                continue;
+            }
+            $seenInStream[$lichessId] = true;
+
+            $batch[] = $row;
+
+            if (count($batch) >= $batchSize) {
+                $result = $this->ingestAndAttachBatch($batch, $challenge);
+                $imported += $result['imported'];
+                $attached += $result['attached'];
+                $skippedAlreadyAttached += $result['skipped_already_attached'];
+                $batch = [];
+            }
+        }
+
+        if ($batch !== []) {
+            $result = $this->ingestAndAttachBatch($batch, $challenge);
+            $imported += $result['imported'];
+            $attached += $result['attached'];
+            $skippedAlreadyAttached += $result['skipped_already_attached'];
+        }
+
+        $this->renormalizeChallengeSequence($challenge);
+
+        return [
+            'imported_into_pool' => $imported,
+            'attached_to_challenge' => $attached,
+            'skipped_already_attached' => $skippedAlreadyAttached,
+        ];
+    }
+
+    /**
+     * Insert a batch into the pool (dedup on lichess_id) and attach every
+     * resolved puzzle — brand new or pre-existing — to the challenge.
+     *
+     * @param  array<int, array<string, mixed>>  $rows
+     * @return array<string, int>
+     */
+    private function ingestAndAttachBatch(array $rows, Challenge $challenge): array
+    {
+        $lichessIds = array_column($rows, 'lichess_id');
+        $lichessIds = array_values(array_unique($lichessIds));
+
+        $insertResult = $this->insertBatch($rows);
+
+        $puzzleIdByLichessId = Puzzle::query()
+            ->whereIn('lichess_id', $lichessIds)
+            ->pluck('id', 'lichess_id')
+            ->all();
+
+        $alreadyAttachedIds = $challenge->puzzles()
+            ->whereIn('puzzles.id', array_values($puzzleIdByLichessId))
+            ->pluck('puzzles.id')
+            ->all();
+
+        $existingCount = $challenge->puzzles()->count();
+
+        $newAttachments = [];
+        foreach ($puzzleIdByLichessId as $puzzleId) {
+            if (in_array($puzzleId, $alreadyAttachedIds, true)) {
+                continue;
+            }
+            $newAttachments[] = $puzzleId;
+        }
+
+        if ($newAttachments !== []) {
+            $attachments = [];
+            foreach ($newAttachments as $index => $puzzleId) {
+                $attachments[$puzzleId] = ['sequence' => $existingCount + $index + 1];
+            }
+            $challenge->puzzles()->attach($attachments);
+        }
+
+        return [
+            'imported' => $insertResult['imported'],
+            'attached' => count($newAttachments),
+            'skipped_already_attached' => count($alreadyAttachedIds),
+        ];
+    }
+
+    /**
+     * Rewrite pivot.sequence as a gapless 1..N for the challenge.
+     */
+    private function renormalizeChallengeSequence(Challenge $challenge): void
+    {
+        $orderedIds = $challenge->puzzles()
+            ->select(['puzzles.id'])
+            ->orderBy('challenge_puzzle.sequence')
+            ->orderBy('puzzles.id')
+            ->pluck('puzzles.id')
+            ->all();
+
+        if ($orderedIds === []) {
+            return;
+        }
+
+        DB::transaction(function () use ($orderedIds, $challenge): void {
+            foreach ($orderedIds as $index => $puzzleId) {
+                DB::table('challenge_puzzle')
+                    ->where('challenge_id', $challenge->id)
+                    ->where('puzzle_id', $puzzleId)
+                    ->update(['sequence' => $index + 1]);
+            }
+        });
     }
 
     public function countMatches(string $path, array $filters = []): int

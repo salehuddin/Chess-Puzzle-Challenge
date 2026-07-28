@@ -5,10 +5,12 @@ namespace App\Filament\Resources\Challenges\Pages;
 use App\Filament\Resources\Challenges\ChallengeResource;
 use App\Filament\Resources\Challenges\Pages\Concerns\HasChallengeRecordHeader;
 use App\Models\Puzzle;
+use App\Services\CsvPuzzleService;
 use Filament\Actions\Action;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DetachAction;
 use Filament\Actions\DetachBulkAction;
+use Filament\Forms\Components\FileUpload;
 use Filament\Notifications\Notification;
 use Filament\Resources\Pages\ManageRelatedRecords;
 use Filament\Schemas\Components\EmbeddedTable;
@@ -19,6 +21,7 @@ use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Storage;
 use Livewire\Attributes\Url;
 
 class ChallengePuzzles extends ManageRelatedRecords
@@ -110,6 +113,73 @@ class ChallengePuzzles extends ManageRelatedRecords
                 ]
                 : [])
             ->headerActions([
+                Action::make('importPuzzles')
+                    ->label('Import CSV')
+                    ->icon('heroicon-o-document-arrow-up')
+                    ->color('primary')
+                    ->modalHeading('Import puzzles into this challenge')
+                    ->modalDescription('Upload a Lichess-format CSV. New puzzles are added to the shared pool and attached to this challenge; puzzles already in the pool are attached directly; puzzles already attached are skipped.')
+                    ->modalSubmitActionLabel('Import & Attach')
+                    ->form([
+                        FileUpload::make('csv_file')
+                            ->label('CSV file')
+                            ->disk('local')
+                            ->directory('puzzle-uploads')
+                            ->acceptedFileTypes(['text/csv', 'text/plain', 'application/vnd.ms-excel'])
+                            ->maxSize(5120)
+                            ->required()
+                            ->helperText('Lichess puzzle CSV format: PuzzleId,FEN,Moves,Rating,RatingDeviation,Popularity,NbPlays,Themes,GameUrl. Max 5 MB.'),
+                    ])
+                    ->action(function (array $data, CsvPuzzleService $csvService): void {
+                        $relativePath = $data['csv_file'];
+                        $absolutePath = Storage::disk('local')->path($relativePath);
+
+                        if (! file_exists($absolutePath)) {
+                            Notification::make()
+                                ->title('Upload not found')
+                                ->danger()
+                                ->send();
+
+                            return;
+                        }
+
+                        $challenge = $this->getOwnerRecord();
+
+                        set_time_limit(0);
+
+                        try {
+                            $result = $csvService->importRowsForChallenge(
+                                $absolutePath,
+                                [],
+                                $challenge->id,
+                            );
+
+                            Notification::make()
+                                ->title('Import complete')
+                                ->body(sprintf(
+                                    '%d new puzzle(s) added to the pool, %d attached to "%s", %d already attached.',
+                                    $result['imported_into_pool'],
+                                    $result['attached_to_challenge'],
+                                    $challenge->name,
+                                    $result['skipped_already_attached'],
+                                ))
+                                ->success()
+                                ->send();
+                        } catch (\Throwable $e) {
+                            Notification::make()
+                                ->title('Import failed')
+                                ->body($e->getMessage())
+                                ->danger()
+                                ->send();
+
+                            return;
+                        } finally {
+                            @unlink($absolutePath);
+                        }
+
+                        $this->normalizeSequence();
+                        $this->resetTable();
+                    }),
                 Action::make('attachRecent')
                     ->label('Quick Attach Recent')
                     ->icon('heroicon-o-bolt')

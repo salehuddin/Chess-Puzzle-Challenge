@@ -3,11 +3,8 @@
 namespace App\Filament\Resources\Puzzles;
 
 use App\Filament\Resources\Puzzles\Pages\CreatePuzzle;
-use App\Filament\Resources\Puzzles\Pages\CsvExplorer;
 use App\Filament\Resources\Puzzles\Pages\EditPuzzle;
-use App\Filament\Resources\Puzzles\Pages\ImportPuzzles;
 use App\Filament\Resources\Puzzles\Pages\ListPuzzles;
-use App\Filament\Resources\Puzzles\Pages\UploadPuzzles;
 use App\Filament\Resources\Puzzles\Schemas\PuzzleForm;
 use App\Filament\Resources\Puzzles\Tables\PuzzlesTable;
 use App\Models\Puzzle;
@@ -46,9 +43,6 @@ class PuzzleResource extends Resource
             'index' => ListPuzzles::route('/'),
             'create' => CreatePuzzle::route('/create'),
             'edit' => EditPuzzle::route('/{record}/edit'),
-            'import' => ImportPuzzles::route('/import'),
-            'explorer' => CsvExplorer::route('/explorer'),
-            'upload' => UploadPuzzles::route('/upload'),
         ];
     }
 }
