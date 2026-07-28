@@ -12,6 +12,10 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
     'challenge_id',
     'puzzle_id',
     'solved_at',
+    'solved_with_help',
+    'skipped_at',
+    'attempts',
+    'hints_used',
 ])]
 class PuzzleProgress extends Model
 {
@@ -23,6 +27,10 @@ class PuzzleProgress extends Model
     {
         return [
             'solved_at' => 'datetime',
+            'skipped_at' => 'datetime',
+            'solved_with_help' => 'boolean',
+            'attempts' => 'integer',
+            'hints_used' => 'integer',
         ];
     }
 
@@ -44,5 +52,26 @@ class PuzzleProgress extends Model
     public function isSolved(): bool
     {
         return $this->solved_at !== null;
+    }
+
+    public function isSkipped(): bool
+    {
+        return $this->skipped_at !== null && $this->solved_at === null;
+    }
+
+    /**
+     * Solved without any help — the strongest solve state.
+     */
+    public function isFullySolved(): bool
+    {
+        return $this->solved_at !== null && ! $this->solved_with_help;
+    }
+
+    /**
+     * Solved, but only after revealing the solution (strict_autosolve mode).
+     */
+    public function isSolvedWithHelp(): bool
+    {
+        return $this->solved_at !== null && $this->solved_with_help;
     }
 }

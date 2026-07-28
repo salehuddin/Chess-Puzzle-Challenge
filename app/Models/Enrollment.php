@@ -112,4 +112,32 @@ class Enrollment extends Model
             default => 'active',
         };
     }
+
+    /**
+     * Number of puzzles marked as skipped (and not yet solved) in this enrollment.
+     */
+    public function skipsUsed(): int
+    {
+        return (int) PuzzleProgress::query()
+            ->where('user_id', $this->user_id)
+            ->where('challenge_id', $this->challenge_id)
+            ->whereNotNull('skipped_at')
+            ->whereNull('solved_at')
+            ->count();
+    }
+
+    /**
+     * Remaining skip tokens for this enrollment, or null when the challenge
+     * does not use the strict_skip navigation mode.
+     */
+    public function skipsRemaining(): ?int
+    {
+        $total = $this->challenge->effectiveSkipTokenCount();
+
+        if ($total === null) {
+            return null;
+        }
+
+        return max(0, $total - $this->skipsUsed());
+    }
 }

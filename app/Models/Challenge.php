@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Support\NavigationMode;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -30,6 +31,9 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
     'price_usd',
     'price_myr',
     'is_active',
+    'puzzle_navigation_mode',
+    'skip_token_count',
+    'autosolve_threshold',
     'medal_weight',
     'medal_length',
     'medal_width',
@@ -71,6 +75,9 @@ class Challenge extends Model
             'price_usd' => 'decimal:2',
             'price_myr' => 'decimal:2',
             'is_active' => 'boolean',
+            'puzzle_navigation_mode' => NavigationMode::class,
+            'skip_token_count' => 'integer',
+            'autosolve_threshold' => 'integer',
             'medal_weight' => 'decimal:2',
             'medal_length' => 'decimal:2',
             'medal_width' => 'decimal:2',
@@ -203,5 +210,29 @@ class Challenge extends Model
     public function scopeActive(Builder $query): Builder
     {
         return $query->where('is_active', true);
+    }
+
+    /**
+     * The default skip-token count when mode is strict_skip and no value is set.
+     */
+    public function effectiveSkipTokenCount(): ?int
+    {
+        if (! $this->puzzle_navigation_mode->allowsSkip()) {
+            return null;
+        }
+
+        return $this->skip_token_count ?? 3;
+    }
+
+    /**
+     * The default autosolve threshold when mode is strict_autosolve and no value is set.
+     */
+    public function effectiveAutosolveThreshold(): ?int
+    {
+        if (! $this->puzzle_navigation_mode->allowsAutoSolve()) {
+            return null;
+        }
+
+        return $this->autosolve_threshold ?? 5;
     }
 }

@@ -9,11 +9,14 @@ export default function puzzlePlayer() {
         puzzleId: null,
         completionToken: null,
         isFinalPuzzle: false,
-        
+
         chess: null,
         board: null,
-        
-        showSuccess: false,
+
+        // Replaced the old full-screen successModal with an inline auto-advance toast.
+        recentlySolved: false,
+        autoAdvanceTimer: null,
+
         showError: false,
         lastMoveError: '',
         ready: false,
@@ -32,6 +35,16 @@ export default function puzzlePlayer() {
 
         puzzleError: false,
         puzzleErrorMessage: '',
+
+        // Per-puzzle wrong-move counter (resets on each new puzzle).
+        // Used to trigger the "Reveal solution?" modal after the autosolve threshold.
+        wrongMoveCount: 0,
+        // Confirms the player has not yet recorded an attempt for the current puzzle.
+        attemptRecordedForCurrent: false,
+        // Whether the modal asking "Reveal solution?" is currently shown.
+        showRevealSolutionModal: false,
+        // Whether the player has revealed the solution this puzzle (avoids double-fire).
+        revealedForCurrent: false,
 
         getStorageKey() {
             const subId = this.subscriptionId
@@ -119,6 +132,13 @@ export default function puzzlePlayer() {
                 this.pendingOpponentTimer = null;
             }
 
+            // Cancel any pending toast auto-advance — new puzzle is loading,
+            // either via auto-advance or via explicit selection in Free mode.
+            if (this.autoAdvanceTimer !== null) {
+                clearTimeout(this.autoAdvanceTimer);
+                this.autoAdvanceTimer = null;
+            }
+
             this.puzzleError = false;
             this.puzzleErrorMessage = '';
             this.fen = fen;
@@ -129,6 +149,13 @@ export default function puzzlePlayer() {
             this.hintSquare = null;
             this.hintClicks = 0;
             this.hintCountedForCurrentPosition = false;
+
+            // Reset per-puzzle tracking state.
+            this.wrongMoveCount = 0;
+            this.attemptRecordedForCurrent = false;
+            this.revealedForCurrent = false;
+            this.showRevealSolutionModal = false;
+            this.recentlySolved = false;
 
             if (!this.fen || !this.moves) return;
 
@@ -143,11 +170,11 @@ export default function puzzlePlayer() {
             }
 
             this.currentMoveIndex = 0;
-            this.showSuccess = false;
+            this.recentlySolved = false;
             this.showError = false;
             this.lastMoveError = '';
             this.lastOpponentMove = '';
-            
+
             this.chess = new Chess(this.fen);
 
             // Lichess puzzle format: the side-to-move in the FEN is the OPPONENT who
@@ -170,7 +197,7 @@ export default function puzzlePlayer() {
                     }
                 }
             };
-            
+
             const boardEl = this.$refs?.board
                 ?? document.getElementById(boardElementId)
                 ?? document.getElementById('board');
@@ -445,6 +472,11 @@ export default function puzzlePlayer() {
             if (!this.hintCountedForCurrentPosition) {
                 this.hintClicks++;
                 this.hintCountedForCurrentPosition = true;
+
+                // Persist the hint count server-side for analytics.
+                if (this.puzzleId && this.completionToken) {
+                    this.$wire.call('recordHint', this.puzzleId, this.completionToken);
+                }
             }
 
             this.board.set({ drawable: this.getDrawable() });
@@ -473,16 +505,16 @@ export default function puzzlePlayer() {
                 console.error('[PuzzlePlayer] Cannot play opponent move', { index: this.currentMoveIndex, token: moveToken });
                 return;
             }
-            
+
             this.lastValidFen = this.chess.fen();
-            
+
             try {
                 const moveResult = this.chess.move(moveObj);
                 if (moveResult) {
                     this.lastOpponentMove = moveResult.san;
                     this.currentMoveIndex++;
                     this.saveState();
-                    
+
                     this.board.set({
                         fen: this.chess.fen(),
                         turnColor: this.playerColor,
@@ -490,10 +522,10 @@ export default function puzzlePlayer() {
                     });
 
                     // If this was the last move in the sequence (trailing opponent
-                    // response after player's final move), show success.
+                    // response after player's final move), show the inline solved toast.
                     if (this.currentMoveIndex >= this.moves.length) {
                         this.board.set({ movable: { color: undefined } });
-                        setTimeout(() => { this.showSuccess = true; }, 800);
+                        setTimeout(() => { this.triggerSolvedToast(); }, 800);
                     } else {
                         this.board.set({ movable: { dests: this.getDests(), color: this.playerColor } });
                     }
@@ -546,22 +578,22 @@ export default function puzzlePlayer() {
                 this.showError = true;
                 return;
             }
-            
+
             if (this.moveObjectsMatch(humanMoveObj, expectedMoveObj)) {
                 try {
                     this.chess.move(humanMoveObj);
                     this.currentMoveIndex++;
                     this.saveState();
-                    
+
                     this.board.set({
                         fen: this.chess.fen(),
                         lastMove: [orig, dest]
                     });
-                    
+
                     if (this.currentMoveIndex >= this.moves.length) {
                         this.board.set({ movable: { color: undefined } });
                         setTimeout(() => {
-                            this.showSuccess = true;
+                            this.triggerSolvedToast();
                         }, 400);
                     } else {
                         this.board.set({ movable: { color: undefined } });
@@ -575,7 +607,91 @@ export default function puzzlePlayer() {
             } else {
                 this.showError = true;
                 this.lastMoveError = this.buildMoveHint(orig, expectedMoveObj);
+                this.handleWrongMove();
             }
+        },
+
+        /**
+         * Track wrong moves; on strict_autosolve mode, after the configured
+         * threshold, prompt the player to reveal the solution.
+         */
+        handleWrongMove() {
+            this.wrongMoveCount++;
+
+            // Persist the attempt server-side (one-per-puzzle for the first wrong move).
+            if (!this.attemptRecordedForCurrent && this.puzzleId && this.completionToken) {
+                this.attemptRecordedForCurrent = true;
+                this.$wire.call('recordAttempt', this.puzzleId, this.completionToken);
+            }
+
+            // Check autosolve threshold — only the player's threshold×first+subsequent wrong moves trigger the modal.
+            // NOTE: $wire.autoSolveThreshold comes from the Livewire component, accessible via this.$wire.
+            const threshold = this.$wire?.autosolveThreshold;
+            if (threshold && this.wrongMoveCount >= threshold && !this.revealedForCurrent) {
+                // Defer one tick so the error modal renders first, then overlay the confirm.
+                this.$nextTick(() => {
+                    this.showRevealSolutionModal = true;
+                });
+            }
+        },
+
+        /**
+         * Show the inline solved toast (replaces the old full-screen successModal
+         * for non-final puzzles). Schedules an auto-advance after 2.2s.
+         */
+        triggerSolvedToast() {
+            this.recentlySolved = true;
+            this.scheduleAutoAdvance();
+        },
+
+        scheduleAutoAdvance() {
+            if (this.autoAdvanceTimer !== null) {
+                clearTimeout(this.autoAdvanceTimer);
+                this.autoAdvanceTimer = null;
+            }
+            this.autoAdvanceTimer = setTimeout(() => {
+                this.autoAdvanceTimer = null;
+                this.recentlySolved = false;
+                this.nextPuzzle(this.$wire);
+            }, 2200);
+        },
+
+        cancelAutoAdvance() {
+            if (this.autoAdvanceTimer !== null) {
+                clearTimeout(this.autoAdvanceTimer);
+                this.autoAdvanceTimer = null;
+            }
+            this.recentlySolved = false;
+        },
+
+        /**
+         * Called when the player accepts "Reveal solution?" in strict_autosolve mode.
+         */
+        confirmRevealSolution() {
+            this.showRevealSolutionModal = false;
+            this.revealedForCurrent = true;
+            this.showError = false;
+            this.lastMoveError = '';
+
+            if (!this.puzzleId || !this.completionToken) return;
+
+            if (this.isFinalPuzzle) {
+                this.$wire.call('completeChallengeWithHelp', this.completionToken);
+            } else {
+                this.$wire.call('solveWithHelp', this.puzzleId, this.completionToken);
+            }
+        },
+
+        cancelRevealSolution() {
+            this.showRevealSolutionModal = false;
+        },
+
+        /**
+         * Called when the player clicks "Skip Puzzle" in strict_skip mode.
+         */
+        skipCurrentPuzzle() {
+            if (!this.puzzleId || !this.completionToken) return;
+            this.$wire.call('skipPuzzle', this.puzzleId, this.completionToken);
         },
 
         buildMoveHint(humanFrom, expectedMoveObj) {
@@ -616,7 +732,7 @@ export default function puzzlePlayer() {
 
             this.showError = false;
             this.lastMoveError = '';
-            this.showSuccess = false;
+            this.recentlySolved = false;
             this.clearEngineHint();
 
             const playerTurn = this.playerColor === 'white' ? 'w' : 'b';
@@ -675,9 +791,8 @@ export default function puzzlePlayer() {
         },
 
         nextPuzzle(wire) {
-            // Keep success modal visible during the Livewire round trip so the user
-            // doesn't see the old board flash. The new component instance will have
-            // showSuccess=false by default after re-render.
+            // Auto-advance may have just been cancelled; ensure toast is gone.
+            this.recentlySolved = false;
             this.clearSavedState();
             if (this.isFinalPuzzle) {
                 wire.completeChallenge(this.completionToken);
@@ -687,7 +802,7 @@ export default function puzzlePlayer() {
 
             wire.solvePuzzle(this.puzzleId, this.completionToken);
         },
-        
+
         uciToMoveObj(uci) {
             if (typeof uci !== 'string') {
                 return null;

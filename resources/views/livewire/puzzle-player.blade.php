@@ -67,16 +67,33 @@
                         @php
                             $solved = in_array($puzzleId, $solvedPuzzleIds);
                             $current = $puzzleId === ($currentPuzzleId ?? null);
+                            $skippedUnsolved = in_array($puzzleId, $skippedUnsolvedPuzzleIds);
+                            $solvedWithHelp = in_array($puzzleId, $solvedWithHelpPuzzleIds);
+                            $freeMode = ($navigationMode?->value ?? 'strict') === 'free';
+                            $clickable = $freeMode && ! $solved && ! $current;
                         @endphp
                         <div
-                            class="h-3.5 rounded-sm border {{ $solved ? 'bg-brand border-transparent' : ($current ? 'bg-neutral-900 border-transparent ring-2 ring-brand/60' : 'bg-base-200 border-neutral-200') }}"
-                            title="Puzzle {{ $index + 1 }}{{ $current ? ' (current)' : '' }}{{ $solved ? ' (solved)' : '' }}"
+                            @if($clickable)
+                                role="button"
+                                tabindex="0"
+                                wire:click="selectPuzzle({{ $puzzleId }})"
+                                class="h-3.5 rounded-sm border cursor-pointer hover:ring-2 hover:ring-brand/40 transition-all {{ $solved ? ($solvedWithHelp ? 'bg-brand/50 border-brand/40' : 'bg-brand border-transparent') : ($skippedUnsolved ? 'bg-amber-400 border-transparent' : ($current ? 'bg-neutral-900 border-transparent ring-2 ring-brand/60' : 'bg-base-200 border-neutral-200')) }}"
+                            @else
+                                class="h-3.5 rounded-sm border {{ $solved ? ($solvedWithHelp ? 'bg-brand/50 border-brand/40' : 'bg-brand border-transparent') : ($skippedUnsolved ? 'bg-amber-400 border-transparent' : ($current ? 'bg-neutral-900 border-transparent ring-2 ring-brand/60' : 'bg-base-200 border-neutral-200')) }}"
+                            @endif
+                            title="Puzzle {{ $index + 1 }}{{ $current ? ' (current)' : '' }}{{ $solved ? ($solvedWithHelp ? ' (solved with help)' : ' (solved)') : '' }}{{ $skippedUnsolved ? ' (skipped)' : '' }}"
                         ></div>
                     @endforeach
                 </div>
 
                 <div class="mt-2.5 flex flex-wrap items-center gap-3 text-[11px] text-neutral-600">
                     <span class="flex items-center gap-1.5"><span class="inline-block w-3 h-3 rounded-sm bg-brand"></span><span>Solved</span></span>
+                    @if(! empty($solvedWithHelpPuzzleIds) || $navigationMode?->allowsAutoSolve())
+                        <span class="flex items-center gap-1.5"><span class="inline-block w-3 h-3 rounded-sm bg-brand/50"></span><span>With help</span></span>
+                    @endif
+                    @if($navigationMode?->allowsSkip())
+                        <span class="flex items-center gap-1.5"><span class="inline-block w-3 h-3 rounded-sm bg-amber-400"></span><span>Skipped</span></span>
+                    @endif
                     <span class="flex items-center gap-1.5"><span class="inline-block w-3 h-3 rounded-sm bg-neutral-900"></span><span>Current</span></span>
                     <span class="flex items-center gap-1.5"><span class="inline-block w-3 h-3 rounded-sm bg-base-200 border border-neutral-200"></span><span>Remaining</span></span>
                 </div>
@@ -185,7 +202,7 @@
                 <p class="text-lg text-neutral-700 mb-10 max-w-lg mx-auto">You have successfully solved all the puzzles. Your new sticker has been added to your dashboard.</p>
 
                 {{-- Stats Grid --}}
-                <div class="grid grid-cols-2 sm:grid-cols-3 gap-3 sm:gap-4 max-w-2xl mx-auto mb-10">
+                <div class="grid grid-cols-2 sm:grid-cols-3 gap-3 sm:gap-4 max-w-2xl mx-auto mb-4">
                     <div class="bg-white/80 backdrop-blur rounded-2xl border border-neutral-200 p-5 text-left">
                         <p class="text-xs font-bold uppercase tracking-[0.15em] text-neutral-500">Puzzles Solved</p>
                         <p class="text-3xl font-display font-black text-neutral-900 mt-1">{{ $completedPuzzles }}<span class="text-lg text-neutral-400">/{{ $totalPuzzles }}</span></p>
@@ -199,6 +216,17 @@
                         <p class="text-2xl font-display font-bold text-brand mt-1.5">✨ Unlocked</p>
                     </div>
                 </div>
+
+                {{-- Solve breakdown (only shown when there are with-help or skipped puzzles) --}}
+                @if($solvedWithHelpCount > 0 || $skippedCount > 0)
+                    <p class="text-xs text-neutral-500 mb-10">
+                        @if($solvedWithHelpCount > 0)<span class="inline-flex items-center gap-1.5"><span class="inline-block w-2.5 h-2.5 rounded-sm bg-brand/50"></span>{{ $solvedWithHelpCount }} solved with help</span>@endif
+                        @if($solvedWithHelpCount > 0 && $skippedCount > 0) · @endif
+                        @if($skippedCount > 0)<span class="inline-flex items-center gap-1.5"><span class="inline-block w-2.5 h-2.5 rounded-sm bg-amber-400"></span>{{ $skippedCount }} skipped (solved later)</span>@endif
+                    </p>
+                @else
+                    <div class="mb-10"></div>
+                @endif
 
                 {{-- Rating CTA (only when review pending and not yet submitted) --}}
                 <div x-show="!reviewSubmitted" x-cloak>
@@ -362,6 +390,17 @@
             </div>
         </div>
     @else
+        {{-- Needs-cleanup banner (strict_skip endgame: skipped puzzles must be revisited) --}}
+        @if($needsCleanup)
+            <div class="mb-4 p-4 rounded-2xl border border-amber-300 bg-amber-50 flex items-start gap-3">
+                <div class="text-2xl">⚠️</div>
+                <div>
+                    <p class="font-display font-bold text-neutral-900">Some puzzles still need solving</p>
+                    <p class="text-sm text-neutral-700 mt-1">You skipped {{ $skippedCount }} puzzle(s). Solve them to complete the challenge and claim your medal. Skipped puzzles show as amber in the progress grid.</p>
+                </div>
+            </div>
+        @endif
+
         {{-- Alpine Board Component --}}
         <div
             x-data="puzzlePlayer()"
@@ -373,32 +412,35 @@
 
             {{-- Board Area --}}
             <div class="w-full lg:w-2/3 max-w-[600px] mx-auto flex-shrink-0 relative">
+                {{-- Inline solved toast (replaces the full-screen successModal for non-final puzzles) --}}
+                <div
+                    x-show="recentlySolved"
+                    x-cloak
+                    x-transition:enter="transition ease-out duration-200"
+                    x-transition:enter-start="opacity-0 -translate-y-2"
+                    x-transition:enter-end="opacity-100 translate-y-0"
+                    x-transition:leave="transition ease-in duration-150"
+                    x-transition:leave-start="opacity-100 translate-y-0"
+                    x-transition:leave-end="opacity-0 -translate-y-2"
+                    class="absolute top-3 left-1/2 -translate-x-1/2 z-40 max-w-[90%]"
+                    style="display: none;"
+                >
+                    <div class="flex items-center gap-3 px-4 py-2.5 rounded-xl bg-white/95 backdrop-blur border border-brand/40 shadow-warm-lg">
+                        <div class="w-7 h-7 flex-shrink-0 bg-brand/15 rounded-full flex items-center justify-center text-brand">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"/></svg>
+                        </div>
+                        <div class="text-sm">
+                            <span class="font-display font-bold text-neutral-900">Puzzle solved</span>
+                            <span class="text-neutral-500 ml-2" x-text="`${$wire.completedPuzzles + 1} / ${$wire.totalPuzzles}`"></span>
+                        </div>
+                        <button type="button" @click="cancelAutoAdvance()" class="text-xs text-neutral-500 hover:text-neutral-900 ml-2">
+                            Stay here
+                        </button>
+                    </div>
+                </div>
+
                 <div class="aspect-square relative rounded-2xl border border-neutral-900/10 overflow-hidden bg-white shadow-warm-lg transition-opacity duration-200">
                     <div id="board" wire:ignore class="w-full h-full"></div>
-
-                    {{-- Animated Success Modal --}}
-                    <div x-show="showSuccess" x-cloak
-                         x-transition:enter="transition ease-out duration-300"
-                         x-transition:enter-start="opacity-0 scale-90 translate-y-4"
-                         x-transition:enter-end="opacity-100 scale-100 translate-y-0"
-                         x-transition:leave="transition ease-in duration-200"
-                         x-transition:leave-start="opacity-100 scale-100"
-                         x-transition:leave-end="opacity-0 scale-90"
-                         class="absolute inset-0 z-50 flex items-center justify-center bg-white/80 backdrop-blur-sm"
-                         style="display: none;">
-
-                        <div class="bg-white p-8 rounded-2xl border border-neutral-200 shadow-warm-lg text-center transform max-w-sm w-full mx-4">
-                            <div class="w-20 h-20 mx-auto bg-green-100 rounded-full flex items-center justify-center mb-4 text-green-600 animate-bounce">
-                                <svg class="w-10 h-10" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"></path></svg>
-                            </div>
-                            <h3 class="text-3xl font-display font-black text-neutral-900 mb-2">Excellent!</h3>
-                            <p class="text-neutral-600 mb-6 font-medium">You solved this puzzle correctly.</p>
-                            <button @click="nextPuzzle($wire)" class="w-full btn btn-primary flex items-center justify-center gap-2 h-12 text-lg">
-                                Next Puzzle
-                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 5l7 7-7 7M5 5l7 7-7 7"></path></svg>
-                            </button>
-                        </div>
-                    </div>
 
                     {{-- Puzzle Data Error Overlay --}}
                     <div x-show="puzzleError" x-cloak
@@ -414,6 +456,33 @@
                         </div>
                     </div>
 
+                    {{-- Reveal solution modal (strict_autosolve mode) --}}
+                    <div x-show="showRevealSolutionModal" x-cloak
+                         x-transition:enter="transition ease-out duration-200"
+                         x-transition:enter-start="opacity-0"
+                         x-transition:enter-end="opacity-100"
+                         x-transition:leave="transition ease-in duration-150"
+                         x-transition:leave-start="opacity-100"
+                         x-transition:leave-end="opacity-0"
+                         class="absolute inset-0 z-50 flex items-center justify-center bg-white/90 backdrop-blur-sm"
+                         style="display: none;">
+                        <div class="bg-white p-8 rounded-2xl border border-neutral-200 shadow-warm-lg text-center max-w-sm w-full mx-4">
+                            <div class="w-20 h-20 mx-auto bg-amber-100 rounded-full flex items-center justify-center mb-4 text-amber-600">
+                                <svg class="w-10 h-10" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/></svg>
+                            </div>
+                            <h3 class="text-2xl font-display font-black text-neutral-900 mb-2">Reveal solution?</h3>
+                            <p class="text-neutral-600 mb-6 font-medium text-sm">You've made several attempts. Reveal the solution and move on? This puzzle will be marked as solved-with-help.</p>
+                            <div class="flex gap-3">
+                                <button @click="cancelRevealSolution()" class="flex-1 btn btn-outline">
+                                    Keep trying
+                                </button>
+                                <button @click="confirmRevealSolution()" class="flex-1 btn btn-primary">
+                                    Reveal solution
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
                     {{-- Animated Error Modal --}}
                     <div x-show="showError" x-cloak
                          x-transition:enter="transition ease-out duration-300"
@@ -422,7 +491,7 @@
                          x-transition:leave="transition ease-in duration-200"
                          x-transition:leave-start="opacity-100 scale-100"
                          x-transition:leave-end="opacity-0 scale-90"
-                         class="absolute inset-0 z-50 flex items-center justify-center bg-white/80 backdrop-blur-sm"
+                         class="absolute inset-0 z-40 flex items-center justify-center bg-white/80 backdrop-blur-sm"
                          style="display: none;">
 
                         <div class="bg-white p-8 rounded-2xl border border-neutral-200 shadow-warm-lg text-center transform max-w-sm w-full mx-4">
@@ -515,6 +584,26 @@
                                     Reset Puzzle
                                 </button>
                             </div>
+
+                            {{-- Skip Puzzle button — strict_skip mode only --}}
+                            @if($navigationMode?->allowsSkip())
+                                @php $remaining = $skipTokensRemaining ?? 0; @endphp
+                                <div class="mt-3">
+                                    <button
+                                        type="button"
+                                        @click="skipCurrentPuzzle()"
+                                        @if($remaining <= 0) disabled @endif
+                                        class="w-full btn btn-warning btn-outline gap-2"
+                                    >
+                                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 5l7 7-7 7M5 5l7 7-7 7"/></svg>
+                                        Skip Puzzle
+                                        <span class="ml-1 badge badge-sm badge-ghost">{{ $remaining }} / {{ $skipTokensTotal }} left</span>
+                                    </button>
+                                    @if($remaining <= 0)
+                                        <p class="mt-1.5 text-xs text-center text-neutral-500">No skip tokens remaining — solve or revisit this puzzle to continue.</p>
+                                    @endif
+                                </div>
+                            @endif
 
                             <div class="mt-4">
                                 <button
