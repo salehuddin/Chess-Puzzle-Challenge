@@ -35,6 +35,8 @@ Features available to authenticated users after logging in.
 - [Order Tracking](./features/user-dashboard/order-tracking.md)
 - [Checkout](./features/user-dashboard/checkout.md)
 - [Profile](./features/user-dashboard/profile.md)
+- [Notifications](./notifications.md)
+- [Challenge Lifecycle](./workflow-challenge-lifecycle.md)
 
 ### Admin Panel (Filament)
 Administrative features for managing the platform.

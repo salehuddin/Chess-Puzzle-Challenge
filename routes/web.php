@@ -13,6 +13,7 @@ use App\Livewire\Dashboard;
 use App\Livewire\EnrolledChallenge;
 use App\Livewire\HallOfFame;
 use App\Livewire\MedalRequest;
+use App\Livewire\Notifications\Index as NotificationsIndex;
 use App\Livewire\PuzzlePlayer;
 use App\Models\Bundle;
 use App\Models\Challenge;
@@ -51,6 +52,7 @@ Route::middleware('auth')->group(function () {
     Route::get('/enrollments/{enrollment}', EnrolledChallenge::class)->name('enrollments.show');
     Route::get('/medal-request/{enrollment}', MedalRequest::class)->name('medal-request');
     Route::get('/hall-of-fame', HallOfFame::class)->name('hall-of-fame');
+    Route::get('/notifications', NotificationsIndex::class)->name('notifications.index');
     Route::get('/orders/{enrollment}', fn (Enrollment $enrollment) => redirect()->route('enrollments.show', $enrollment, 301))->name('orders.track');
 
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');

@@ -68,7 +68,7 @@ class AdminPanelProvider extends PanelProvider
             ->darkMode(true)
             ->sidebarCollapsibleOnDesktop(true)
             ->globalSearch(true)
-            ->databaseNotifications(false)
+            ->databaseNotifications()
             ->assets([
                 Css::make('filament-puzzle-preview', Vite::asset('resources/css/filament-puzzle-preview.css')),
                 Js::make('filament-puzzle-preview', Vite::asset('resources/js/filament-puzzle-preview.js'))->module(),

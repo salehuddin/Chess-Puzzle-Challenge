@@ -18,7 +18,7 @@ use Spatie\Activitylog\Models\Concerns\LogsActivity;
 use Spatie\Activitylog\Support\LogOptions;
 use Spatie\Permission\Traits\HasRoles;
 
-#[Fillable(['name', 'username', 'email', 'password', 'avatar', 'bio', 'profile_is_public', 'address_line1', 'address_line2', 'city', 'state', 'postcode', 'country'])]
+#[Fillable(['name', 'username', 'email', 'password', 'avatar', 'bio', 'profile_is_public', 'address_line1', 'address_line2', 'city', 'state', 'postcode', 'country', 'notification_preferences'])]
 #[Hidden(['password', 'remember_token'])]
 class User extends Authenticatable implements FilamentUser
 {
@@ -36,7 +36,52 @@ class User extends Authenticatable implements FilamentUser
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
             'profile_is_public' => 'boolean',
+            'notification_preferences' => 'array',
         ];
+    }
+
+    /**
+     * Notification types that players can manage from their profile.
+     * Staff-only notifications are intentionally not included here.
+     *
+     * @return array<string, string>
+     */
+    public static function playerNotificationTypes(): array
+    {
+        return [
+            'enrollment_activated' => 'Challenge enrollment',
+            'challenge_completed' => 'Challenge completion',
+            'medal_shipped' => 'Medal shipped',
+            'medal_delivered' => 'Medal delivered',
+            'review_featured' => 'Review published or featured',
+        ];
+    }
+
+    public function wantsNotification(string $type, string $channel): bool
+    {
+        return (bool) data_get($this->notification_preferences, "{$type}.{$channel}", true);
+    }
+
+    /**
+     * @return array<string, array<string, bool>>
+     */
+    public function defaultNotificationPreferences(): array
+    {
+        $preferences = [];
+
+        foreach (array_keys(self::playerNotificationTypes()) as $type) {
+            $preferences[$type] = ['database' => true, 'mail' => true];
+        }
+
+        return $preferences;
+    }
+
+    /**
+     * @return array<string, array<string, bool>>
+     */
+    public function notificationPreferences(): array
+    {
+        return array_replace_recursive($this->defaultNotificationPreferences(), $this->notification_preferences ?? []);
     }
 
     /**

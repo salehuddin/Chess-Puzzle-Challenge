@@ -36,6 +36,8 @@
                     ✦ {{ auth()->user()->stickers()->count() }}
                 </span>
 
+                @livewire('notification-bell')
+
                 {{-- Dropdown --}}
                 <div class="dropdown dropdown-end">
                     <div
@@ -128,6 +130,7 @@
         <div class="px-4 py-4 border-t border-neutral-100">
             <p class="text-xs text-neutral-400 mb-1">{{ Auth::user()->name }}</p>
             <p class="text-sm text-neutral-500 mb-3">{{ Auth::user()->email }}</p>
+            <a href="{{ route('notifications.index') }}" class="block px-3 py-2 rounded-lg text-neutral-700 hover:bg-orange-50 text-sm mb-1">Notifications</a>
             <a href="{{ route('dashboard') }}" class="block px-3 py-2 rounded-lg text-neutral-700 hover:bg-orange-50 text-sm mb-1">Dashboard</a>
             <a href="{{ route('profile.edit') }}" class="block px-3 py-2 rounded-lg text-neutral-700 hover:bg-orange-50 text-sm mb-1">Profile & Address</a>
             @if(Auth::user()->isPubliclyViewable())

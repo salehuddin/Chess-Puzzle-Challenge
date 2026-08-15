@@ -29,14 +29,39 @@ class DocumentationService
 
         $featuresPath = $this->basePath.'/features';
 
-        if (! is_dir($featuresPath)) {
-            return collect();
+        $categories = collect([
+            $this->rootDocumentationCategory(),
+        ]);
+
+        if (is_dir($featuresPath)) {
+            $categories = $categories->concat(collect(File::directories($featuresPath))
+                ->sort()
+                ->map(fn (string $path) => $this->makeCategory($path)));
         }
 
-        return collect(File::directories($featuresPath))
-            ->sort()
-            ->map(fn (string $path) => $this->makeCategory($path))
-            ->filter(fn (array $category) => $category['documents']->isNotEmpty());
+        return $categories->filter(fn (array $category) => $category['documents']->isNotEmpty());
+    }
+
+    /**
+     * Root-level workflow documents intended for the internal admin reference.
+     *
+     * @return array{name: string, label: string, documents: Collection<int, array{path: string, title: string, description: string, updated_at: Carbon}>}
+     */
+    protected function rootDocumentationCategory(): array
+    {
+        $documents = collect([
+            'workflow-challenge-lifecycle.md',
+            'notifications.md',
+        ])
+            ->map(fn (string $file) => base_path('docs/'.$file))
+            ->filter(fn (string $path) => File::exists($path))
+            ->map(fn (string $path) => $this->parseDocument($path));
+
+        return [
+            'name' => 'lifecycle-notifications',
+            'label' => 'Lifecycle & Notifications',
+            'documents' => $documents->values(),
+        ];
     }
 
     /**

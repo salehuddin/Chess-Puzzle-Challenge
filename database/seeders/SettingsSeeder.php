@@ -66,6 +66,41 @@ class SettingsSeeder extends Seeder
                 'button_text' => 'View Order',
                 'test_recipient' => config('app.admin_email'),
             ],
+            'medal_shipped' => [
+                'subject' => 'Your medal has shipped: {{challenge_name}}',
+                'title' => 'Your medal is on the way',
+                'body' => "Hi {{user_name}},\n\nYour medal for {{challenge_name}} has shipped. Follow the tracking link below for updates.",
+                'button_text' => 'Track Medal',
+                'test_recipient' => config('app.admin_email'),
+            ],
+            'medal_delivered' => [
+                'subject' => 'Your medal was delivered',
+                'title' => 'Medal delivered',
+                'body' => "Hi {{user_name}},\n\nYour medal for {{challenge_name}} has been marked as delivered. We hope you enjoy it!",
+                'button_text' => 'View Challenge',
+                'test_recipient' => config('app.admin_email'),
+            ],
+            'review_featured' => [
+                'subject' => 'Your review is now public',
+                'title' => 'Thank you for your review',
+                'body' => "Hi {{user_name}},\n\nYour review for {{challenge_name}} is now public on {{platform_name}}.",
+                'button_text' => 'View Reviews',
+                'test_recipient' => config('app.admin_email'),
+            ],
+            'medal_request_ready' => [
+                'subject' => 'Medal request ready to ship',
+                'title' => 'Fulfillment action required',
+                'body' => 'A medal request for {{challenge_name}} is ready to ship.',
+                'button_text' => 'Open Fulfillment Queue',
+                'test_recipient' => config('app.admin_email'),
+            ],
+            'review_awaiting_moderation' => [
+                'subject' => 'Review awaiting moderation',
+                'title' => 'New review to moderate',
+                'body' => 'A new review for {{challenge_name}} is awaiting moderation.',
+                'button_text' => 'Review Submission',
+                'test_recipient' => config('app.admin_email'),
+            ],
         ]);
 
         Settings::set('hq_addresses', [

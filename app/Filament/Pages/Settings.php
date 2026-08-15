@@ -152,6 +152,11 @@ class Settings extends Page implements HasForms
                         $this->challengeEnrollmentTemplateTab(),
                         $this->challengeCompletionTemplateTab(),
                         $this->orderReceiptTemplateTab(),
+                        $this->medalShippedTemplateTab(),
+                        $this->medalDeliveredTemplateTab(),
+                        $this->reviewFeaturedTemplateTab(),
+                        $this->medalRequestReadyTemplateTab(),
+                        $this->reviewAwaitingModerationTemplateTab(),
                     ]),
             ]);
     }
@@ -279,6 +284,31 @@ class Settings extends Page implements HasForms
             placeholders: ['{{platform_name}}', '{{user_name}}', '{{order_id}}', '{{order_total}}', '{{order_currency}}'],
             hasButton: true,
         );
+    }
+
+    protected function medalShippedTemplateTab(): Tab
+    {
+        return $this->emailTemplateTab('medal_shipped', 'Medal Shipped', ['{{platform_name}}', '{{user_name}}', '{{challenge_name}}', '{{tracking_url}}'], true);
+    }
+
+    protected function medalDeliveredTemplateTab(): Tab
+    {
+        return $this->emailTemplateTab('medal_delivered', 'Medal Delivered', ['{{platform_name}}', '{{user_name}}', '{{challenge_name}}'], true);
+    }
+
+    protected function reviewFeaturedTemplateTab(): Tab
+    {
+        return $this->emailTemplateTab('review_featured', 'Review Published', ['{{platform_name}}', '{{user_name}}', '{{challenge_name}}'], true);
+    }
+
+    protected function medalRequestReadyTemplateTab(): Tab
+    {
+        return $this->emailTemplateTab('medal_request_ready', 'Medal Request Ready', ['{{platform_name}}', '{{challenge_name}}'], true);
+    }
+
+    protected function reviewAwaitingModerationTemplateTab(): Tab
+    {
+        return $this->emailTemplateTab('review_awaiting_moderation', 'Review Awaiting Moderation', ['{{platform_name}}', '{{challenge_name}}'], true);
     }
 
     /**
