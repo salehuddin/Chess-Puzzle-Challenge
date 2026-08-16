@@ -419,6 +419,28 @@ body {
     background-color: rgba(183, 255, 0, 0.14) !important;
 }
 
+/* Keep every table record action readable, regardless of its Filament
+   action color (gray, primary, info, etc.). */
+.fi-ta-actions .fi-btn,
+.fi-ta-actions .fi-btn > .fi-icon {
+    color: var(--cpc-onyx) !important;
+}
+
+.fi-ta-actions .fi-btn:hover,
+.fi-ta-actions .fi-btn:hover > .fi-icon {
+    color: #000000 !important;
+}
+
+.dark .fi-ta-actions .fi-btn,
+.dark .fi-ta-actions .fi-btn > .fi-icon {
+    color: #FEFEFE !important;
+}
+
+.dark .fi-ta-actions .fi-btn:hover,
+.dark .fi-ta-actions .fi-btn:hover > .fi-icon {
+    color: var(--cpc-brand) !important;
+}
+
 /* ── Form inputs ──────────────────────────────────────────── */
 .fi-fo-text-input input,
 .fi-fo-select select,
