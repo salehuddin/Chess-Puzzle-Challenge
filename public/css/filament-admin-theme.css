@@ -388,6 +388,37 @@ body {
     box-shadow: 0 4px 12px rgba(183, 255, 0, 0.40);
 }
 
+/* ── Ghost / outlined action buttons (table row actions, header
+      actions: "Edit", "View", "Delete", etc.) ────────────────── */
+/* These are text-only buttons with NO fill, so they read `var(--text)`
+   (set to white above) / `var(--dark-text)` (set to onyx above) as their
+   text color. That leaves them white-on-white in light mode and
+   black-on-dark in dark mode — unreadable. Give them proper link colors
+   matching the rest of the table, independent of the solid-button vars. */
+.fi-btn.fi-outlined.fi-color-primary,
+.fi-btn.fi-ghost.fi-color-primary {
+    color: var(--cpc-onyx) !important;
+    --tw-ring-color: var(--cpc-border) !important;
+}
+
+.fi-btn.fi-outlined.fi-color-primary:hover,
+.fi-btn.fi-ghost.fi-color-primary:hover {
+    color: #000000 !important;
+    background-color: rgba(183, 255, 0, 0.08) !important;
+}
+
+.dark .fi-btn.fi-outlined.fi-color-primary,
+.dark .fi-btn.fi-ghost.fi-color-primary {
+    color: var(--cpc-brand) !important;
+    --tw-ring-color: #404040 !important;
+}
+
+.dark .fi-btn.fi-outlined.fi-color-primary:hover,
+.dark .fi-btn.fi-ghost.fi-color-primary:hover {
+    color: #D4F500 !important;
+    background-color: rgba(183, 255, 0, 0.14) !important;
+}
+
 /* ── Form inputs ──────────────────────────────────────────── */
 .fi-fo-text-input input,
 .fi-fo-select select,
