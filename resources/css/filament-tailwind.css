@@ -1,1 +1,22 @@
 @import "tailwindcss";
+
+/* Filament table record actions use generated --text / --dark-text
+   variables for every action color. Keep those text-only buttons readable
+   regardless of whether the action is primary, gray, info, or another color. */
+.fi-ta-actions .fi-btn.fi-color {
+    --text: #111111 !important;
+    --dark-text: #FEFEFE !important;
+    color: #111111 !important;
+}
+
+.fi-ta-actions .fi-btn.fi-color > .fi-icon {
+    color: #111111 !important;
+}
+
+.dark .fi-ta-actions .fi-btn.fi-color {
+    color: #FEFEFE !important;
+}
+
+.dark .fi-ta-actions .fi-btn.fi-color > .fi-icon {
+    color: #FEFEFE !important;
+}
