@@ -337,21 +337,14 @@ body {
 }
 
 /* ── Primary button (the main "Save / Create" CTA) ─────────── */
-/* Filament v5 wires the color via CSS variables (`--bg`, `--text`,
-   `--dark-bg`, `--dark-text`) on the .fi-color-primary element, and
-   the actual `background-color` is applied by `.fi-btn.fi-color`
-   using `bg-(--bg)`. We override the variables so the existing
-   pipeline picks up our brand colors. This avoids the specificity
-   war with Filament's loaded-later Tailwind utilities. */
+/* Filament v5 wires filled-button backgrounds via CSS variables on the
+   .fi-color-primary element. Keep text variables untouched because
+   outlined table actions use them for contrast-aware text colors. */
 .fi-color-primary {
     --bg: var(--cpc-onyx) !important;
-    --text: var(--cpc-white) !important;
     --hover-bg: #000000 !important;
-    --hover-text: var(--cpc-white) !important;
     --dark-bg: var(--cpc-brand) !important;
-    --dark-text: #111111 !important;
     --dark-hover-bg: #D4F500 !important;
-    --dark-hover-text: #111111 !important;
 }
 
 /* Belt-and-braces: still set the rendered properties directly so
@@ -390,11 +383,8 @@ body {
 
 /* ── Ghost / outlined action buttons (table row actions, header
       actions: "Edit", "View", "Delete", etc.) ────────────────── */
-/* These are text-only buttons with NO fill, so they read `var(--text)`
-   (set to white above) / `var(--dark-text)` (set to onyx above) as their
-   text color. That leaves them white-on-white in light mode and
-   black-on-dark in dark mode — unreadable. Give them proper link colors
-   matching the rest of the table, independent of the solid-button vars. */
+/* These are text-only buttons with no fill, so they need link colors that
+   remain readable against the table surface. */
 .fi-btn.fi-outlined.fi-color-primary,
 .fi-btn.fi-ghost.fi-color-primary {
     color: var(--cpc-onyx) !important;
