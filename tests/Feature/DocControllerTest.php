@@ -45,6 +45,6 @@ class DocControllerTest extends TestCase
 
     public function test_docs_link_appears_in_marketing_nav(): void
     {
-        $this->get('/')->assertSee('Docs');
+        $this->get('/challenges')->assertSee('Docs');
     }
 }

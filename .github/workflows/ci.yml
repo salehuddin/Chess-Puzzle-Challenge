@@ -28,9 +28,6 @@ jobs:
       - name: Verify PHP version
         run: php -v
 
-      - name: Install PHP dependencies
-        run: composer install --no-interaction --prefer-dist
-
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
@@ -40,8 +37,11 @@ jobs:
       - name: Install Node dependencies
         run: npm ci
 
-      - name: Build assets
+      - name: Build assets (Vite manifest is needed when composer boots the app)
         run: npm run build
+
+      - name: Install PHP dependencies
+        run: composer install --no-interaction --prefer-dist
 
       - name: Prepare environment
         run: |
