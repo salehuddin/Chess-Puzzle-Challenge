@@ -18,8 +18,9 @@ $ErrorActionPreference = "Stop"
 # ──────────────────────────────────────────────────────────────────────
 # Configuration — edit these values
 # ──────────────────────────────────────────────────────────────────────
-$COOLIFY_URL  = "http://109.123.239.88:8000/api/v1"
-$COOLIFY_TOKEN = "1|Nl88hWEMFSqkiu7kgVXJyXREJ04MMC2lhlT4nKQf6d0a9828"
+$COOLIFY_URL  = if ($env:COOLIFY_URL) { $env:COOLIFY_URL } else { "http://109.123.239.88:8000/api/v1" }  # prefer https
+$COOLIFY_TOKEN = $env:COOLIFY_TOKEN  # set in your shell; never commit
+if (-not $COOLIFY_TOKEN) { throw "Set `$env:COOLIFY_TOKEN first (Coolify > Keys & Tokens > API tokens)." }
 
 $PROJECT_NAME        = "chess-puzzle-challenge"
 $PROJECT_DESCRIPTION = "Chess Puzzle Challenge - Laravel + Filament app"
