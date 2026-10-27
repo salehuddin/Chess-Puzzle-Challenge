@@ -53,16 +53,3 @@ jobs:
 
       - name: Run Pint (code style)
         run: ./vendor/bin/pint --test
-
-  deploy:
-    needs: test
-    runs-on: ubuntu-latest
-    if: github.ref == 'refs/heads/main' && github.event_name == 'push'
-
-    steps:
-      - name: Trigger Coolify deploy
-        if: ${{ vars.COOLIFY_DEPLOY_WEBHOOK != '' }}
-        run: |
-          curl -X POST "${{ vars.COOLIFY_DEPLOY_WEBHOOK }}" \
-            -H "Content-Type: application/json" \
-            --fail-with-body
