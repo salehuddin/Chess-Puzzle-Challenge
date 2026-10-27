@@ -1,4 +1,4 @@
-FROM php:8.5-fpm AS base
+FROM php:8.5.12-fpm-trixie AS base
 
 RUN apt-get update && apt-get install -y --no-install-recommends \
     nginx supervisor \
@@ -39,7 +39,11 @@ RUN printf '%s\n' \
     '    listen 80 default_server;' \
     '    root /app/public;' \
     '    index index.php;' \
-    '    client_max_body_size 100M;' \
+    '    client_max_body_size 30M;' \
+    '    server_tokens off;' \
+    'add_header X-Content-Type-Options nosniff always;' \
+    'add_header X-Frame-Options SAMEORIGIN always;' \
+    'add_header Referrer-Policy strict-origin-when-cross-origin always;' \
     '' \
     '    location / {' \
     '        try_files $uri $uri/ /index.php?$query_string;' \

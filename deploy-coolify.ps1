@@ -29,7 +29,7 @@ $APP_DOMAIN       = "chesspuzzlechallenge.com"
 $GIT_REPOSITORY   = "https://github.com/salehuddin/Chess-Puzzle-Challenge"
 $GIT_BRANCH       = "main"
 $BUILD_PACK       = "dockerfile"
-$PORTS_EXPOSES    = "9000"
+$PORTS_EXPOSES    = "80"
 
 $DB_NAME     = "chess-puzzle-mysql"
 $DB_DATABASE = "chess_puzzle"
@@ -323,9 +323,9 @@ Write-Host "    Host:     $DB_HOST (internal Docker hostname)" -ForegroundColor 
 Write-Host "    Port:     3306" -ForegroundColor Gray
 Write-Host "    Database: $DB_DATABASE" -ForegroundColor Gray
 Write-Host "    Username: $DB_USER" -ForegroundColor Gray
-Write-Host "    Password: $DB_PASSWORD" -ForegroundColor Gray
+Write-Host "    Password: (see Coolify)" -ForegroundColor Gray
 Write-Host ""
-Write-Host "  APP_KEY: $APP_KEY" -ForegroundColor Gray
+Write-Host "  APP_KEY: (set)" -ForegroundColor Gray
 Write-Host ""
 
 if (-not $DryRun) {

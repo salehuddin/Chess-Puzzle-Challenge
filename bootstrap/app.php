@@ -4,6 +4,7 @@ use App\Http\Middleware\EnsureUserIsStaff;
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
+use Illuminate\Http\Request;
 
 return Application::configure(basePath: dirname(__DIR__))
     ->withRouting(
@@ -24,7 +25,7 @@ return Application::configure(basePath: dirname(__DIR__))
         $middleware->trustProxies(at: '*');
     })
     ->withExceptions(function (Exceptions $exceptions): void {
-        $exceptions->render(function (\Throwable $e, \Illuminate\Http\Request $request) {
+        $exceptions->render(function (Throwable $e, Request $request) {
             if ($request->is('livewire/*/upload-file') || $request->is('livewire/upload-file')) {
                 $payload = [
                     'message' => $e->getMessage(),
@@ -34,6 +35,7 @@ return Application::configure(basePath: dirname(__DIR__))
                 if (config('app.debug')) {
                     $payload['trace'] = explode("\n", $e->getTraceAsString());
                 }
+
                 return response()->json($payload, 500);
             }
 
